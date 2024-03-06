@@ -1,0 +1,6 @@
+@DP_backend_HostAddress = http://localhost:5226
+
+GET {{DP_backend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
