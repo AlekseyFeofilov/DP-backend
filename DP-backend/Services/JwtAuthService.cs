@@ -1,16 +1,10 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
-using DP_backend.Models;
 using DP_backend.Configurations;
+using DP_backend.Domain.Identity;
 
 namespace DP_backend.Services
 {
