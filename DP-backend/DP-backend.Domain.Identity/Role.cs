@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
-using static DP_backend.Models.IBaseEntitry;
+﻿using System;
+using System.Collections.Generic;
+using DP_backend.Common;
+using Microsoft.AspNetCore.Identity;
 
-namespace DP_backend.Models
+namespace DP_backend.Domain.Identity
 {
     // Базовая моделька, возможно будем расширять
     public class Role : IdentityRole<Guid>, IBaseEntity

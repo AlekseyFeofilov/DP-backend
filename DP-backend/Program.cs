@@ -44,7 +44,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.MigrateDBWhenNecessary<ApplicationDbContext>();
+// app.MigrateDBWhenNecessary<ApplicationDbContext>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

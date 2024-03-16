@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DP_backend.Models.IBaseEntitry;
+﻿using DP_backend.Common;
 
 namespace DP_backend.Helpers
 {

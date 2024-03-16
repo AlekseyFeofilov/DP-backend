@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Data;
+﻿using System;
+using Microsoft.AspNetCore.Identity;
 
-namespace DP_backend.Models
+namespace DP_backend.Domain.Identity
 {
     public class UserRole : IdentityUserRole<Guid>
     {

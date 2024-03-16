@@ -30,4 +30,46 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Identity\obj\DP-backend.Domain.Identity.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Identity\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Identity\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Employment\obj\Debug\net7.0\DP-backend.Domain.Employment.sourcelink.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Employment\obj\DP-backend.Domain.Employment.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Employment\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Domain.Employment\obj\project.packagespec.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Common\obj\DP-backend.Common.csproj.nuget.dgspec.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Common\obj\project.assets.json" />
+    <_ContentIncludedByDefault Remove="DP-backend.Common\obj\project.packagespec.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DP-backend.Domain.Identity\**" />
+    <Compile Remove="DP-backend.Domain.Employment\**" />
+    <Compile Remove="DP-backend.Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="DP-backend.Domain.Identity\**" />
+    <EmbeddedResource Remove="DP-backend.Domain.Employment\**" />
+    <EmbeddedResource Remove="DP-backend.Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="DP-backend.Domain.Identity\**" />
+    <Content Remove="DP-backend.Domain.Employment\**" />
+    <Content Remove="DP-backend.Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="DP-backend.Domain.Identity\**" />
+    <None Remove="DP-backend.Domain.Employment\**" />
+    <None Remove="DP-backend.Common\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
+    <ProjectReference Include="DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj" />
+  </ItemGroup>
+
 </Project>

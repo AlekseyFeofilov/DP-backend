@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System.Reflection;
+using DP_backend.Configurators.Entities;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using System.Data;
-using DP_backend.Models;
+using DP_backend.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using DP_backend.Helpers;
 
@@ -9,7 +10,9 @@ namespace DP_backend
 {
     public class ApplicationDbContext : IdentityDbContext<User, Role, Guid, IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options){}
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
+        {
+        }
 
         public override DbSet<User> Users { get; set; }
         public override DbSet<Role> Roles { get; set; }
@@ -31,9 +34,11 @@ namespace DP_backend
                     .WithMany(x => x.Roles)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Cascade);
-
             });
+
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(EmploymentEntityConfiguration))!);
         }
+
         public override int SaveChanges()
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
@@ -83,6 +88,5 @@ namespace DP_backend
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker, dateTime);
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
-
     }
 }
