@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Identity;
 using DP_backend.Configurations;
 using DP_backend.Domain.Identity;
+using DP_backend.Models;
 
 namespace DP_backend.Services;
 
@@ -54,10 +55,10 @@ public class JwtAuthService : IJwtAuthService
     {
         var claims = new Dictionary<string, object>
         {
-            { "Id", user.Id.ToString() },
-            { "AccountId", user.AccountId.ToString() },
-            { "Name", user.UserName },
-            { "Email", user.Email },
+            { DPClaimtTypes.Id,         user.Id.ToString() },
+            { DPClaimtTypes.AccountId,  user.AccountId.ToString() },
+            { DPClaimtTypes.Name,       user.UserName },
+            { DPClaimtTypes.Email,      user.Email },
         };
         try
         {

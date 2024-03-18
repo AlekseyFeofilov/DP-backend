@@ -14,5 +14,7 @@ public class EmploymentVariantEntityConfiguration : IEntityTypeConfiguration<Emp
             ownsBuilder.HasOne(x => x.Employer);
             ownsBuilder.Property(x => x.CustomCompanyName);
         });
+
+        builder.Navigation(x => x.Student).AutoInclude();
     }
 }
