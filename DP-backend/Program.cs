@@ -1,6 +1,8 @@
 using DP_backend;
+using DP_backend.Configurations;
 using DP_backend.Configurators;
 using DP_backend.Models;
+using DP_backend.Services.Initialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
@@ -32,6 +34,7 @@ services.AddDefaultIdentity<User>()
     .AddSignInManager<SignInManager<User>>()
     .AddUserManager<UserManager<User>>()
     .AddRoleManager<RoleManager<Role>>();
+builder.ConfigureClaimAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

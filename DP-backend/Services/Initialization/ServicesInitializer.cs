@@ -1,6 +1,6 @@
 ﻿using DP_backend.Services;
 
-namespace DP_backend.Configurators
+namespace DP_backend.Services.Initialization
 {
     public static class ServicesInitializer
     {

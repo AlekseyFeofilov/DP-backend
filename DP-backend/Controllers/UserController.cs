@@ -27,7 +27,7 @@ namespace DP_backend.Controllers
         [HttpPost]
         [SwaggerResponse(400)]
         [ProducesResponseType(typeof(string), 200)]
-        public async Task<IActionResult> Auth(string token)
+        public async Task<IActionResult> Auth(string token, bool? asStudent=null)
         {
             TSUAuthResponseDTO data = null;
             try

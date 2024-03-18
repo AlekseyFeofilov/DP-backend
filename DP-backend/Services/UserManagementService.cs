@@ -9,7 +9,7 @@ namespace DP_backend.Services
     public interface IUserManagementService
     {
         public Task<User> GetUserByAccountId(Guid accountId);
-        public Task<User> CreateUserByAccountId(Guid accountId);
+        public Task<User> CreateUserByAccountId(Guid accountId, bool asStudent);
     }
 
     public class UserManagementService : IUserManagementService
@@ -18,6 +18,7 @@ namespace DP_backend.Services
         private readonly ITSUAccountService _tsuAccountService;
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
+
         public UserManagementService(ITSUAccountService tSUAccountService, ApplicationDbContext context, UserManager<User> userManager, ITSUAccountService tsuAccountService)
         {
             _accountService = tSUAccountService;
@@ -30,7 +31,7 @@ namespace DP_backend.Services
             return await _dbContext.Users.GetUndeleted().FirstOrDefaultAsync(x => x.AccountId == accountId);
         }
 
-        public async Task<User> CreateUserByAccountId(Guid accountId)
+        public async Task<User> CreateUserByAccountId(Guid accountId, bool asStudent)
         {
             var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.AccountId == accountId);
             if (user != null)
@@ -51,7 +52,21 @@ namespace DP_backend.Services
             {
                 return null;
             }
-
+            try
+            {
+                if (asStudent)
+                {
+                    await _userManager.AddToRoleAsync(user, ApplicationRoleNames.Student);
+                }
+                else
+                {
+                    await _userManager.AddToRoleAsync(user, ApplicationRoleNames.NoOne);
+                }
+            }
+            catch
+            {
+                throw;
+            }
             return user;
         }
 
