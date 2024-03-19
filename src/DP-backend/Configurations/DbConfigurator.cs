@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace DP_backend.Configurators
+namespace DP_backend.Configurations
 {
     public static class DbConfigurator
     {

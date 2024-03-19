@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
-using DP_backend.Configurators.Entities;
+using DP_backend.Configurations.Entities;
+using DP_backend.Domain.Employment;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using DP_backend.Domain.Identity;
@@ -17,25 +18,18 @@ namespace DP_backend
         public override DbSet<User> Users { get; set; }
         public override DbSet<Role> Roles { get; set; }
         public override DbSet<UserRole> UserRoles { get; set; }
+        
+        public virtual DbSet<Student> Students { get; set; }
+        public virtual DbSet<Comment> Comments { get; set; }
+        public virtual DbSet<Employer> Employers { get; set; }
+        public virtual DbSet<EmploymentVariant> EmploymentVariants { get; set; }
+        public virtual DbSet<Employment> Employments { get; set; }
+        // todo : see InternshipReport
+        // public virtual DbSet<InternshipReport> InternshipReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<UserRole>(o =>
-            {
-                o.ToTable("UserRoles");
-
-                o.HasOne(x => x.Role)
-                    .WithMany(x => x.Users)
-                    .HasForeignKey(x => x.RoleId)
-                    .OnDelete(DeleteBehavior.Cascade);
-
-                o.HasOne(x => x.User)
-                    .WithMany(x => x.Roles)
-                    .HasForeignKey(x => x.UserId)
-                    .OnDelete(DeleteBehavior.Cascade);
-            });
-
             builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(EmploymentEntityConfiguration))!);
         }
 

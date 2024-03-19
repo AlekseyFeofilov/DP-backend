@@ -1,5 +1,4 @@
 ﻿using DP_backend.Domain.Identity;
-using DP_backend.Models;
 
 namespace DP_backend.Configurations
 {

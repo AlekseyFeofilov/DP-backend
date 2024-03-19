@@ -1,6 +1,5 @@
 using DP_backend;
 using DP_backend.Configurations;
-using DP_backend.Configurators;
 using DP_backend.Domain.Identity;
 using DP_backend.Services.Initialization;
 using Microsoft.AspNetCore.Identity;

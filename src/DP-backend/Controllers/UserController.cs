@@ -1,6 +1,5 @@
 ﻿using DP_backend.Models.DTOs.TSUAccounts;
 using DP_backend.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
@@ -11,19 +10,19 @@ namespace DP_backend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-
         private readonly ITSUAccountService _accountService;
         private readonly ApplicationDbContext _context;
         private readonly IJwtAuthService _jwtAuthService;
         private readonly IUserManagementService _userManagementService;
+
         public UserController(ITSUAccountService tSUAccountService, ApplicationDbContext context, IUserManagementService userManagementService, IJwtAuthService jwtAuthService)
         {
-
             _accountService = tSUAccountService;
             _context = context;
             _userManagementService = userManagementService;
             _jwtAuthService = jwtAuthService;
         }
+
         [HttpPost]
         [Route("Auth")]
         [SwaggerResponse(400)]
@@ -39,6 +38,7 @@ namespace DP_backend.Controllers
             {
                 return Problem(statusCode: 501, detail: ex.Message);
             }
+
             var user = await _context.Users
                 .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
@@ -47,6 +47,7 @@ namespace DP_backend.Controllers
             {
                 return Problem(statusCode: 404, detail: "You are not registered in the system!");
             }
+
             try
             {
                 var jwtToken = await _jwtAuthService.GenerateToken(user);
@@ -73,6 +74,7 @@ namespace DP_backend.Controllers
             {
                 return Problem(statusCode: 501, detail: ex.Message);
             }
+
             var user = await _context.Users
                 .Include(x => x.Roles)
                 .ThenInclude(x => x.Role)
@@ -81,6 +83,7 @@ namespace DP_backend.Controllers
             {
                 return Problem(statusCode: 409, detail: "You are already registered in the system!");
             }
+
             try
             {
                 user = await _userManagementService.CreateUserByAccountId(data.AccountId, asStudent);
@@ -93,6 +96,7 @@ namespace DP_backend.Controllers
             {
                 return StatusCode(500);
             }
+
             if (user == null)
             {
                 return StatusCode(403);

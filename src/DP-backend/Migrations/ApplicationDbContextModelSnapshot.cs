@@ -51,7 +51,7 @@ namespace DP_backend.Migrations
 
                     b.HasIndex("TargetEntityId");
 
-                    b.ToTable("Comment");
+                    b.ToTable("Comment", (string)null);
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Employer", b =>
@@ -66,7 +66,7 @@ namespace DP_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employer");
+                    b.ToTable("Employer", (string)null);
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Employment", b =>
@@ -89,7 +89,7 @@ namespace DP_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employment");
+                    b.ToTable("Employment", (string)null);
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.EmploymentVariant", b =>
@@ -124,7 +124,7 @@ namespace DP_backend.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("EmploymentVariant");
+                    b.ToTable("EmploymentVariant", (string)null);
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Student", b =>
@@ -154,7 +154,7 @@ namespace DP_backend.Migrations
 
                     b.HasIndex("EmploymentId");
 
-                    b.ToTable("Student");
+                    b.ToTable("Student", (string)null);
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Identity.Role", b =>
@@ -379,7 +379,7 @@ namespace DP_backend.Migrations
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Employment", b =>
                 {
-                    b.OwnsOne("DP_backend.Domain.Employment.EmployerVariant", "Employer", b1 =>
+                    b.OwnsOne("DP_backend.Domain.Employment.Employment.Employer#DP_backend.Domain.Employment.EmployerVariant", "Employer", b1 =>
                         {
                             b1.Property<Guid>("EmploymentId")
                                 .HasColumnType("uuid");
@@ -394,7 +394,7 @@ namespace DP_backend.Migrations
 
                             b1.HasIndex("EmployerId");
 
-                            b1.ToTable("Employment");
+                            b1.ToTable("Employment", (string)null);
 
                             b1.HasOne("DP_backend.Domain.Employment.Employer", "Employer")
                                 .WithMany()
@@ -418,7 +418,7 @@ namespace DP_backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("DP_backend.Domain.Employment.EmployerVariant", "Employer", b1 =>
+                    b.OwnsOne("DP_backend.Domain.Employment.EmploymentVariant.Employer#DP_backend.Domain.Employment.EmployerVariant", "Employer", b1 =>
                         {
                             b1.Property<Guid>("EmploymentVariantId")
                                 .HasColumnType("uuid");
@@ -433,7 +433,7 @@ namespace DP_backend.Migrations
 
                             b1.HasIndex("EmployerId");
 
-                            b1.ToTable("EmploymentVariant");
+                            b1.ToTable("EmploymentVariant", (string)null);
 
                             b1.HasOne("DP_backend.Domain.Employment.Employer", "Employer")
                                 .WithMany()
