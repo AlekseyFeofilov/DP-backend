@@ -11,6 +11,7 @@ namespace DP_backend.Services.Initialization
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
                 var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+                var administrationService = scope.ServiceProvider.GetRequiredService<IAdministrationService>();
                 var userManagementService = scope.ServiceProvider.GetRequiredService<IUserManagementService>();
                 var allRoles = roleManager.Roles.ToList();
                 var currentTime = DateTime.Now;
@@ -28,28 +29,28 @@ namespace DP_backend.Services.Initialization
                         await roleManager.CreateAsync(role);
                     }
                 }
-                await InitializeAdministrators(userManager, configuration, userManagementService);
+                await InitializeAdministrators(userManager, configuration, userManagementService, administrationService);
             }
         }
 
         private static async Task InitializeAdministrators(UserManager<User> userManager, IConfiguration configuration,
-            IUserManagementService userManagementService)
+            IUserManagementService userManagementService, IAdministrationService administrationService)
         {
             var accountIds = configuration.GetSection("Administrators").Get<List<Guid>>();
             foreach (var accountId in accountIds)
             {
-                await InitializeAdministrator(userManager, userManagementService, accountId);
+                await InitializeAdministrator(userManager, userManagementService, accountId, administrationService);
             }
         }
 
-        private static async Task InitializeAdministrator(UserManager<User> userManager, IUserManagementService userManagementService, Guid accountId)
+        private static async Task InitializeAdministrator(UserManager<User> userManager, IUserManagementService userManagementService, Guid accountId, IAdministrationService administrationService)
         {
             var administrator = await userManagementService.GetUserByAccountId(accountId) ??
-                                await userManagementService.CreateUserByAccountId(accountId);
+                                await userManagementService.CreateUserByAccountId(accountId, false);
 
             if (!await userManager.IsInRoleAsync(administrator, ApplicationRoles.Administrator.ToString()))
             {
-                await userManager.AddToRoleAsync(administrator, ApplicationRoles.Administrator.ToString());
+                await administrationService.ChangeUserRole(administrator.Id,ApplicationRoles.Administrator);
             }
         }
     }

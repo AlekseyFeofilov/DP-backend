@@ -8,7 +8,8 @@ namespace DP_backend.Services.Initialization
         {
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<IJwtAuthService, JwtAuthService>();
-            services.AddScoped<ITSUAccountService, ITSUAccountService>();
+            services.AddScoped<ITSUAccountService, TSUAccountService>();
+            services.AddScoped<IAdministrationService, AdministrationService>();
         }
     }
 }

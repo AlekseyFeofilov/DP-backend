@@ -24,17 +24,14 @@ namespace DP_backend.Services
     {
         private readonly JwtConfigurations _jwtSettings;
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<JwtAuthService> _logger;
         private readonly UserManager<User> _userManger;
         public JwtAuthService(IOptions<JwtConfigurations> jwtSettings, 
             ApplicationDbContext context, 
-            UserManager<User> userManger,
-            ILogger<JwtAuthService> logger)
+            UserManager<User> userManger)
         {
             _jwtSettings = jwtSettings.Value;
             _context = context;
             _userManger = userManger;
-            _logger = logger;
         }
 
         public async Task<string> GenerateToken(User user)
@@ -58,7 +55,6 @@ namespace DP_backend.Services
             }
             catch (Exception ex) 
             {
-                _logger.LogError(ex, ex.Message);
                 throw;
             }
         }
