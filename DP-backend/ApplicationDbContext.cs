@@ -14,6 +14,7 @@ namespace DP_backend
         public override DbSet<User> Users { get; set; }
         public override DbSet<Role> Roles { get; set; }
         public override DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Student> Students { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
