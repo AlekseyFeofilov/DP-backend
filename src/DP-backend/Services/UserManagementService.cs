@@ -1,3 +1,4 @@
+using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
 using DP_backend.Models.DTOs.TSUAccounts;
@@ -26,6 +27,7 @@ namespace DP_backend.Services
             _userManager = userManager;
             _tsuAccountService = tsuAccountService;
         }
+
         public async Task<User> GetUserByAccountId(Guid accountId)
         {
             return await _dbContext.Users.GetUndeleted().FirstOrDefaultAsync(x => x.AccountId == accountId);
@@ -44,6 +46,7 @@ namespace DP_backend.Services
             {
                 return null;
             }
+
             _dbContext.Users.Add(user);
 
 
@@ -52,11 +55,13 @@ namespace DP_backend.Services
             {
                 return null;
             }
+
             try
             {
                 if (asStudent)
                 {
                     await _userManager.AddToRoleAsync(user, ApplicationRoleNames.Student);
+                    _dbContext.Students.Add(new Student { UserId = user.Id });
                 }
                 else
                 {
@@ -67,12 +72,12 @@ namespace DP_backend.Services
             {
                 throw;
             }
+
             return user;
         }
 
         private async Task<User> GetUserFromTsuAccounts(Guid accountId, User user)
         {
-
             TSUAccountsUserModelDTO tsuAccountUserModel;
             try
             {
