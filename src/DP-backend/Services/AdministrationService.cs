@@ -1,9 +1,8 @@
-﻿using DP_backend.Configurations;
+﻿using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
 using DP_backend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace DP_backend.Services
 {

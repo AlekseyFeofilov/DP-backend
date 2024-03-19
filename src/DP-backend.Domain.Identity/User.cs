@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using DP_backend.Common;
+﻿using DP_backend.Common;
 using Microsoft.AspNetCore.Identity;
 
 namespace DP_backend.Domain.Identity

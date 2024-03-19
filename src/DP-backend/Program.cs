@@ -2,10 +2,8 @@ using DP_backend;
 using DP_backend.Configurations;
 using DP_backend.Configurators;
 using DP_backend.Domain.Identity;
-using DP_backend.Models;
 using DP_backend.Services.Initialization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -44,7 +42,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-// app.MigrateDBWhenNecessary<ApplicationDbContext>();
+app.MigrateDBWhenNecessary<ApplicationDbContext>();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

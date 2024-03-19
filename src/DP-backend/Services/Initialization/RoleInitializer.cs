@@ -1,4 +1,5 @@
-﻿using DP_backend.Models;
+﻿using DP_backend.Domain.Identity;
+using DP_backend.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace DP_backend.Services.Initialization
