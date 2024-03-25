@@ -8,5 +8,6 @@ public static class ServicesInitializer
         services.AddScoped<IJwtAuthService, JwtAuthService>();
         services.AddScoped<ITSUAccountService, TSUAccountService>();
         services.AddScoped<IAdministrationService, AdministrationService>();
+        services.AddScoped<IEmployerService, EmployerService>();
     }
 }
