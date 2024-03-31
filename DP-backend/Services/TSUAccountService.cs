@@ -9,13 +9,10 @@ namespace DP_backend.Services
 {
     public interface ITSUAccountService
     {
-        public string GetAuthLink();
 
         Task<TSUAuthResponseDTO> GetAuthData(string token);
 
         Task<TSUAccountsUserModelDTO> GetUserModelByAccountId(Guid accountId);
-
-        Task<List<TSUUserShortModelDTO>> GetUsersByNamePart(string namePart);
 
         bool IsValidTsuAccountEmail(string email);
 
@@ -24,22 +21,18 @@ namespace DP_backend.Services
     {
         private readonly HttpClient _httpClient;
         private readonly HttpClient _httpClientWithAuthorization;
-        private readonly string _privateAuthEndpoint;
-        private readonly string _publicAuthEndpoint;
+        private readonly string _authEndpoint;
         private readonly string _tsuApplicationId;
         private readonly string _secretToken;
         private readonly string _getUserModelByIdRequest;
-        private readonly string _getUsersByNamePartRequest;
 
         public TSUAccountService(IConfiguration configuration)
         {
             var tsuAccountsSection = configuration.GetSection("TSUAccounts");
-            _privateAuthEndpoint = tsuAccountsSection["PrivateAuthEndpoint"];
-            _publicAuthEndpoint = tsuAccountsSection["PublicAuthEndpoint"];
+            _authEndpoint = tsuAccountsSection["PrivateAuthEndpoint"];
             _tsuApplicationId = tsuAccountsSection["AppID"];
             _secretToken = tsuAccountsSection["SecretToken"];
             _getUserModelByIdRequest = tsuAccountsSection["GetUserModelByIdRequest"];
-            _getUsersByNamePartRequest = tsuAccountsSection["GetUsersByNamePartRequest"];
 
             _httpClient = new HttpClient();
             _httpClientWithAuthorization = new HttpClient
@@ -54,10 +47,6 @@ namespace DP_backend.Services
 
         }
 
-        public string GetAuthLink()
-        {
-            return _publicAuthEndpoint + _tsuApplicationId;
-        }
 
         public async Task<TSUAuthResponseDTO> GetAuthData(string token)
         {
@@ -69,7 +58,7 @@ namespace DP_backend.Services
                     ApplicationId = _tsuApplicationId,
                     SecreteKey = _secretToken
                 };
-                var response = await _httpClient.PostAsync(_privateAuthEndpoint,
+                var response = await _httpClient.PostAsync(_authEndpoint,
                     new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
                 response.EnsureSuccessStatusCode();
                 var responseMsg = await response.Content.ReadAsStringAsync();
@@ -122,25 +111,6 @@ namespace DP_backend.Services
             throw new HttpRequestException("Errors appears during sending request to API TSU Accounts");
         }
 
-        public async Task<List<TSUUserShortModelDTO>> GetUsersByNamePart(string namePart)
-        {
-            var response = await _httpClientWithAuthorization.GetAsync(_getUsersByNamePartRequest + namePart);
-            if (response.IsSuccessStatusCode)
-            {
-                var responseMsg = await response.Content.ReadAsStringAsync();
-
-                try
-                {
-                    var result = JsonConvert.DeserializeObject<List<TSUUserShortModelDTO>>(responseMsg);
-                    return result;
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
-            }
-            throw new HttpRequestException("Errors appears during sending request to API TSU Accounts");
-        }
 
         public bool IsValidTsuAccountEmail(string email)
         {
