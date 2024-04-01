@@ -1,8 +1,10 @@
+using System.Reflection;
 using DP_backend;
 using DP_backend.Configurations;
 using DP_backend.Configurators;
 using DP_backend.Domain.Identity;
 using DP_backend.Services.Initialization;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 
@@ -25,6 +27,7 @@ builder.Services.AddSwaggerGen(options =>
         Scheme = "Bearer"
     });
 });
+
 services.InitInternalServices(configuration);
 builder.AddDb<ApplicationDbContext>("DbConnection");
 services.AddDefaultIdentity<User>()
@@ -34,6 +37,10 @@ services.AddDefaultIdentity<User>()
     .AddUserManager<UserManager<User>>()
     .AddRoleManager<RoleManager<Role>>();
 builder.ConfigureClaimAuthorization();
+
+builder.Services.AddMapster();
+TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +49,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
 app.MigrateDBWhenNecessary<ApplicationDbContext>();
 app.UseHttpsRedirection();
 
