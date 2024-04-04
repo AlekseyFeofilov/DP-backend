@@ -19,7 +19,7 @@ namespace DP_backend.Controllers
             _employmentService = employmentService;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("{id:guid}")]
         [Authorize(Policy = $"{ApplicationRoleNames.Staff}, {ApplicationRoleNames.Student}")]
         public async Task<ActionResult<EmploymentDTO>> GetEmployment(Guid id)
