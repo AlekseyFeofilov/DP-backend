@@ -18,7 +18,7 @@ namespace DP_backend
         public override DbSet<User> Users { get; set; }
         public override DbSet<Role> Roles { get; set; }
         public override DbSet<UserRole> UserRoles { get; set; }
-        
+        public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<Student> Students { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Employer> Employers { get; set; }

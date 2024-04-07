@@ -1,8 +1,10 @@
-﻿using DP_backend.Models.DTOs.TSUAccounts;
+﻿using DP_backend.Common.Enumerations;
+using DP_backend.Domain.Identity;
+using DP_backend.Models;
 using DP_backend.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace DP_backend.Controllers
 {
@@ -10,107 +12,65 @@ namespace DP_backend.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly ITSUAccountService _accountService;
-        private readonly ApplicationDbContext _context;
-        private readonly IJwtAuthService _jwtAuthService;
         private readonly IUserManagementService _userManagementService;
-
-        public UserController(ITSUAccountService tSUAccountService, ApplicationDbContext context, IUserManagementService userManagementService, IJwtAuthService jwtAuthService)
+        public UserController(IUserManagementService userManagementService)
         {
-            _accountService = tSUAccountService;
-            _context = context;
             _userManagementService = userManagementService;
-            _jwtAuthService = jwtAuthService;
         }
 
+        [Route("GiveRole/{userId}")]
         [HttpPost]
-        [Route("Auth")]
-        [SwaggerResponse(400)]
-        [ProducesResponseType(typeof(string), 200)]
-        public async Task<IActionResult> Auth(string token)
+        public async Task<IActionResult> ChangeUserRole(Guid userId, ApplicationRoles role)
         {
-            TSUAuthResponseDTO data = null;
             try
             {
-                data = await _accountService.GetAuthData(token);
+                await _userManagementService.ChangeUserRole(userId, role);
+                return Ok();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Problem(statusCode: 404, detail:ex.Message);
             }
             catch (Exception ex)
             {
-                return Problem(statusCode: 501, detail: ex.Message);
+                return Problem(statusCode: 500,detail: ex.Message);
             }
+        }
 
-            var user = await _context.Users
-                .Include(x => x.Roles)
-                .ThenInclude(x => x.Role)
-                .FirstOrDefaultAsync(x => x.AccountId == data.AccountId);
-            if (user == null)
-            {
-                return Problem(statusCode: 404, detail: "You are not registered in the system!");
-            }
-
+        [Route("{userId}/SetStudentGroup/{groupId}")]
+        [HttpPost]
+        public async Task<IActionResult> SetStudentGroup(Guid userId, Guid groupId)
+        {
             try
             {
-                var jwtToken = await _jwtAuthService.GenerateToken(user);
-                return Ok(jwtToken);
+                await _userManagementService.SetStudentGroup(userId, groupId);
+                return Ok();
             }
-            catch (InvalidOperationException ex)
+            catch (KeyNotFoundException ex)
+            {
+                return Problem(statusCode: 404, detail: ex.Message);
+            }
+            catch (Exception ex)
             {
                 return Problem(statusCode: 500, detail: ex.Message);
             }
         }
 
-        [HttpPost]
-        [SwaggerResponse(400)]
-        [Route("Register")]
-        [ProducesResponseType(typeof(string), 200)]
-        public async Task<IActionResult> Register(string token, bool asStudent)
+        [HttpGet]
+        [Route("ByGroup/{groupId}")]
+        public async Task<IActionResult> GetStudents(Guid? groupId, bool withoutGroup=false)
         {
-            TSUAuthResponseDTO data = null;
             try
             {
-                data = await _accountService.GetAuthData(token);
+                var students = await _userManagementService.GetStudentsFromGroup(groupId, withoutGroup);
+                return Ok(students);
             }
             catch (Exception ex)
-            {
-                return Problem(statusCode: 501, detail: ex.Message);
-            }
-
-            var user = await _context.Users
-                .Include(x => x.Roles)
-                .ThenInclude(x => x.Role)
-                .FirstOrDefaultAsync(x => x.AccountId == data.AccountId);
-            if (user != null)
-            {
-                return Problem(statusCode: 409, detail: "You are already registered in the system!");
-            }
-
-            try
-            {
-                user = await _userManagementService.CreateUserByAccountId(data.AccountId, asStudent);
-            }
-            catch (ArgumentException)
-            {
-                return StatusCode(401);
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500);
-            }
-
-            if (user == null)
-            {
-                return StatusCode(403);
-            }
-
-            try
-            {
-                var jwtToken = await _jwtAuthService.GenerateToken(user);
-                return Ok(jwtToken);
-            }
-            catch (InvalidOperationException ex)
             {
                 return Problem(statusCode: 500, detail: ex.Message);
             }
         }
+
+
     }
 }
