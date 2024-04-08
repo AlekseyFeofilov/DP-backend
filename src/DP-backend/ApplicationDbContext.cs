@@ -64,7 +64,14 @@ namespace DP_backend
         public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
-            await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
+            try
+            {
+                await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
+                return await base.SaveChangesAsync(cancellationToken);
+            }
+            catch (Exception ex) { 
+            
+            }
             return await base.SaveChangesAsync(cancellationToken);
         }
 

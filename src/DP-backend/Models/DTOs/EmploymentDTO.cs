@@ -1,21 +1,29 @@
 using DP_backend.Domain.Employment;
+using System.ComponentModel.DataAnnotations;
 
 namespace DP_backend.Models.DTOs
 {
     public class EmploymentDTO
     {
-        Guid Id { get; set; }
+
+        public Guid Id { get; set; }
         public EmploymentStatus Status { get; set; } 
+        Guid StudentId { get; set; }
         [Required]
-        public required EmployerDTO Employer {  get; set; }
+        public EmployerDTO Employer {  get; set; }
         [Required]
-        public required string Vacancy { get; set; }
+        public string Vacancy { get; set; }
         public string? Comment { get; set; }
         public EmploymentStatus EmploymentStatus { get; set; }
-        public EmploymentDTO(Employment model) 
-        { 
+        public EmploymentDTO() { }
+        public EmploymentDTO(Employment model)
+        {
             Id = model.Id;
-        }
             Status = model.Status;
+            Employer = new EmployerDTO(model.Employer);
+            Comment= model.Comment;
+            Vacancy = model.Vacancy;
+            StudentId = model.StudentId;
+        }
     }
 }

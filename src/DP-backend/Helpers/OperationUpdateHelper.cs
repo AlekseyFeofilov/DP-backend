@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Security.Principal;
 using DP_backend.Domain.Employment;
-using DP_backend.Migrations;
 
 namespace DP_backend.Helpers
 {
@@ -14,7 +13,6 @@ namespace DP_backend.Helpers
         {
             var modifiedEntries = changeTracker.Entries<EmploymentVariant>();
             var modifiedEntries2 = changeTracker.Entries<Employment>();
-
             foreach (var entity in modifiedEntries)
             {
                 if (entity.State == EntityState.Modified || entity.State == EntityState.Added)
@@ -47,8 +45,10 @@ namespace DP_backend.Helpers
                     {
                         student.Status = StudentStatus.None;
                     }
+                    changeTracker.TrackGraph(student, e =>
+                    e.Entry.State = EntityState.Modified
+                    );
                 }
-                await context.SaveChangesAsync();
             }
 
             foreach (var entity in modifiedEntries2)
@@ -83,9 +83,11 @@ namespace DP_backend.Helpers
                     {
                         student.Status = StudentStatus.None;
                     }
+                    changeTracker.TrackGraph(student, e =>
+                    e.Entry.State = EntityState.Modified
+                    );
                 }
             }
-            await context.SaveChangesAsync();
         }
     }
 }

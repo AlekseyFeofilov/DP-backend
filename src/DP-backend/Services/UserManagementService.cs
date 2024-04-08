@@ -15,6 +15,8 @@ namespace DP_backend.Services
         public Task ChangeUserRole(Guid userId, ApplicationRoles roleName);
         public Task SetStudentGroup(Guid userId, Guid groupId);
         public Task<List<StudentDTO>> GetStudentsFromGroup (Guid? groupId, bool withoutGroup);
+        public Task<StudentStatus> GetStudentStatus(Guid userId);
+        public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
     }
 
     public class UserManagementService : IUserManagementService
@@ -156,6 +158,21 @@ namespace DP_backend.Services
             return await _dbContext.Students
                 .Where(x=> withoutGroup? (x.GroupId==null) : (groupId==null? true : x.GroupId==groupId))
                 .Select(x=> new StudentDTO(x)).ToListAsync();
+        }
+
+        public async Task<StudentStatus> GetStudentStatus(Guid userId)
+        {
+            var student = await _dbContext.Students.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {userId} id!");
+            }
+            return student.Status;
+        }
+
+        public async Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses)
+        {
+            return await _dbContext.Students.Where(x=>statuses.Contains(x.Status)).Select(x=> new StudentDTO(x)).ToListAsync();
         }
     }
 }

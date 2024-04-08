@@ -32,10 +32,10 @@ namespace DP_backend.Controllers
         }
 
         [HttpPost]
-        [Authorize(Policy = ApplicationRoleNames.Student)]
-        public async Task<IActionResult> CreateEmployment(EmploymentСreationDTO employmentСreation)
+        
+        public async Task<IActionResult> CreateEmployment(EmploymentСreationDTO employmentСreation, Guid UserId)
         {
-            await _employmentService.CreateEmployment(User.GetUserId(), employmentСreation);
+            await _employmentService.CreateEmployment(UserId, employmentСreation);
             return Ok();
         }
 

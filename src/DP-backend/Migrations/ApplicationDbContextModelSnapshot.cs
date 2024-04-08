@@ -191,7 +191,7 @@ namespace DP_backend.Migrations
                     b.Property<DateTime?>("DeleteDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("GroupId")
+                    b.Property<Guid?>("GroupId")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyDateTime")
@@ -489,9 +489,7 @@ namespace DP_backend.Migrations
                 {
                     b.HasOne("DP_backend.Domain.Employment.Group", "Group")
                         .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GroupId");
 
                     b.HasOne("DP_backend.Domain.Identity.User", null)
                         .WithOne()

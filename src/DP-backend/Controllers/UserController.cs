@@ -1,4 +1,5 @@
 ﻿using DP_backend.Common.Enumerations;
+using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Models;
 using DP_backend.Services;
@@ -71,6 +72,38 @@ namespace DP_backend.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("/{studentId}/GetStatus")]
+        public async Task<IActionResult> GetStudentStatus(Guid studentId)
+        {
+            try
+            {
+                var status = await _userManagementService.GetStudentStatus(studentId);
+                return Ok(status);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return Problem(statusCode: 404, detail: ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return Problem(statusCode: 500, detail: ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("/GetWihStatus")]
+        public async Task<IActionResult> GetStudentsWithStatuses(List<StudentStatus> statuses)
+        {
+            try
+            {
+                var students = await _userManagementService.GetStudentsWithStatuses(statuses);
+                return Ok(students);
+            }
+            catch (Exception ex)
+            {
+                return Problem(statusCode: 500, detail: ex.Message);
+            }
+        }
 
     }
 }
