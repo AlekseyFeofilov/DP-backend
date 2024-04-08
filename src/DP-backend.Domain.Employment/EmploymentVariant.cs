@@ -1,10 +1,11 @@
-﻿using DP_backend.Common;
+﻿using System.ComponentModel;
+using DP_backend.Common;
 
 namespace DP_backend.Domain.Employment;
 
 public class EmploymentVariant : BaseEntity
 {
-    public EmploymentVariantStatus Status { get; set; }
+    public EmploymentVariantStatus Status { get; set; } = EmploymentVariantStatus.NoInfo;
 
     /// <summary>
     /// Приоритет, чем меньше тем приоритетнее (семантика - "Первый приоритет") 
@@ -23,8 +24,18 @@ public class EmploymentVariant : BaseEntity
 
 public enum EmploymentVariantStatus
 {
-    // вероятно мы могли бы учитывать планируемые варианты, по поводу которых ещё не было проведено никаких переговоров 
-    // Challenge = 1,
+    [Description("Нет - дефолтный статус")]
+    NoInfo = 1,
+    
+    [Description("Прошел собеседование")] 
     Interviewed = 2,
-    Offered = 3,
+    
+    [Description("Получил оффер (Думаю)")] 
+    OfferPending = 3,
+
+    [Description("Получил оффер (Принял)")]
+    OfferAccepted = 4,
+
+    [Description("Получил оффер (Отказался)")]
+    OfferRefused = 5
 }
