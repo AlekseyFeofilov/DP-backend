@@ -1,4 +1,4 @@
-﻿namespace DP_backend.Services.Initialization;
+namespace DP_backend.Services.Initialization;
 
 public static class ServicesInitializer
 {
@@ -9,6 +9,7 @@ public static class ServicesInitializer
         services.AddScoped<ITSUAccountService, TSUAccountService>();
         services.AddScoped<IEmployerService, EmployerService>();
         services.AddScoped<IEmploymentVariantService, EmploymentVariantService>();
+        services.AddScoped<IEmploymentService, EmploymentService>();
         services.AddScoped<IGroupService, GroupService>();
     }
 }

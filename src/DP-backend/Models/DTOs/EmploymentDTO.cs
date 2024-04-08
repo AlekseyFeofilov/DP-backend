@@ -1,4 +1,4 @@
-﻿using DP_backend.Domain.Employment;
+using DP_backend.Domain.Employment;
 
 namespace DP_backend.Models.DTOs
 {
@@ -6,12 +6,16 @@ namespace DP_backend.Models.DTOs
     {
         Guid Id { get; set; }
         public EmploymentStatus Status { get; set; } 
-
-        public EmploymentDTO() { }
+        [Required]
+        public required EmployerDTO Employer {  get; set; }
+        [Required]
+        public required string Vacancy { get; set; }
+        public string? Comment { get; set; }
+        public EmploymentStatus EmploymentStatus { get; set; }
         public EmploymentDTO(Employment model) 
         { 
             Id = model.Id;
-            Status = model.Status;
         }
+            Status = model.Status;
     }
 }

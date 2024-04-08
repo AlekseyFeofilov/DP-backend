@@ -3,6 +3,7 @@ using System;
 using DP_backend;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DP_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240404135030_changeEmployment")]
+    partial class changeEmployment
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,32 +157,6 @@ namespace DP_backend.Migrations
                     b.ToTable("EmploymentVariant", (string)null);
                 });
 
-            modelBuilder.Entity("DP_backend.Domain.Employment.Group", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreateDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DeleteDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Grade")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime>("ModifyDateTime")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("Number")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Groups");
-                });
-
             modelBuilder.Entity("DP_backend.Domain.Employment.Student", b =>
                 {
                     b.Property<Guid>("Id")
@@ -191,9 +168,6 @@ namespace DP_backend.Migrations
                     b.Property<DateTime?>("DeleteDateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("GroupId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("ModifyDateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -201,8 +175,6 @@ namespace DP_backend.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.ToTable("Student", (string)null);
                 });
@@ -487,19 +459,11 @@ namespace DP_backend.Migrations
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Student", b =>
                 {
-                    b.HasOne("DP_backend.Domain.Employment.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DP_backend.Domain.Identity.User", null)
                         .WithOne()
                         .HasForeignKey("DP_backend.Domain.Employment.Student", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Identity.UserRole", b =>
