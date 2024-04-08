@@ -1,4 +1,5 @@
-﻿using DP_backend.Helpers;
+﻿using DP_backend.Domain.Employment;
+using DP_backend.Helpers;
 using DP_backend.Models;
 using DP_backend.Models.DTOs;
 using DP_backend.Services;
@@ -22,8 +23,9 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpPost]
-    [Authorize]
+    [Authorize] // todo check permission for example employment_variant.my.manage 
     [ProducesResponseType<ErrorDto>(404)]
+    [ProducesResponseType<ErrorDto>(403)]
     public async Task<EmploymentVariantDTO> Create(EmploymentVariantCreateDTO dto, CancellationToken cancellationToken)
     {
         var employmentVariant = await employmentVariantService.Create(new(User, dto), cancellationToken);
@@ -31,7 +33,7 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpPut("{id}")]
-    [Authorize]
+    [Authorize] // todo check permission for example employment_variant.my.manage
     [ProducesResponseType<ErrorDto>(404)]
     [ProducesResponseType<ErrorDto>(403)]
     public async Task<EmploymentVariantDTO> Update(Guid id, EmploymentVariantUpdateDTO data, CancellationToken cancellationToken)
@@ -41,7 +43,7 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
+    [Authorize] // todo check permission for example employment_variant.my.manage
     [ProducesResponseType<ErrorDto>(404)]
     [ProducesResponseType<ErrorDto>(403)]
     public async Task<EmploymentVariantDTO> Remove(Guid id, CancellationToken cancellationToken)
@@ -58,4 +60,23 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
         var employmentVariants = await context.EmploymentVariants.Where(x => x.Student.Id == userId).ToListAsync(cancellationToken);
         return employmentVariants.Select(x => x.Adapt<EmploymentVariantDTO>()).ToList();
     }
+
+    [HttpGet]
+    [Authorize] // todo check permission for example employment_variant.read
+    public async Task<List<EmploymentVariantDTO>> SearchEmploymentVariants(
+        [FromQuery] Guid? studentId,
+        [FromQuery] Guid? employerId,
+        CancellationToken cancellationToken)
+    {
+        var employmentVariants = await context.EmploymentVariants
+            .If(studentId.HasValue,
+                variants => variants.Where(x => x.Student.Id == studentId))
+            .If(employerId.HasValue,
+                variants => variants.Where(x => x.Employer.Employer != null && x.Employer.Employer.Id == employerId))
+            .ToListAsync(cancellationToken);
+        return employmentVariants.Select(x => x.Adapt<EmploymentVariantDTO>()).ToList();
+    }
+
+    [HttpGet("status/list")] // todo cache
+    public IEnumerable<DictionaryEntry> GetStatuses() => DictionaryService.DescribeEnum<EmploymentVariantStatus>();
 }
