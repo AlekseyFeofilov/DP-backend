@@ -17,9 +17,9 @@ public class Student : BaseEntity
 public enum StudentStatus
 {
     None = 0,
-    CompaniesChosen = 1,
+    CompaniesChose = 1,
     PassedTheInterview = 2,
     GetAnOffer = 3,
-    OfferChosen = 4,
+    EmployedNotVerified = 4,
     Employed = 5
 }

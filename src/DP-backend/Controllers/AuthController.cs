@@ -112,5 +112,20 @@ namespace DP_backend.Controllers
                 return Problem(statusCode: 500, detail: ex.Message);
             }
         }
+
+        [HttpGet]
+        [Route("GetLink")]
+        public async Task<IActionResult> GetAuthLink()
+        {
+            try
+            {
+               var link = _accountService.GetAuthLink();
+                return Ok(link);
+            }
+            catch (Exception ex)
+            {
+                return Problem(statusCode:501, detail: ex.Message);
+            }
+        }
     }
 }

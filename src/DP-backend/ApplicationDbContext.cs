@@ -36,51 +36,59 @@ namespace DP_backend
         public override int SaveChanges()
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
+            OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
             return base.SaveChanges();
         }
 
         public int SaveChanges(DateTime dateTime)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker, dateTime);
+            OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
             return base.SaveChanges();
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
+            OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
         public int SaveChanges(bool acceptAllChangesOnSuccess, DateTime dateTime)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker, dateTime);
+            OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
             return base.SaveChanges(acceptAllChangesOnSuccess);
         }
 
-        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
-            return base.SaveChangesAsync(cancellationToken);
+            await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public Task<int> SaveChangesAsync(DateTime dateTime, CancellationToken cancellationToken = default)
+        public async Task<int> SaveChangesAsync(DateTime dateTime, CancellationToken cancellationToken = default)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker, dateTime);
-            return base.SaveChangesAsync(cancellationToken);
+            await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+        public async override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = default)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
 
-        public Task<int> SaveChangesAsync(DateTime dateTime, bool acceptAllChangesOnSuccess,
+        public async Task<int> SaveChangesAsync(DateTime dateTime, bool acceptAllChangesOnSuccess,
             CancellationToken cancellationToken = default)
         {
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker, dateTime);
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+            await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }
 }
