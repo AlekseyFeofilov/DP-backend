@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DP_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240401174600_EmploymentStudentForeignKey")]
-    partial class EmploymentStudentForeignKey
+    [Migration("20240408120029_fixedCinfigForeignKey")]
+    partial class fixedCinfigForeignKey
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,11 +87,17 @@ namespace DP_backend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
                     b.Property<DateTime>("CreateDateTime")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("DeleteDateTime")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EmployerId")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyDateTime")
                         .HasColumnType("timestamp with time zone");
@@ -102,7 +108,13 @@ namespace DP_backend.Migrations
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Vacancy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployerId");
 
                     b.HasIndex("StudentId")
                         .IsUnique();
@@ -145,6 +157,32 @@ namespace DP_backend.Migrations
                     b.ToTable("EmploymentVariant", (string)null);
                 });
 
+            modelBuilder.Entity("DP_backend.Domain.Employment.Group", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreateDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("DeleteDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Grade")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("ModifyDateTime")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Number")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
             modelBuilder.Entity("DP_backend.Domain.Employment.Student", b =>
                 {
                     b.Property<Guid>("Id")
@@ -156,6 +194,9 @@ namespace DP_backend.Migrations
                     b.Property<DateTime?>("DeleteDateTime")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<Guid?>("GroupId")
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("ModifyDateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -163,6 +204,8 @@ namespace DP_backend.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.ToTable("Student", (string)null);
                 });
@@ -389,41 +432,19 @@ namespace DP_backend.Migrations
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Employment", b =>
                 {
+                    b.HasOne("DP_backend.Domain.Employment.Employer", "Employer")
+                        .WithMany()
+                        .HasForeignKey("EmployerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DP_backend.Domain.Employment.Student", null)
                         .WithOne("Employment")
                         .HasForeignKey("DP_backend.Domain.Employment.Employment", "StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("DP_backend.Domain.Employment.EmployerVariant", "Employer", b1 =>
-                        {
-                            b1.Property<Guid>("EmploymentId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("CustomCompanyName")
-                                .HasColumnType("text");
-
-                            b1.Property<Guid?>("EmployerId")
-                                .HasColumnType("uuid");
-
-                            b1.HasKey("EmploymentId");
-
-                            b1.HasIndex("EmployerId");
-
-                            b1.ToTable("Employment");
-
-                            b1.HasOne("DP_backend.Domain.Employment.Employer", "Employer")
-                                .WithMany()
-                                .HasForeignKey("EmployerId");
-
-                            b1.WithOwner()
-                                .HasForeignKey("EmploymentId");
-
-                            b1.Navigation("Employer");
-                        });
-
-                    b.Navigation("Employer")
-                        .IsRequired();
+                    b.Navigation("Employer");
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.EmploymentVariant", b =>
@@ -469,11 +490,17 @@ namespace DP_backend.Migrations
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Student", b =>
                 {
+                    b.HasOne("DP_backend.Domain.Employment.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId");
+
                     b.HasOne("DP_backend.Domain.Identity.User", null)
                         .WithOne()
                         .HasForeignKey("DP_backend.Domain.Employment.Student", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Identity.UserRole", b =>

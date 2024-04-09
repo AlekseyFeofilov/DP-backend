@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\src\DP-backend.Common\DP-backend.Common.csproj" />
+    <ProjectReference Include="..\src\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
+    <ProjectReference Include="..\src\DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj" />
+    <ProjectReference Include="..\src\DP-backend\DP-backend.csproj" />
+  </ItemGroup>
+
+</Project>

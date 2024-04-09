@@ -3,13 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34622.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend", ".\src\DP-backend\DP-backend.csproj", "{54253C6B-BA5D-443A-8A7E-75123B17F4D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend", "src\DP-backend\DP-backend.csproj", "{54253C6B-BA5D-443A-8A7E-75123B17F4D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.Domain.Identity", ".\src\DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj", "{4E07970E-70AF-4D7B-B5F3-474741E2E916}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend.Domain.Identity", "src\DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj", "{4E07970E-70AF-4D7B-B5F3-474741E2E916}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.Domain.Employment", ".\src\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj", "{EA3E9D61-E2F1-47E8-B0C0-72310EBA3199}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend.Domain.Employment", "src\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj", "{EA3E9D61-E2F1-47E8-B0C0-72310EBA3199}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.Common", ".\src\DP-backend.Common\DP-backend.Common.csproj", "{AC828830-76BD-4760-B6CB-F06EDFB13036}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend.Common", "src\DP-backend.Common\DP-backend.Common.csproj", "{AC828830-76BD-4760-B6CB-F06EDFB13036}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthTest", "AuthTest\AuthTest.csproj", "{AB5FF1F4-6219-4C40-BFA6-D40630882755}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{AC828830-76BD-4760-B6CB-F06EDFB13036}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC828830-76BD-4760-B6CB-F06EDFB13036}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC828830-76BD-4760-B6CB-F06EDFB13036}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

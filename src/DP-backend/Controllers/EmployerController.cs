@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace DP_backend.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Policy =ApplicationRoleNames.Staff)]
+
     [ApiController]
+    [Authorize(Policy = $"{ApplicationRoleNames.Staff}")]
     public class EmployerController : ControllerBase
     {
         private readonly IEmployerService _employerService;

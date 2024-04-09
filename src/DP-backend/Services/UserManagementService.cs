@@ -1,6 +1,7 @@
 using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
+using DP_backend.Models.DTOs;
 using DP_backend.Models.DTOs.TSUAccounts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,11 @@ namespace DP_backend.Services
     {
         public Task<User> GetUserByAccountId(Guid accountId);
         public Task<User> CreateUserByAccountId(Guid accountId, bool asStudent);
+        public Task ChangeUserRole(Guid userId, ApplicationRoles roleName);
+        public Task SetStudentGroup(Guid userId, Guid groupId);
+        public Task<List<StudentDTO>> GetStudentsFromGroup (Guid? groupId, bool withoutGroup);
+        public Task<StudentStatus> GetStudentStatus(Guid userId);
+        public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
     }
 
     public class UserManagementService : IUserManagementService
@@ -19,6 +25,7 @@ namespace DP_backend.Services
         private readonly ITSUAccountService _tsuAccountService;
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
+
 
         public UserManagementService(ITSUAccountService tSUAccountService, ApplicationDbContext context, UserManager<User> userManager, ITSUAccountService tsuAccountService)
         {
@@ -108,6 +115,64 @@ namespace DP_backend.Services
             }
 
             return user;
+        }
+
+        public async Task ChangeUserRole(Guid userId, ApplicationRoles roleName)
+        {
+            var user = await _dbContext.Users.Include(x => x.Roles).ThenInclude(x => x.Role).GetUndeleted().FirstOrDefaultAsync(x => x.Id == userId);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"There is no user with {userId} Id!");
+            }
+            try
+            {
+                await _userManager.RemoveFromRolesAsync(user, user.Roles.Select(x => x.Role.Name));
+                await _userManager.AddToRoleAsync(user, ApplicationRoleNames.SystemRoleNamesDictionary[roleName]);
+
+                await _dbContext.SaveChangesAsync();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public async Task SetStudentGroup(Guid userId, Guid groupId)
+        {
+            var student = await _dbContext.Students.Include(x=>x.Group).FirstOrDefaultAsync(x => x.UserId == userId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {userId} id!");
+            }
+            var group = await _dbContext.Groups.FirstOrDefaultAsync(x=>x.Id==groupId);
+            if (group == null) 
+            {
+                throw new KeyNotFoundException($"There is no group with this {groupId} id!");
+            }
+            student.Group= group;
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<List<StudentDTO>> GetStudentsFromGroup(Guid? groupId, bool withoutGroup)
+        {
+            return await _dbContext.Students
+                .Where(x=> withoutGroup? (x.GroupId==null) : (groupId==null? true : x.GroupId==groupId))
+                .Select(x=> new StudentDTO(x)).ToListAsync();
+        }
+
+        public async Task<StudentStatus> GetStudentStatus(Guid userId)
+        {
+            var student = await _dbContext.Students.FirstOrDefaultAsync(x => x.UserId == userId);
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"There is no student with this {userId} id!");
+            }
+            return student.Status;
+        }
+
+        public async Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses)
+        {
+            return await _dbContext.Students.Where(x=>statuses.Contains(x.Status)).Select(x=> new StudentDTO(x)).ToListAsync();
         }
     }
 }

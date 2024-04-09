@@ -18,7 +18,7 @@ public class EmploymentVariant : BaseEntity
     /// Должность \ занятость \ стек 
     /// </summary>
     public string Occupation { get; set; }
-
+    public Guid StudentId { get; set; }
     public Student Student { get; set; }
 }
 

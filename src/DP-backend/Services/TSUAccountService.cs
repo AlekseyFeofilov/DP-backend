@@ -1,9 +1,11 @@
 ﻿using DP_backend.Models.DTOs.TSUAccounts;
-using Newtonsoft.Json;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Net;
 using System.Text;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
+
 
 namespace DP_backend.Services
 {
@@ -16,12 +18,14 @@ namespace DP_backend.Services
 
         bool IsValidTsuAccountEmail(string email);
 
+        string GetAuthLink();
     }
     public class TSUAccountService: ITSUAccountService
     {
         private readonly HttpClient _httpClient;
         private readonly HttpClient _httpClientWithAuthorization;
-        private readonly string _authEndpoint;
+        private readonly string _privateAuthEndpoint;
+        private readonly string _publicAuthEndpoint;
         private readonly string _tsuApplicationId;
         private readonly string _secretToken;
         private readonly string _getUserModelByIdRequest;
@@ -29,7 +33,8 @@ namespace DP_backend.Services
         public TSUAccountService(IConfiguration configuration)
         {
             var tsuAccountsSection = configuration.GetSection("TSUAccounts");
-            _authEndpoint = tsuAccountsSection["PrivateAuthEndpoint"];
+            _privateAuthEndpoint = tsuAccountsSection["PrivateAuthEndpoint"];
+            _publicAuthEndpoint = tsuAccountsSection["PublicAuthEndpoint"];
             _tsuApplicationId = tsuAccountsSection["AppID"];
             _secretToken = tsuAccountsSection["SecretToken"];
             _getUserModelByIdRequest = tsuAccountsSection["GetUserModelByIdRequest"];
@@ -44,10 +49,12 @@ namespace DP_backend.Services
                             $"{tsuAccountsSection["BasicAuthenticationUsername"]}:{tsuAccountsSection["BasicAuthenticationPassword"]}")))
                 }
             };
-
         }
 
-
+        public string GetAuthLink()
+        {
+            return _publicAuthEndpoint + _tsuApplicationId;
+        }
         public async Task<TSUAuthResponseDTO> GetAuthData(string token)
         {
             try
@@ -58,7 +65,7 @@ namespace DP_backend.Services
                     ApplicationId = _tsuApplicationId,
                     SecreteKey = _secretToken
                 };
-                var response = await _httpClient.PostAsync(_authEndpoint,
+                var response = await _httpClient.PostAsync(_privateAuthEndpoint,
                     new StringContent(JsonConvert.SerializeObject(requestBody), Encoding.UTF8, "application/json"));
                 response.EnsureSuccessStatusCode();
                 var responseMsg = await response.Content.ReadAsStringAsync();
@@ -80,6 +87,7 @@ namespace DP_backend.Services
 
         public async Task<TSUAccountsUserModelDTO> GetUserModelByAccountId(Guid accountId)
         {
+
             var response = await _httpClientWithAuthorization.GetAsync(_getUserModelByIdRequest + accountId);
 
             if (response.StatusCode == HttpStatusCode.NotFound)
