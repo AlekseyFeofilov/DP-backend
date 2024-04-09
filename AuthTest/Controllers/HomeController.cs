@@ -42,11 +42,10 @@ namespace AuthTest.Controllers
             
 
             var client = new HttpClient();
-            var response = await client.PostAsync("https://localhost:7086/api/Auth/Auth", new StringContent(JsonConvert.SerializeObject(token), Encoding.UTF8, "application/json"));
+            var response = await client.PostAsync("https://localhost:7086/api/Auth/Auth", new StringContent(JsonConvert.SerializeObject(token), Encoding.UTF8, "application/json"));           
             response.EnsureSuccessStatusCode();
-
-
-            return Ok();
+            var responseMsg = await response.Content.ReadAsStringAsync();
+            return Ok(responseMsg);
         }
     }
 }

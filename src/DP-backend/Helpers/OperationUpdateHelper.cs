@@ -29,7 +29,7 @@ namespace DP_backend.Helpers
                     {
                         student.Status = StudentStatus.EmployedNotVerified;
                     }
-                    else if (student.EmploymentVariants.Any(x => x.Status == EmploymentVariantStatus.Offered))
+                    else if (student.EmploymentVariants.Any(x => x.Status == EmploymentVariantStatus.OfferPending))
                     {
                         student.Status = StudentStatus.GetAnOffer;
                     }
@@ -67,7 +67,7 @@ namespace DP_backend.Helpers
                     {
                         student.Status = StudentStatus.EmployedNotVerified;
                     }
-                    else if (student.EmploymentVariants.Any(x => x.Status == EmploymentVariantStatus.Offered))
+                    else if (student.EmploymentVariants.Any(x => x.Status == EmploymentVariantStatus.OfferPending))
                     {
                         student.Status = StudentStatus.GetAnOffer;
                     }
