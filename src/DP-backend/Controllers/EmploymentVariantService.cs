@@ -40,7 +40,7 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
         return employmentVariant.Adapt<EmploymentVariantDTO>();
     }
 
-    [HttpPut("{id}/r")]
+    [HttpPut("{id}")]
     [Authorize]
     [ProducesResponseType<ErrorDto>(404)]
     [ProducesResponseType<ErrorDto>(403)]

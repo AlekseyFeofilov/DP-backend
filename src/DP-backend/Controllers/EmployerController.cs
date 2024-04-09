@@ -11,6 +11,7 @@ namespace DP_backend.Controllers
     [Route("api/[controller]")]
 
     [ApiController]
+    [Authorize(Policy = $"{ApplicationRoleNames.Staff}")]
     public class EmployerController : ControllerBase
     {
         private readonly IEmployerService _employerService;

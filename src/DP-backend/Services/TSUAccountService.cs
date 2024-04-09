@@ -1,9 +1,11 @@
 ﻿using DP_backend.Models.DTOs.TSUAccounts;
-using Newtonsoft.Json;
-using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Mail;
+using System.Net;
 using System.Text;
+using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
+
 
 namespace DP_backend.Services
 {
@@ -47,7 +49,6 @@ namespace DP_backend.Services
                             $"{tsuAccountsSection["BasicAuthenticationUsername"]}:{tsuAccountsSection["BasicAuthenticationPassword"]}")))
                 }
             };
-
         }
 
         public string GetAuthLink()
@@ -86,6 +87,7 @@ namespace DP_backend.Services
 
         public async Task<TSUAccountsUserModelDTO> GetUserModelByAccountId(Guid accountId)
         {
+
             var response = await _httpClientWithAuthorization.GetAsync(_getUserModelByIdRequest + accountId);
 
             if (response.StatusCode == HttpStatusCode.NotFound)

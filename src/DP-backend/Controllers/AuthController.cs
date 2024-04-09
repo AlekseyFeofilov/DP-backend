@@ -3,6 +3,8 @@ using DP_backend.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace DP_backend.Controllers
 {
@@ -29,6 +31,7 @@ namespace DP_backend.Controllers
         [ProducesResponseType(typeof(string), 200)]
         public async Task<IActionResult> Auth([FromBody]string token)
         {
+            
             TSUAuthResponseDTO data = null;
             try
             {
@@ -45,7 +48,22 @@ namespace DP_backend.Controllers
                 .FirstOrDefaultAsync(x => x.AccountId == data.AccountId);
             if (user == null)
             {
-                return Problem(statusCode: 404, detail: "You are not registered in the system!");
+                try
+                {
+                    user = await _userManagementService.CreateUserByAccountId(data.AccountId, true);
+                }
+                catch (ArgumentException)
+                {
+                    return StatusCode(401);
+                }
+                catch (Exception e)
+                {
+                    return StatusCode(500);
+                }
+                if (user == null)
+                {
+                    return StatusCode(403);
+                }
             }
 
             try

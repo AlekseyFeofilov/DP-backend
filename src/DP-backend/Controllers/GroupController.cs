@@ -2,11 +2,14 @@
 using DP_backend.Domain.Identity;
 using DP_backend.Models.Exceptions;
 using DP_backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace DP_backend.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = $"{ApplicationRoleNames.Staff}")]
     public class GroupController : Controller
     {
         private readonly IGroupService _groupService;
