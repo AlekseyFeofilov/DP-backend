@@ -6,13 +6,14 @@ using Microsoft.AspNetCore.Identity;
 using DP_backend.Configurations;
 using DP_backend.Domain.Identity;
 using DP_backend.Models;
+using System.Security.Claims;
 
 namespace DP_backend.Services;
 
 public interface IJwtAuthService
 {
     public Task<string> GenerateToken(User user);
-    public Task<IDictionary<string, object>> GetClaims(User user);
+    public Task<List<Claim>> GetClaims(User user);
 }
 
 public class JwtAuthService : IJwtAuthService
@@ -35,7 +36,7 @@ public class JwtAuthService : IJwtAuthService
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Key);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Claims = await GetClaims(user),
+                Subject = new ClaimsIdentity(await GetClaims(user)),
                 NotBefore = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.Add(_jwtSettings.Lifetime),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
@@ -51,21 +52,21 @@ public class JwtAuthService : IJwtAuthService
         }
     }
 
-    public async Task<IDictionary<string, object>> GetClaims(User user)
+    public async Task<List<Claim>> GetClaims(User user)
     {
-        var claims = new Dictionary<string, object>
+        var claims = new List<Claim>
         {
-            { DPClaimtTypes.Id,         user.Id.ToString() },
-            { DPClaimtTypes.AccountId,  user.AccountId.ToString() },
-            { DPClaimtTypes.Name,       user.UserName },
-            { DPClaimtTypes.Email,      user.Email },
+            new Claim("Id", user.Id.ToString()),
+            new Claim("AccountId", user.AccountId.ToString()),
+            new Claim("Name", user.UserName),
+            new Claim("Email", user.Email),
         };
         try
         {
             var roles = await _userManger.GetRolesAsync(user);
             foreach (var role in roles)
             {
-                claims.Add(role, "true");
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
         }
         catch

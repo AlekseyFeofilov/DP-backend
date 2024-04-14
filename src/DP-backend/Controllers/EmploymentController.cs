@@ -21,7 +21,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
-        [Authorize(Policy = $"{ApplicationRoleNames.Staff}, {ApplicationRoleNames.Student}")]
+        [Authorize(Policy = "EmploymentControl")]
         public async Task<ActionResult<EmploymentDTO>> GetEmployment(Guid id)
         {
             var employment = await _employmentService.GetEmployment(
@@ -41,7 +41,7 @@ namespace DP_backend.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
-        [Authorize(Policy = $"{ApplicationRoleNames.Staff}, {ApplicationRoleNames.Student}")]
+        [Authorize(Policy = "EmploymentControl")]
         public async Task<IActionResult> ChangeEmployment(Guid id, EmploymentChangeDTO employmentChange)
         {
             await _employmentService.ChangeEmployment(
@@ -54,7 +54,7 @@ namespace DP_backend.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
-        [Authorize(Policy = ApplicationRoleNames.Staff)]
+        [Authorize(Policy = "EmploymentDelete")]
         public async Task<IActionResult> DeleteEmployment(Guid id)
         {
             await _employmentService.DeleteEmployment(id);

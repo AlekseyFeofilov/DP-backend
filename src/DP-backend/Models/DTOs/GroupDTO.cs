@@ -5,7 +5,7 @@ namespace DP_backend.Models.DTOs
 {
     public class GroupDTO
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public int Number { get; set; }
         public Grade Grade { get; set; }
 
