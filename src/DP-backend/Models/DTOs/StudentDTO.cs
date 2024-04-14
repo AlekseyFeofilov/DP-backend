@@ -15,8 +15,8 @@ namespace DP_backend.Models.DTOs
         { 
             UserId = model.UserId;
             Status = model.Status;
-            Group = new GroupDTO(model.Group);
-            Employment = new EmploymentDTO(model.Employment);
+            Group = model.Group==null? null : new GroupDTO(model.Group);
+            Employment = model.Employment == null ? null : new EmploymentDTO(model.Employment);
             EmploymentVariants = model.EmploymentVariants.Select(x=>x.Adapt<EmploymentVariantDTO>()).ToList();
         }
     }

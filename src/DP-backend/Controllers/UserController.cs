@@ -11,7 +11,7 @@ namespace DP_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = $"{ApplicationRoleNames.Staff}")]
+    [Authorize(Policy = "UserControl")]
     public class UserController : ControllerBase
     {
         private readonly IUserManagementService _userManagementService;
@@ -59,12 +59,12 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
-        [Route("ByGroup/{groupId}")]
-        public async Task<IActionResult> GetStudents(Guid? groupId, bool withoutGroup=false)
+        [Route("ByGroup")]
+        public async Task<IActionResult> GetStudents(Grade? grade=null, int? groupNumber=null, bool withoutGroups=false)
         {
             try
             {
-                var students = await _userManagementService.GetStudentsFromGroup(groupId, withoutGroup);
+                var students = await _userManagementService.GetStudentsFromGroup(grade, groupNumber, withoutGroups);
                 return Ok(students);
             }
             catch (Exception ex)
@@ -74,7 +74,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
-        [Route("/{studentId}/GetStatus")]
+        [Route("{studentId}/GetStatus")]
         public async Task<IActionResult> GetStudentStatus(Guid studentId)
         {
             try
@@ -92,7 +92,7 @@ namespace DP_backend.Controllers
             }
         }
         [HttpGet]
-        [Route("/GetWihStatus")]
+        [Route("GetWihStatus")]
         public async Task<IActionResult> GetStudentsWithStatuses(List<StudentStatus> statuses)
         {
             try

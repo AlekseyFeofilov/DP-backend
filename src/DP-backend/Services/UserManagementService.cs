@@ -1,3 +1,4 @@
+using DP_backend.Common.Enumerations;
 using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
@@ -14,7 +15,7 @@ namespace DP_backend.Services
         public Task<User> CreateUserByAccountId(Guid accountId, bool asStudent);
         public Task ChangeUserRole(Guid userId, ApplicationRoles roleName);
         public Task SetStudentGroup(Guid userId, Guid groupId);
-        public Task<List<StudentDTO>> GetStudentsFromGroup (Guid? groupId, bool withoutGroup);
+        public Task<List<StudentDTO>> GetStudentsFromGroup (Grade? grade, int? groupNumber, bool withoutGroups);
         public Task<StudentStatus> GetStudentStatus(Guid userId);
         public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
     }
@@ -68,7 +69,8 @@ namespace DP_backend.Services
                 if (asStudent)
                 {
                     await _userManager.AddToRoleAsync(user, ApplicationRoleNames.Student);
-                    _dbContext.Students.Add(new Student { UserId = user.Id });
+                   await _dbContext.Students.AddAsync(new Student { UserId = user.Id });
+                   await _dbContext.SaveChangesAsync();
                 }
                 else
                 {
@@ -139,7 +141,7 @@ namespace DP_backend.Services
 
         public async Task SetStudentGroup(Guid userId, Guid groupId)
         {
-            var student = await _dbContext.Students.Include(x=>x.Group).FirstOrDefaultAsync(x => x.UserId == userId);
+            var student = await _dbContext.Students.Include(x=>x.Group).FirstOrDefaultAsync(x => x.Id == userId);
             if (student == null)
             {
                 throw new KeyNotFoundException($"There is no student with this {userId} id!");
@@ -153,16 +155,31 @@ namespace DP_backend.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<StudentDTO>> GetStudentsFromGroup(Guid? groupId, bool withoutGroup)
+        public async Task<List<StudentDTO>> GetStudentsFromGroup(Grade? grade, int? groupNumber, bool withoutGroups)
         {
-            return await _dbContext.Students
-                .Where(x=> withoutGroup? (x.GroupId==null) : (groupId==null? true : x.GroupId==groupId))
-                .Select(x=> new StudentDTO(x)).ToListAsync();
+            IQueryable<Student> query =  _dbContext.Students.Include(x=>x.Group).Include(x=>x.Employment).ThenInclude(x=>x.Employer).Include(x=>x.EmploymentVariants).ThenInclude(x => x.Employer);
+            if (withoutGroups)
+            {
+                query = query.Where(x => x.Group == null);
+            }
+            else
+            {
+                if (grade != null)
+                {
+                    query = query.Where(s => s.Group.Grade == grade);
+                }
+
+                if (groupNumber != null)
+                {
+                    query = query.Where(s => s.Group.Number == groupNumber);
+                }
+            }
+            return await query.Select(x=>new StudentDTO(x)).ToListAsync();
         }
 
         public async Task<StudentStatus> GetStudentStatus(Guid userId)
         {
-            var student = await _dbContext.Students.FirstOrDefaultAsync(x => x.UserId == userId);
+            var student = await _dbContext.Students.FirstOrDefaultAsync(x => x.Id == userId);
             if (student == null)
             {
                 throw new KeyNotFoundException($"There is no student with this {userId} id!");

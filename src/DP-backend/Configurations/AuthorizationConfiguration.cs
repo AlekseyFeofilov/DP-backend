@@ -1,4 +1,5 @@
-﻿using DP_backend.Domain.Identity;
+﻿using DP_backend.Controllers;
+using DP_backend.Domain.Identity;
 
 namespace DP_backend.Configurations
 {
@@ -13,28 +14,42 @@ namespace DP_backend.Configurations
             builder.Services.AddAuthorization(options =>
             {
 
-                options.AddPolicy(ApplicationRoleNames.Administrator, policy =>
+
+                options.AddPolicy("GroupControl", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ApplicationRoleNames.Administrator, "true");
+                    policy.RequireRole(ApplicationRoleNames.Administrator, ApplicationRoleNames.Staff);
                 });
+
+                options.AddPolicy("UserControl", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(ApplicationRoleNames.Administrator, ApplicationRoleNames.Staff);
+                });
+                options.AddPolicy("EmployerControl", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(ApplicationRoleNames.Administrator, ApplicationRoleNames.Staff);
+                });
+                options.AddPolicy("EmploymentControl", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(ApplicationRoleNames.Student, ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
+                });
+
+                options.AddPolicy("EmploymentDelete", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
+                });
+
                 options.AddPolicy(ApplicationRoleNames.Student, policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ApplicationRoleNames.Student, "true");
+                    policy.RequireRole(ApplicationRoleNames.Student);
                 });
 
-                options.AddPolicy(ApplicationRoleNames.Staff, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ApplicationRoleNames.Staff, "true");
-                });
 
-                options.AddPolicy(ApplicationRoleNames.NoOne, policy =>
-                {
-                    policy.RequireAuthenticatedUser();
-                    policy.RequireClaim(ApplicationRoleNames.NoOne, "true");
-                });
             });
 
         }
