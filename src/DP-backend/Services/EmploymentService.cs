@@ -9,6 +9,7 @@ namespace DP_backend.Services
 {
     public interface IEmploymentService
     {
+        Task<List<EmploymentDTO>> GetEmployments(string? companyName, EmploymentStatus? employmentStatus);
         Task<EmploymentDTO> GetEmployment(Guid employmentId, Guid userId, bool isStaff);
         Task CreateEmployment(Guid employmentId, EmploymentСreationDTO employmentСreation);
         Task ChangeEmployment(Guid employmentId, EmploymentChangeDTO employmentChange, Guid userId, bool isStaff);
@@ -24,6 +25,23 @@ namespace DP_backend.Services
             _context = context;
         }
 
+        public async Task<List<EmploymentDTO>> GetEmployments(string? companyName, EmploymentStatus? employmentStatus)
+        {
+            IQueryable<Employment> employmentsQuery = _context.Employments.GetUndeleted().Include(e => e.Employer);
+            if (companyName != null)
+            {
+                employmentsQuery = employmentsQuery.Where(e => e.Employer.CompanyName.Contains(companyName));
+            }
+            if (employmentStatus != null)
+            {
+                employmentsQuery = employmentsQuery.Where(e => e.Status == employmentStatus);
+            }
+
+            return await employmentsQuery
+                .Select(employment => new EmploymentDTO(employment))
+                .ToListAsync();
+        }
+
         public async Task<EmploymentDTO> GetEmployment(Guid employmentId, Guid userId, bool isStaff)
         {
             var employment = await _context.Employments.GetUndeleted()
@@ -37,14 +55,7 @@ namespace DP_backend.Services
             {
                 throw new NoPermissionException();
             }
-            return new EmploymentDTO 
-            { 
-                Id = employment.Id, 
-                Employer = new EmployerDTO(employment.Employer),
-                Vacancy = employment.Vacancy, 
-                Comment = employment.Comment, 
-                EmploymentStatus = employment.Status 
-            };
+            return new EmploymentDTO(employment);
         }
 
         public async Task CreateEmployment(Guid userId, EmploymentСreationDTO employmentСreation)

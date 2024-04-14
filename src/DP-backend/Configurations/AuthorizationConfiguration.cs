@@ -36,6 +36,11 @@ namespace DP_backend.Configurations
                     policy.RequireAuthenticatedUser();
                     policy.RequireRole(ApplicationRoleNames.Student, ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
                 });
+                options.AddPolicy("EmploymentsRead", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
+                });
 
                 options.AddPolicy("EmploymentDelete", policy =>
                 {

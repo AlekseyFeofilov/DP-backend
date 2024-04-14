@@ -1,4 +1,5 @@
-﻿using DP_backend.Domain.Identity;
+﻿using DP_backend.Domain.Employment;
+using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
 using DP_backend.Models.DTOs;
 using DP_backend.Services;
@@ -20,6 +21,15 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "EmploymentsRead")]
+        public async Task<ActionResult<List<EmploymentDTO>>> GetEmployments(
+            string? companyName = null, EmploymentStatus? employmentStatus = null)
+        {
+            var employments = await _employmentService.GetEmployments(companyName, employmentStatus);
+            return Ok(employments);
+        }
+
+        [HttpGet]
         [Route("{id:guid}")]
         [Authorize(Policy = "EmploymentControl")]
         public async Task<ActionResult<EmploymentDTO>> GetEmployment(Guid id)
@@ -27,7 +37,7 @@ namespace DP_backend.Controllers
             var employment = await _employmentService.GetEmployment(
                 id,
                 User.GetUserId(),
-                User.FindFirstValue(ApplicationRoleNames.Staff) == "true");
+                User.FindFirstValue(ApplicationRoleNames.Staff) == "true" || User.FindFirstValue(ApplicationRoleNames.Administrator) == "true");
             return Ok(employment);
         }
 
@@ -48,7 +58,7 @@ namespace DP_backend.Controllers
                 id,
                 employmentChange,
                 User.GetUserId(),
-                User.FindFirstValue(ApplicationRoleNames.Staff) == "true");
+                User.FindFirstValue(ApplicationRoleNames.Staff) == "true" || User.FindFirstValue(ApplicationRoleNames.Administrator) == "true");
             return Ok();
         }
 
