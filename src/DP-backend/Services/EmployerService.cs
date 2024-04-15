@@ -26,6 +26,10 @@ namespace DP_backend.Services
             {
                 Id = Guid.NewGuid(),
                 CompanyName = model.CompanyName,
+                Contact = model.Contact,
+                Comment = model.Comment,
+                CommunicationPlace = model.CommunicationPlace,
+                PlacesQuantity = model.PlacesQuantity
             };
             await _context.AddAsync(employer);
             await _context.SaveChangesAsync();
@@ -66,6 +70,10 @@ namespace DP_backend.Services
                 throw new KeyNotFoundException($"There is no employer with this {employerId} id!");
             }
             employer.CompanyName = model.CompanyName;
+            employer.Comment = model.Comment;
+            employer.CommunicationPlace = model.CommunicationPlace;
+            employer.Contact= model.Contact;
+            employer.PlacesQuantity = model.PlacesQuantity;
             await _context.SaveChangesAsync();
         }
     }

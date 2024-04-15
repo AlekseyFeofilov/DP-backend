@@ -6,7 +6,7 @@ namespace DP_backend.Models.DTOs
     {
         public Guid? Id { get; set; }
 
-        public EmployerDTO(Employer employer) : base(employer.CompanyName)
+        public EmployerDTO(Employer employer) : base(employer)
         {
             Id = employer.Id;            
         }
