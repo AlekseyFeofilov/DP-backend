@@ -21,12 +21,12 @@ public interface IEmploymentVariantService
     Task<EmploymentVariant> Remove(RemoveEmploymentVariantRequest request, CancellationToken ct);
 }
 
-public class EmploymentVariantService(ApplicationDbContext context) : IEmploymentVariantService
+public class EmploymentVariantService(ApplicationDbContext context, IEmploymentService employmentService) : IEmploymentVariantService
 {
     public async Task<EmploymentVariant> Get(Guid employmentVariantId, CancellationToken ct)
     {
         var employmentVariant = await context.EmploymentVariants.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employmentVariantId, ct);
-        if (employmentVariant is null) throw new KeyNotFoundException($"Вариант трудоустройства {{{employmentVariantId}}} не найден");
+        if (employmentVariant is null) throw new NotFoundException($"Вариант трудоустройства {{{employmentVariantId}}} не найден");
         return employmentVariant;
     }
 
@@ -41,23 +41,34 @@ public class EmploymentVariantService(ApplicationDbContext context) : IEmploymen
         {
             var employerId = dto.EmployerVariant.EmployerId.Value;
             var employer = await context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId, ct)
-                           ?? throw new KeyNotFoundException($"Компания-работодатель {{{employerId}}} не найден");
+                           ?? throw new NotFoundException($"Компания-работодатель {{{employerId}}} не найден");
             employerVariant = new EmployerVariant(employer);
         }
 
         employerVariant ??= new EmployerVariant(dto.EmployerVariant.CustomCompanyName!);
-
+        var internshipRequest = await employmentService.CreateInternshipRequest(request.CallingUser.GetUserId(), new InternshipRequestСreationDTO
+        {
+            EmployerId = (Guid)dto.EmployerVariant.EmployerId,
+            Vacancy = dto.Occupation,
+            Comment = ""
+        });
         var employmentVariant = new EmploymentVariant()
         {
-            Employer = employerVariant,
             Occupation = dto.Occupation,
             Priority = dto.Priority,
             Status = dto.Status,
-            Student = new Student { UserId = request.CallingUser.GetUserId() }
+            InternshipRequestId=internshipRequest.Id,
+            StudentId = request.CallingUser.GetUserId()
         };
         context.EmploymentVariants.Add(employmentVariant);
+        try
+        {
+            await context.SaveChangesAsync(ct);
+        }
+        catch (Exception ex)
+        {
 
-        await context.SaveChangesAsync(ct);
+        }
         return employmentVariant;
     }
 

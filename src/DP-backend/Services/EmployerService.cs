@@ -1,6 +1,7 @@
 ﻿using DP_backend.Domain.Employment;
 using DP_backend.Helpers;
 using DP_backend.Models.DTOs;
+using DP_backend.Models.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace DP_backend.Services
@@ -40,7 +41,7 @@ namespace DP_backend.Services
             var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId);
             if (employer == null)
             {
-                throw new KeyNotFoundException($"There is no employer with this {employerId} id!");
+                throw new NotFoundException($"There is no employer with this {employerId} id!");
             }
             _context.Employers.Remove(employer);
             await _context.SaveChangesAsync();
@@ -57,7 +58,7 @@ namespace DP_backend.Services
             var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId);
             if (employer == null)
             {
-                throw new KeyNotFoundException($"There is no employer with this {employerId} id!");
+                throw new NotFoundException($"There is no employer with this {employerId} id!");
             }
             return new EmployerDTO(employer);
         }
@@ -67,7 +68,7 @@ namespace DP_backend.Services
             var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(x=>x.Id== employerId);
             if (employer == null)
             {
-                throw new KeyNotFoundException($"There is no employer with this {employerId} id!");
+                throw new NotFoundException($"There is no employer with this {employerId} id!");
             }
             employer.CompanyName = model.CompanyName;
             employer.Comment = model.Comment;

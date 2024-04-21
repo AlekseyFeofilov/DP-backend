@@ -7,7 +7,7 @@ public record EmployerVariantDTO(Guid? EmployerId, string? CustomCompanyName);
 /// <param name="Status"></param>
 /// <param name="Occupation">Должность \ занятость \ стек</param>
 /// <param name="Priority">Приоритет, чем меньше тем приоритетнее (семантика - "Первый приоритет")</param>
-public record EmploymentVariantDTO(EmploymentVariantStatus Status, int Priority, EmployerVariantDTO Employer, string Occupation, Guid StudentId);
+public record EmploymentVariantDTO(Guid Id, EmploymentVariantStatus Status, int Priority, EmployerVariantDTO Employer, string Occupation, Guid StudentId);
 
 /// <param name="Status"></param>
 /// <param name="Occupation">Должность \ занятость \ стек</param>

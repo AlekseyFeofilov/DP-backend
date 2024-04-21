@@ -9,11 +9,7 @@ public class EmploymentVariantEntityConfiguration : IEntityTypeConfiguration<Emp
     public void Configure(EntityTypeBuilder<EmploymentVariant> builder)
     {
         builder.ToTable(nameof(EmploymentVariant));
-        builder.OwnsOne(x => x.Employer, ownsBuilder =>
-        {
-            ownsBuilder.HasOne(x => x.Employer);
-            ownsBuilder.Property(x => x.CustomCompanyName);
-        });
+        builder.HasOne(x => x.InternshipRequest);
 
         builder.Navigation(x => x.Student).AutoInclude();
     }

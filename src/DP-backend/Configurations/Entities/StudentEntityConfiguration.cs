@@ -13,6 +13,6 @@ public class StudentEntityConfiguration : IEntityTypeConfiguration<Student>
         builder.Ignore(x => x.UserId);
         builder.HasOne<User>().WithOne().HasForeignKey<Student>(x => x.Id);
         builder.HasMany(x => x.EmploymentVariants).WithOne(x => x.Student);
-        builder.HasOne(x => x.Employment).WithOne().HasForeignKey<Employment>(x => x.StudentId);
+        builder.HasMany(x => x.Employments).WithOne(x => x.Student);
     }
 }

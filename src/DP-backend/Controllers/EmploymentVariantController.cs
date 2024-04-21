@@ -72,7 +72,7 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
             .If(studentId.HasValue,
                 variants => variants.Where(x => x.Student.Id == studentId))
             .If(employerId.HasValue,
-                variants => variants.Where(x => x.Employer.Employer != null && x.Employer.Employer.Id == employerId))
+                variants => variants.Where(x => x.InternshipRequest.Employer != null && x.InternshipRequest.Employer.Id == employerId))
             .ToListAsync(cancellationToken);
         return employmentVariants.Select(x => x.Adapt<EmploymentVariantDTO>()).ToList();
     }

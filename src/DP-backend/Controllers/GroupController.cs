@@ -27,10 +27,7 @@ namespace DP_backend.Controllers
                 await _groupService.CreateGroup(groupNumber, grade);
                 return Ok();
             }
-            catch (BadDataException ex)
-            {
-                return Problem(statusCode: 404, detail: ex.Message);
-            }
+
             catch (Exception ex)
             {
                 return Problem(statusCode: 500, detail: ex.Message);
@@ -46,10 +43,7 @@ namespace DP_backend.Controllers
                 await _groupService.DeleteGroup(groupId);
                 return Ok();
             }
-            catch (KeyNotFoundException ex)
-            {
-                return Problem(statusCode: 404, detail: ex.Message);
-            }
+
             catch (Exception ex)
             {
                 return Problem(statusCode: 500, detail: ex.Message);
@@ -79,10 +73,7 @@ namespace DP_backend.Controllers
                 await _groupService.ChangeGroupGrade(groupId, grade);
                 return Ok();
             }
-            catch (KeyNotFoundException ex)
-            {
-                return Problem(statusCode: 404, detail: ex.Message);
-            }
+
             catch (Exception ex)
             {
                 return Problem(statusCode: 500, detail: ex.Message);

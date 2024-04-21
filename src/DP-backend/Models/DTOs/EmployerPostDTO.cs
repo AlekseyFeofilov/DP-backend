@@ -9,6 +9,7 @@ namespace DP_backend.Models.DTOs
         public string CommunicationPlace { get; set; }
         public string Contact { get; set; }
         public string Comment { get; set; }
+        public EmployerPostDTO() { }
         public EmployerPostDTO(Employer model)
         {
             CompanyName = model.CompanyName;

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DP_backend.Models.DTOs
 {
-    public class EmploymentСreationDTO
+    public class InternshipRequestСreationDTO
     {
         public Guid EmployerId { get; set; }
 
