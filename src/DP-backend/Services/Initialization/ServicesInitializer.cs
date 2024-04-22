@@ -11,5 +11,6 @@ public static class ServicesInitializer
         services.AddScoped<IEmploymentVariantService, EmploymentVariantService>();
         services.AddScoped<IEmploymentService, EmploymentService>();
         services.AddScoped<IGroupService, GroupService>();
+        services.AddScoped<ICommentService, CommentService>();
     }
 }
