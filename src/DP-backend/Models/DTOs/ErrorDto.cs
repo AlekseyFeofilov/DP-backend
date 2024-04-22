@@ -1,4 +1,4 @@
-﻿namespace DP_backend.Models
+﻿namespace DP_backend.Models.DTOs
 {
     public class ErrorDto
     {

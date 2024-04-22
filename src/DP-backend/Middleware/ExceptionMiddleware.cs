@@ -1,5 +1,5 @@
 ﻿using DP_backend.Models.Exceptions;
-using DP_backend.Models;
+using DP_backend.Models.DTOs;
 
 namespace DP_backend.Middleware
 {

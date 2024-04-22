@@ -54,7 +54,11 @@ namespace DP_backend.Configurations
                     policy.RequireRole(ApplicationRoleNames.Student);
                 });
 
-
+                options.AddPolicy("StaffAndStudent", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireRole(ApplicationRoleNames.Student, ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
+                });
             });
 
         }
