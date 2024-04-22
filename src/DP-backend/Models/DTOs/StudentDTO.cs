@@ -9,14 +9,14 @@ namespace DP_backend.Models.DTOs
         public StudentStatus Status { get; set; } = StudentStatus.None;
         public GroupDTO? Group { get; set; }
         public List<EmploymentVariantDTO> EmploymentVariants { get; set; }
-        public EmploymentDTO Employment { get; set; }
+        public List<EmploymentDTO> Employments { get; set; }
         public StudentDTO() { }
         public StudentDTO(Student model) 
         { 
             UserId = model.UserId;
             Status = model.Status;
             Group = model.Group==null? null : new GroupDTO(model.Group);
-            Employment = model.Employment == null ? null : new EmploymentDTO(model.Employment);
+            Employments = model.Employments.Select(x=> new EmploymentDTO(x)).ToList();
             EmploymentVariants = model.EmploymentVariants.Select(x=>x.Adapt<EmploymentVariantDTO>()).ToList();
         }
     }

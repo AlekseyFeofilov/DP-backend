@@ -30,7 +30,7 @@ namespace DP_backend.Services
             var group = await _dbContext.Groups.FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new KeyNotFoundException($"There is no group with this {groupId} id!");
+                throw new NotFoundException($"There is no group with this {groupId} id!");
             }
             group.Grade = grade;
             await _dbContext.SaveChangesAsync();
@@ -41,7 +41,7 @@ namespace DP_backend.Services
           var group =  await _dbContext.Groups.FirstOrDefaultAsync(x => x.Number == groupNumber);
             if (group != null)
             {
-                throw new BadDataException($"There is already a group with this {groupNumber} groupNumber!");
+                throw new InvalidOperationException($"There is already a group with this {groupNumber} groupNumber!");
             }
             group = new Group
             {
@@ -58,7 +58,7 @@ namespace DP_backend.Services
             var group = await _dbContext.Groups.FirstOrDefaultAsync(x => x.Id == groupId);
             if (group == null)
             {
-                throw new KeyNotFoundException($"There is no group with this {groupId} id!");
+                throw new NotFoundException($"There is no group with this {groupId} id!");
             }
             _dbContext.Groups.Remove(group);
             await _dbContext.SaveChangesAsync();

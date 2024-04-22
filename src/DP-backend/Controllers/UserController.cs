@@ -24,86 +24,40 @@ namespace DP_backend.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeUserRole(Guid userId, ApplicationRoles role)
         {
-            try
-            {
                 await _userManagementService.ChangeUserRole(userId, role);
                 return Ok();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return Problem(statusCode: 404, detail:ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return Problem(statusCode: 500,detail: ex.Message);
-            }
         }
 
         [Route("{userId}/SetStudentGroup/{groupId}")]
         [HttpPost]
         public async Task<IActionResult> SetStudentGroup(Guid userId, Guid groupId)
         {
-            try
-            {
                 await _userManagementService.SetStudentGroup(userId, groupId);
                 return Ok();
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return Problem(statusCode: 404, detail: ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return Problem(statusCode: 500, detail: ex.Message);
-            }
+
         }
 
         [HttpGet]
         [Route("ByGroup")]
         public async Task<IActionResult> GetStudents(Grade? grade=null, int? groupNumber=null, bool withoutGroups=false)
         {
-            try
-            {
                 var students = await _userManagementService.GetStudentsFromGroup(grade, groupNumber, withoutGroups);
                 return Ok(students);
-            }
-            catch (Exception ex)
-            {
-                return Problem(statusCode: 500, detail: ex.Message);
-            }
         }
 
         [HttpGet]
         [Route("{studentId}/GetStatus")]
         public async Task<IActionResult> GetStudentStatus(Guid studentId)
         {
-            try
-            {
-                var status = await _userManagementService.GetStudentStatus(studentId);
-                return Ok(status);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return Problem(statusCode: 404, detail: ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return Problem(statusCode: 500, detail: ex.Message);
-            }
+           var status = await _userManagementService.GetStudentStatus(studentId);
+           return Ok(status);
         }
         [HttpGet]
         [Route("GetWihStatus")]
         public async Task<IActionResult> GetStudentsWithStatuses(List<StudentStatus> statuses)
         {
-            try
-            {
                 var students = await _userManagementService.GetStudentsWithStatuses(statuses);
                 return Ok(students);
-            }
-            catch (Exception ex)
-            {
-                return Problem(statusCode: 500, detail: ex.Message);
-            }
         }
 
     }

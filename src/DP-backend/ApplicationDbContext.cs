@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using DP_backend.Domain.Identity;
 using Microsoft.EntityFrameworkCore;
 using DP_backend.Helpers;
+using DP_backend.Common;
 
 namespace DP_backend
 {
@@ -24,12 +25,16 @@ namespace DP_backend
         public virtual DbSet<Employer> Employers { get; set; }
         public virtual DbSet<EmploymentVariant> EmploymentVariants { get; set; }
         public virtual DbSet<Employment> Employments { get; set; }
+        public virtual DbSet<EmploymentRequest> EmploymentRequests { get; set; }
+        public virtual DbSet<InternshipRequest> InternshipRequests { get; set; }
+
         // todo : see InternshipReport
         // public virtual DbSet<InternshipReport> InternshipReports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            builder.ApplyGlobalFilters<IBaseEntity>(e => e.DeleteDateTime == null);
             builder.ApplyConfigurationsFromAssembly(Assembly.GetAssembly(typeof(EmploymentEntityConfiguration))!);
         }
 

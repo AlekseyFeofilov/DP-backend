@@ -12,7 +12,7 @@ public class EmploymentVariant : BaseEntity
     /// </summary>
     public int Priority { get; set; } = 0;
 
-    public required EmployerVariant Employer { get; set; }
+
 
     /// <summary>
     /// Должность \ занятость \ стек 
@@ -20,6 +20,8 @@ public class EmploymentVariant : BaseEntity
     public string Occupation { get; set; }
     public Guid StudentId { get; set; }
     public Student Student { get; set; }
+    public Guid InternshipRequestId { get; set; }
+    public InternshipRequest InternshipRequest { get; set; }
 }
 
 public enum EmploymentVariantStatus

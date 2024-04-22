@@ -46,7 +46,7 @@ namespace DP_backend.Services.Initialization
         private static async Task InitializeAdministrator(UserManager<User> userManager, IUserManagementService userManagementService, Guid accountId)
         {
             var administrator = await userManagementService.GetUserByAccountId(accountId) ??
-                                await userManagementService.CreateUserByAccountId(accountId, false);
+                                await userManagementService.CreateUserByAccountId(accountId, true);
 
             if (!await userManager.IsInRoleAsync(administrator, ApplicationRoles.Administrator.ToString()))
             {

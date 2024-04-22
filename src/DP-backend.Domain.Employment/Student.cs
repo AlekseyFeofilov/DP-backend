@@ -10,8 +10,9 @@ public class Student : BaseEntity
     public Guid? GroupId { get; set; }
     public Group? Group { get; set; }
     public List<EmploymentVariant> EmploymentVariants { get; set; }
-
-    public Employment? Employment { get; set; }
+    public List<InternshipRequest> InternshipRequests { get; set; }
+    public List<EmploymentRequest> EmploymentRequests { get; set; }
+    public List<Employment> Employments { get; set; }
 }
 
 public enum StudentStatus

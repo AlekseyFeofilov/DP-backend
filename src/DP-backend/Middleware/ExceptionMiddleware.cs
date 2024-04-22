@@ -43,6 +43,12 @@ namespace DP_backend.Middleware
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "403", Message = e.Message });
             }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogError(e.Message);
+                context.Response.StatusCode = StatusCodes.Status409Conflict;
+                await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "409", Message = e.Message });
+            }
             catch (Exception e)
             {
                 _logger.LogError(e.ToString());

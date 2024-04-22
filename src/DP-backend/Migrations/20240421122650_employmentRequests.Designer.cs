@@ -3,6 +3,7 @@ using System;
 using DP_backend;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DP_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240421122650_employmentRequests")]
+    partial class employmentRequests
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -164,7 +167,7 @@ namespace DP_backend.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("EmploymentRequests", (string)null);
+                    b.ToTable("EmploymentRequests");
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.EmploymentVariant", b =>
@@ -178,9 +181,6 @@ namespace DP_backend.Migrations
 
                     b.Property<DateTime?>("DeleteDateTime")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("InternshipRequestId")
-                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("ModifyDateTime")
                         .HasColumnType("timestamp with time zone");
@@ -199,8 +199,6 @@ namespace DP_backend.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InternshipRequestId");
 
                     b.HasIndex("StudentId");
 
@@ -230,7 +228,7 @@ namespace DP_backend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups", (string)null);
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.InternshipRequest", b =>
@@ -270,7 +268,7 @@ namespace DP_backend.Migrations
 
                     b.HasIndex("StudentId");
 
-                    b.ToTable("InternshipRequests", (string)null);
+                    b.ToTable("InternshipRequests");
                 });
 
             modelBuilder.Entity("DP_backend.Domain.Employment.Student", b =>
@@ -558,19 +556,41 @@ namespace DP_backend.Migrations
 
             modelBuilder.Entity("DP_backend.Domain.Employment.EmploymentVariant", b =>
                 {
-                    b.HasOne("DP_backend.Domain.Employment.InternshipRequest", "InternshipRequest")
-                        .WithMany()
-                        .HasForeignKey("InternshipRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DP_backend.Domain.Employment.Student", "Student")
                         .WithMany("EmploymentVariants")
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("InternshipRequest");
+                    b.OwnsOne("DP_backend.Domain.Employment.EmployerVariant", "Employer", b1 =>
+                        {
+                            b1.Property<Guid>("EmploymentVariantId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("CustomCompanyName")
+                                .HasColumnType("text");
+
+                            b1.Property<Guid?>("EmployerId")
+                                .HasColumnType("uuid");
+
+                            b1.HasKey("EmploymentVariantId");
+
+                            b1.HasIndex("EmployerId");
+
+                            b1.ToTable("EmploymentVariant");
+
+                            b1.HasOne("DP_backend.Domain.Employment.Employer", "Employer")
+                                .WithMany()
+                                .HasForeignKey("EmployerId");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmploymentVariantId");
+
+                            b1.Navigation("Employer");
+                        });
+
+                    b.Navigation("Employer")
+                        .IsRequired();
 
                     b.Navigation("Student");
                 });
