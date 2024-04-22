@@ -34,12 +34,12 @@ namespace DP_backend.Configurations
                 options.AddPolicy("EmploymentControl", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireRole(ApplicationRoleNames.Student, ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
+                    policy.RequireRole(ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
                 });
                 options.AddPolicy("EmploymentsRead", policy =>
                 {
                     policy.RequireAuthenticatedUser();
-                    policy.RequireRole(ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
+                    policy.RequireRole(ApplicationRoleNames.Student, ApplicationRoleNames.Staff, ApplicationRoleNames.Administrator);
                 });
 
                 options.AddPolicy("EmploymentDelete", policy =>

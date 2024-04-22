@@ -19,8 +19,11 @@ namespace DP_backend.Controllers
         {
             _employerService = employerService;
         }
+        
         [HttpGet]
         [Route("GetAll")]
+        [AllowAnonymous]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult>  GetAll()
         {
                 var employers = await _employerService.GetAllEmployers();
