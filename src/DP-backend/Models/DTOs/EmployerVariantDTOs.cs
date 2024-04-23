@@ -2,6 +2,11 @@
 
 namespace DP_backend.Models.DTOs;
 
+/// <summary>
+/// Id известного работодателя или кастомное имя которое передал пользователь 
+/// </summary>
+/// <param name="EmployerId">Id известного работодателя</param>
+/// <param name="CustomCompanyName">Имя от клиента для неизвестного работодателя</param>
 public record EmployerVariantDTO(Guid? EmployerId, string? CustomCompanyName);
 
 /// <param name="Status"></param>

@@ -4,10 +4,8 @@ using DP_backend.Configurations;
 using DP_backend.Configurators;
 using DP_backend.Domain.Identity;
 using DP_backend.Services.Initialization;
-using DP_backend.Swagger;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -15,23 +13,7 @@ var configuration = builder.Configuration;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-    options.EnableAnnotations();
-    options.OperationFilter<SecurityRequirementsOperationFilter>();
-    options.OperationFilter<DefaultResponseOperationFilter>();
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter token",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    
-});
+builder.Services.ConfigureSwaggerGen();
 
 services.InitInternalServices(configuration);
 builder.AddDb<ApplicationDbContext>("DbConnection");
@@ -48,21 +30,12 @@ builder.ConfigureClaimAuthorization();
 builder.Services.AddMapster();
 TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 var allowAnyCorsPolicy = "AllowAnyCorsPolicy";
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: allowAnyCorsPolicy, configurePolicy: builder =>
-    {
-        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-});
+builder.Services.AddCors(options => { options.AddPolicy(name: allowAnyCorsPolicy, configurePolicy: builder => { builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }); });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-}
+app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); }
 );
 
 app.MigrateDBWhenNecessary<ApplicationDbContext>();
