@@ -24,9 +24,9 @@ namespace DP_backend.Controllers
         [Route("GetAll")]
         [AllowAnonymous]
         [Authorize(Policy = "StaffAndStudent")]
-        public async Task<IActionResult>  GetAll()
+        public async Task<IActionResult>  GetAll(bool? isPartner)
         {
-                var employers = await _employerService.GetAllEmployers();
+                var employers = await _employerService.GetAllEmployers(isPartner);
                 return Ok(employers);            
         }
 

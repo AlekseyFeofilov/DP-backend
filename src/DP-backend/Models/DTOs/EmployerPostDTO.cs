@@ -8,6 +8,7 @@ namespace DP_backend.Models.DTOs
         public string PlacesQuantity { get; set; }
         public string CommunicationPlace { get; set; }
         public string Contact { get; set; }
+        public bool isPartner { get; set; }
         public string Comment { get; set; }
         public EmployerPostDTO() { }
         public EmployerPostDTO(Employer model)
@@ -16,6 +17,7 @@ namespace DP_backend.Models.DTOs
             PlacesQuantity = model.PlacesQuantity;
             CommunicationPlace = model.CommunicationPlace;
             Contact = model.Contact;
+            isPartner = model.isPartner;
             Comment = model.Comment;
         }
     }
