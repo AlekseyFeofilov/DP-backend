@@ -59,6 +59,12 @@ namespace DP_backend.Controllers
                 var students = await _userManagementService.GetStudentsWithStatuses(statuses);
                 return Ok(students);
         }
-
+        [HttpGet]
+        [Route("Dashboard")]
+        public async Task<IActionResult> GetStudentsDashboard(int page, Grade? grade, int? group, StudentStatus? status, string? namePart)
+        {
+            var students = await _userManagementService.GetStudentsByFilters(page,grade,group,status,namePart);
+            return Ok(students);
+        }
     }
 }

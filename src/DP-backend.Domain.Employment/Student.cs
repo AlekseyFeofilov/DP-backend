@@ -6,6 +6,7 @@ namespace DP_backend.Domain.Employment;
 public class Student : BaseEntity
 {
     public required Guid UserId { get => Id; init => Id = value; }
+    public string Name { get; set; }
     public StudentStatus Status { get; set; } = StudentStatus.None;
     public Guid? GroupId { get; set; }
     public Group? Group { get; set; }

@@ -7,6 +7,7 @@ using DP_backend.Models.DTOs.TSUAccounts;
 using DP_backend.Models.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace DP_backend.Services
 {
@@ -19,22 +20,25 @@ namespace DP_backend.Services
         public Task<List<StudentDTO>> GetStudentsFromGroup (Grade? grade, int? groupNumber, bool withoutGroups);
         public Task<StudentStatus> GetStudentStatus(Guid userId);
         public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
+        public Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart);
     }
 
     public class UserManagementService : IUserManagementService
     {
         private readonly ITSUAccountService _accountService;
         private readonly ITSUAccountService _tsuAccountService;
+        private readonly IConfiguration _configuration;
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<User> _userManager;
 
 
-        public UserManagementService(ITSUAccountService tSUAccountService, ApplicationDbContext context, UserManager<User> userManager, ITSUAccountService tsuAccountService)
+        public UserManagementService(ITSUAccountService tSUAccountService, ApplicationDbContext context, UserManager<User> userManager, ITSUAccountService tsuAccountService, IConfiguration configuration)
         {
             _accountService = tSUAccountService;
             _dbContext = context;
             _userManager = userManager;
             _tsuAccountService = tsuAccountService;
+            _configuration = configuration;
         }
 
         public async Task<User> GetUserByAccountId(Guid accountId)
@@ -70,7 +74,7 @@ namespace DP_backend.Services
                 if (asStudent)
                 {
                     await _userManager.AddToRoleAsync(user, ApplicationRoleNames.Student);
-                   await _dbContext.Students.AddAsync(new Student { UserId = user.Id });
+                   await _dbContext.Students.AddAsync(new Student { UserId = user.Id, Name=user.UserName });
                    await _dbContext.SaveChangesAsync();
                 }
                 else
@@ -109,7 +113,6 @@ namespace DP_backend.Services
             user.AccountId = accountId;
             if (_tsuAccountService.IsValidTsuAccountEmail(tsuAccountUserModel.Email))
             {
-                user.UserName = tsuAccountUserModel.Email;
                 user.Email = tsuAccountUserModel.Email;
             }
             else
@@ -191,6 +194,47 @@ namespace DP_backend.Services
         public async Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses)
         {
             return await _dbContext.Students.Where(x=>statuses.Contains(x.Status)).Select(x=> new StudentDTO(x)).ToListAsync();
+        }
+
+        public async Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart)
+        {
+            int _pageSize = _configuration.GetSection("PaginationSettings").GetValue<int>("PageSize");
+            int pageCount; 
+            IQueryable<Student> query = _dbContext.Students.Include(x => x.Group).Include(x => x.Employments).ThenInclude(x => x.Employer).Include(x => x.EmploymentVariants).ThenInclude(x => x.InternshipRequest).ThenInclude(x => x.Employer);
+            if(grade != null)
+            {
+                query = query.Where(x => x.Group.Grade == grade);
+            }
+            if (group != null)
+            {
+                query = query.Where(x => x.Group.Number == group);
+            }
+            if (status != null)
+            {
+                query = query.Where(x => x.Status == status);
+            }
+            if (namePart != null)
+            {
+                query = query.Where(x => Regex.IsMatch(x.Name, namePart));
+            }
+            if ((query.Count() % _pageSize) == 0)
+            {
+                pageCount = (query.Count() / _pageSize);
+            }
+            else
+            {
+                pageCount = (query.Count() / _pageSize) + 1;
+            }
+            var students = await query
+                .Skip(_pageSize * (page - 1))
+                .Take(_pageSize)
+                .Select(x=>new StudentDTO(x)).ToListAsync();
+            var pagination = new PaginationDTO(page, pageCount, _pageSize);
+            return new StudentsWithPaginationDTO
+            {
+                Students = students,
+                Pagination = pagination
+            };
         }
     }
 }
