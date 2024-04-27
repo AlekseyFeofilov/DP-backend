@@ -12,7 +12,7 @@ namespace DP_backend.Services
         public Task UpdateEmployer(Guid employerId, EmployerPostDTO model);
         public Task DeleteEmployer(Guid employerId);
         public Task<EmployerDTO> GetEmployerById(Guid employerId);
-        public Task<List<EmployerDTO>> GetAllEmployers();
+        public Task<List<EmployerDTO>> GetAllEmployers(bool? asPartner);
     }
     public class EmployerService : IEmployerService
     {
@@ -29,6 +29,7 @@ namespace DP_backend.Services
                 CompanyName = model.CompanyName,
                 Contact = model.Contact,
                 Comment = model.Comment,
+                isPartner = model.isPartner,
                 CommunicationPlace = model.CommunicationPlace,
                 PlacesQuantity = model.PlacesQuantity
             };
@@ -38,7 +39,7 @@ namespace DP_backend.Services
 
         public async Task DeleteEmployer(Guid employerId)
         {
-            var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId);
+            var employer = await _context.Employers.FirstOrDefaultAsync(x => x.Id == employerId);
             if (employer == null)
             {
                 throw new NotFoundException($"There is no employer with this {employerId} id!");
@@ -47,15 +48,24 @@ namespace DP_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<EmployerDTO>> GetAllEmployers()
+        public async Task<List<EmployerDTO>> GetAllEmployers(bool? asPartner)
         {
-            var employers = await _context.Employers.GetUndeleted().Select(x=>new EmployerDTO(x)).ToListAsync();
-            return employers;
+            IQueryable<Employer> query = _context.Employers;
+            if (asPartner==true)
+            {
+                query = query.Where(x => x.isPartner);
+            }
+            else if (asPartner==false)
+            {
+                query = query.Where(x => !x.isPartner);
+            }
+            return await query.Select(x=>new EmployerDTO(x)).ToListAsync();
+            
         }
 
         public async Task<EmployerDTO> GetEmployerById(Guid employerId)
         {
-            var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId);
+            var employer = await _context.Employers.FirstOrDefaultAsync(x => x.Id == employerId);
             if (employer == null)
             {
                 throw new NotFoundException($"There is no employer with this {employerId} id!");
@@ -65,13 +75,14 @@ namespace DP_backend.Services
 
         public async Task UpdateEmployer(Guid employerId, EmployerPostDTO model)
         {
-            var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(x=>x.Id== employerId);
+            var employer = await _context.Employers.FirstOrDefaultAsync(x=>x.Id== employerId);
             if (employer == null)
             {
                 throw new NotFoundException($"There is no employer with this {employerId} id!");
             }
             employer.CompanyName = model.CompanyName;
             employer.Comment = model.Comment;
+            employer.isPartner = model.isPartner;
             employer.CommunicationPlace = model.CommunicationPlace;
             employer.Contact= model.Contact;
             employer.PlacesQuantity = model.PlacesQuantity;
