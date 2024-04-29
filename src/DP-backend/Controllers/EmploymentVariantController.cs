@@ -76,6 +76,6 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
         return employmentVariants.Select(x => x.Adapt<EmploymentVariantDTO>()).ToList();
     }
 
-    [HttpGet("status/list")] // todo cache
+    [HttpGet("status/list")]
     public IEnumerable<DictionaryEntry> GetStatuses() => DictionaryService.DescribeEnum<EmploymentVariantStatus>();
 }

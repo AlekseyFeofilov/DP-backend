@@ -11,6 +11,7 @@ public static class DictionaryService
     
     public static IEnumerable<DictionaryEntry> DescribeEnum(Type enumType)
     {
+        // todo cache
         foreach (var enumRawValue in enumType.GetEnumValuesAsUnderlyingType())
         {
             var enumName = Enum.GetName(enumType, enumRawValue)!;
@@ -19,7 +20,7 @@ public static class DictionaryService
             var enumFieldName = enumField.GetCustomAttribute<DescriptionAttribute>()?.Description
                                 ?? enumName;
 
-            yield return new DictionaryEntry((long)enumRawValue, enumFieldName);
+            yield return new DictionaryEntry(Convert.ToInt64(enumRawValue), enumFieldName);
         }
     }
 }
