@@ -13,13 +13,16 @@ namespace DP_backend.Models.DTOs
         [Required]
         public EmployerDTO Employer {  get; set; }
 
+        public Guid? InternshipRequestId { get; init; }
+
+        public Guid? EmploymentRequestId { get; init; }
+
         [Required]
         public string Vacancy { get; set; }
 
         public string? Comment { get; set; }
 
         public EmploymentStatus EmploymentStatus { get; set; }
-
         public EmploymentDTO() { }
 
         public EmploymentDTO(Employment model)
@@ -30,6 +33,8 @@ namespace DP_backend.Models.DTOs
             Vacancy = model.Vacancy;
             Comment = model.Comment;
             EmploymentStatus = model.Status;
+            InternshipRequestId= model.InternshipRequestId;
+            EmploymentRequestId = model.EmploymentRequestId;
         }
     }
 }
