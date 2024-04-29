@@ -27,6 +27,14 @@ namespace DP_backend.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        [Route("{entityId:guid}")]
+        public async Task<ActionResult<List<CommentDTO>>> GetComment(Guid entityId)
+        {
+            var comments = await _commentService.GetComments(entityId);
+            return Ok(comments);
+        }
+
         [HttpDelete]
         [Route("{commentId:guid}")]
         public async Task<IActionResult> DeleteComment(Guid commentId)
