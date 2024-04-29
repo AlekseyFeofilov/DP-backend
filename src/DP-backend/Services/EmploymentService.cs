@@ -22,6 +22,8 @@ namespace DP_backend.Services
         Task ChangeEmployment(Guid employmentId, EmploymentChangeDTO employmentChange, Guid userId, bool isStaff);
         Task DeleteEmployment(Guid employmentId);
         Task<List<EmploymentRequestDTO>> GetStudentRequests(Guid studentId);
+        Task<List<EmploymentDTO>> GetStudentEmployments(Guid studentId);
+        Task<List<ObjectWithDataDTO<EmploymentsInfoDTO>>> GetAllStudentEmploymentInformation(Guid studentId);
     }
 
     public class EmploymentService : IEmploymentService
@@ -221,7 +223,9 @@ namespace DP_backend.Services
                 Status = EmploymentStatus.Active,
                 Employer = employmentRequest.InternshipRequest.Employer,
                 StudentId = employmentRequest.InternshipRequest.StudentId,
-                Vacancy = employmentRequest.InternshipRequest.Vacancy
+                Vacancy = employmentRequest.InternshipRequest.Vacancy,
+                EmploymentRequestId= employmentRequest.Id,
+                InternshipRequestId = employmentRequest.InternshipRequestId,
             };
             student.Employments.ForEach(x => x.Status = EmploymentStatus.InActive);
             student.InternshipRequests.ForEach(x =>
@@ -249,6 +253,54 @@ namespace DP_backend.Services
             }
             var requests = student.EmploymentRequests.Select(x => new EmploymentRequestDTO(x)).ToList();
             return requests;
+        }
+
+        public async Task<List<EmploymentDTO>> GetStudentEmployments(Guid studentId)
+        {
+            var student = await _context.Students
+                .Include(x => x.Employments)
+                .ThenInclude(x => x.Employer)
+                .FirstOrDefaultAsync(x => x.Id == studentId);
+            if (student == null)
+            {
+                throw new NotFoundException($"Пользователь с Id {studentId}  не найден");
+            }
+            var employments = student.Employments.Select(x => new EmploymentDTO(x)).ToList();
+            return employments;
+        }
+
+        public async Task<List<ObjectWithDataDTO<EmploymentsInfoDTO>>> GetAllStudentEmploymentInformation(Guid studentId)
+        {
+            var student = await _context.Students
+                .Include(x => x.EmploymentRequests)
+                .ThenInclude(x => x.InternshipRequest)
+                .ThenInclude(x => x.Employer)
+                .Include(x => x.Employments)
+                .ThenInclude(x => x.Employer)
+                .FirstOrDefaultAsync(x => x.Id == studentId);
+            if (student == null)
+            {
+                throw new NotFoundException($"Пользователь с Id {studentId}  не найден");
+            }
+            var infoList = new List<ObjectWithDataDTO<EmploymentsInfoDTO>>();
+            foreach (var internshipRequest in student.InternshipRequests)
+            {
+                var employmentRequest = student.EmploymentRequests.Where(x=>x.InternshipRequestId == internshipRequest.Id).FirstOrDefault();
+                var employment = employmentRequest==null? null : student.Employments.Where(x => x.InternshipRequestId == internshipRequest.Id && x.EmploymentRequestId==employmentRequest.Id).FirstOrDefault();
+                var employmentsInfo = new EmploymentsInfoDTO 
+                { 
+                    Employment= employment == null ? null : new EmploymentDTO(employment),
+                    EmploymentRequest = employmentRequest==null? null: new EmploymentRequestDTO(employmentRequest),
+                    InternshipRequest =  new InternshipRequestDTO(internshipRequest)
+                };
+                var info = new ObjectWithDataDTO<EmploymentsInfoDTO>
+                {
+                    Date = employment!=null? employment.ModifyDateTime : employmentRequest != null? employmentRequest.ModifyDateTime: internshipRequest.ModifyDateTime,
+                    Object= employmentsInfo
+                };
+                infoList.Add(info);
+            }
+            return infoList;
         }
     }
 }

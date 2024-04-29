@@ -142,5 +142,40 @@ namespace DP_backend.Controllers
            var requests = await _employmentService.GetStudentRequests(studentId);
             return Ok(requests);
         }
+
+        [HttpGet]
+        [Route("My")]
+        [Authorize(Policy = "EmploymentsRead")]
+        public async Task<IActionResult> GetYourEmployments()
+        {
+            var employments = await _employmentService.GetStudentEmployments(User.GetUserId());
+            return Ok(employments);
+        }
+        [HttpGet]
+        [Route("{studentId}")]
+        [Authorize(Policy = "EmploymentsRead")]
+        public async Task<IActionResult> GetStudentEmployments(Guid studentId)
+        {
+            var employments = await _employmentService.GetStudentEmployments(studentId);
+            return Ok(employments);
+        }
+
+        [HttpGet]
+        [Route("Everything/{studentId}")]
+        [Authorize(Policy = "EmploymentsRead")]
+        public async Task<IActionResult> GetYourEmploymentsInfo()
+        {
+            var employmentsInfo = await _employmentService.GetAllStudentEmploymentInformation(User.GetUserId());
+            return Ok(employmentsInfo);
+        }
+
+        [HttpGet]
+        [Route("Everything/{studentId}")]
+        [Authorize(Policy = "EmploymentsRead")]
+        public async Task<IActionResult> GetStudentEmploymentsInfo(Guid studentId)
+        {
+            var employmentsInfo = await _employmentService.GetAllStudentEmploymentInformation(studentId);
+            return Ok(employmentsInfo);
+        }
     }
 }
