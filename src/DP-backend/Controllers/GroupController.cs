@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DP_backend.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Policy = "GroupControl")]
+    [Authorize(Policy = "Staff")]
     public class GroupController : Controller
     {
         private readonly IGroupService _groupService;

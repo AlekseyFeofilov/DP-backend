@@ -21,7 +21,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<ActionResult<List<EmploymentDTO>>> GetEmployments(
             string? companyName = null, EmploymentStatus? employmentStatus = null)
         {
@@ -31,7 +31,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("{id:guid}")]
-        [Authorize(Policy = "EmploymentControl")]
+        [Authorize(Policy = "Staff")]
         public async Task<ActionResult<EmploymentDTO>> GetEmployment(Guid id)
         {
             var employment = await _employmentService.GetEmployment(
@@ -43,7 +43,7 @@ namespace DP_backend.Controllers
 
         [HttpPost]
         [Route("InternshipRequest")]
-        [Authorize(Policy = $"EmploymentControl")]
+        [Authorize(Policy = $"Staff")]
         public async Task<IActionResult> CreateInternshipRequest(InternshipRequestСreationDTO employmentСreation)
         {
             await _employmentService.CreateInternshipRequest(User.GetUserId(), employmentСreation);
@@ -52,7 +52,7 @@ namespace DP_backend.Controllers
 
         [HttpPost]
         [Route("InternshipRequest/{internshipRequestId}/UpdateStatus")]
-        [Authorize(Policy = $"EmploymentsRead")]
+        [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> UpdateInternshipRequestStatus(Guid internshipRequestId, InternshipStatus status)
         {
             await _employmentService.UpdateInternshipRequestStatus(internshipRequestId, status);
@@ -61,7 +61,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("InternshipRequest/My")]
-        [Authorize(Policy = $"EmploymentControl")]
+        [Authorize(Policy = $"Staff")]
         public async Task<IActionResult> GetYourInternshipRequests()
         {
             var internshipRequests = await _employmentService.GetStudentInternshipRequests(User.GetUserId());
@@ -70,7 +70,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("InternshipRequest/{userId}")]
-        [Authorize(Policy = $"EmploymentsRead")]
+        [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> GetStudentInternshipRequests(Guid userId)
         {
             var internshipRequests = await _employmentService.GetStudentInternshipRequests(userId);
@@ -79,7 +79,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("InternshipRequest/NonVerified")]
-        [Authorize(Policy = $"EmploymentsRead")]
+        [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> GetNonVerifiedInternshipRequests()
         {
             var internshipRequests = await _employmentService.GetNonVerifiedInternshipRequests();
@@ -88,7 +88,7 @@ namespace DP_backend.Controllers
 
         [HttpPut]
         [Route("{id:guid}")]
-        [Authorize(Policy = "EmploymentControl")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> ChangeEmployment(Guid id, EmploymentChangeDTO employmentChange)
         {
             await _employmentService.ChangeEmployment(
@@ -101,7 +101,7 @@ namespace DP_backend.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
-        [Authorize(Policy = "EmploymentDelete")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> DeleteEmployment(Guid id)
         {
             await _employmentService.DeleteEmployment(id);
@@ -110,7 +110,7 @@ namespace DP_backend.Controllers
 
         [HttpPost]
         [Route("EmploymentRequest/{internshipRequestId}")]
-        [Authorize(Policy = "EmploymentControl")]
+        [Authorize(Policy = "Staff")]
         public async Task<IActionResult> CreateEmploymentRequest(Guid internshipRequestId)
         {
             await _employmentService.CreateEmploymentRequest(internshipRequestId, User.GetUserId());
@@ -119,7 +119,7 @@ namespace DP_backend.Controllers
 
         [HttpPut]
         [Route("EmploymentRequest/{employmentRequestId}/StatusUpdate")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> UpdateEmploymentRequestStatus(Guid employmentRequestId, EmploymentRequestStatus status)
         {
             await _employmentService.UpdateEmploymentRequestStatus(employmentRequestId, status);
@@ -128,7 +128,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("Requests/My")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetYourEmploymentRequests()
         {
             var requests = await _employmentService.GetStudentRequests(User.GetUserId());
@@ -136,7 +136,7 @@ namespace DP_backend.Controllers
         }
         [HttpGet]
         [Route("EmploymentRequest/{studentId}")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmploymentRequests(Guid studentId)
         {
            var requests = await _employmentService.GetStudentRequests(studentId);
@@ -145,7 +145,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("My")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetYourEmployments()
         {
             var employments = await _employmentService.GetStudentEmployments(User.GetUserId());
@@ -153,7 +153,7 @@ namespace DP_backend.Controllers
         }
         [HttpGet]
         [Route("{studentId}")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmployments(Guid studentId)
         {
             var employments = await _employmentService.GetStudentEmployments(studentId);
@@ -162,7 +162,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("Everything/{studentId}")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetYourEmploymentsInfo()
         {
             var employmentsInfo = await _employmentService.GetAllStudentEmploymentInformation(User.GetUserId());
@@ -171,7 +171,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("Everything/{studentId}")]
-        [Authorize(Policy = "EmploymentsRead")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmploymentsInfo(Guid studentId)
         {
             var employmentsInfo = await _employmentService.GetAllStudentEmploymentInformation(studentId);

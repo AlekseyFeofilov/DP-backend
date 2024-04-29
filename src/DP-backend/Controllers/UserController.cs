@@ -11,7 +11,7 @@ namespace DP_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = "UserControl")]
+    [Authorize(Policy = "Staff")]
     public class UserController : ControllerBase
     {
         private readonly IUserManagementService _userManagementService;
