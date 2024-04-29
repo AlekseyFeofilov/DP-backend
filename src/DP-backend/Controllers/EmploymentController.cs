@@ -161,7 +161,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
-        [Route("Everything/{studentId}")]
+        [Route("Everything/My")]
         [Authorize(Policy = "EmploymentsRead")]
         public async Task<IActionResult> GetYourEmploymentsInfo()
         {
