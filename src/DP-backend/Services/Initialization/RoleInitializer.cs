@@ -36,7 +36,7 @@ namespace DP_backend.Services.Initialization
         private static async Task InitializeAdministrators(UserManager<User> userManager, IConfiguration configuration,
             IUserManagementService userManagementService)
         {
-            var accountIds = configuration.GetSection("Administrators").Get<List<Guid>>();
+            var accountIds = configuration.GetSection("Administrators").Get<List<Guid>>() ?? new List<Guid>();
             foreach (var accountId in accountIds)
             {
                 await InitializeAdministrator(userManager, userManagementService, accountId);
