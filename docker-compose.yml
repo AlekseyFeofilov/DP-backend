@@ -5,16 +5,16 @@ services:
         image:  postgres:latest
         hostname: postgres_db
         environment:
-            POSTGRES_PASSWORD: admin
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
         expose: 
             - 5432
+        ports:
+          - "5432:5432"
         deploy:
             restart_policy:
                 condition: on-failure
                 delay: 3s
                 max_attempts: 3
-                
-            
     app:
         build:
             context: .
@@ -30,4 +30,6 @@ services:
                 condition: on-failure
                 delay: 5s
                 max_attempts: 3
+        env_file:
+          - path: ./.env
 
