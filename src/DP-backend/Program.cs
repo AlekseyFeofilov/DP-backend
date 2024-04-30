@@ -17,7 +17,10 @@ builder.Services.ConfigureSwaggerGen();
 
 services.InitInternalServices(configuration);
 builder.AddDb<ApplicationDbContext>("DbConnection");
-services.AddDefaultIdentity<User>()
+services.AddDefaultIdentity<User>(options =>
+    {
+        options.User.AllowedUserNameCharacters = string.Empty; 
+    })
     .AddRoles<Role>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager<SignInManager<User>>()
