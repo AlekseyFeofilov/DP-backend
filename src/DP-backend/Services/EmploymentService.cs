@@ -228,12 +228,18 @@ namespace DP_backend.Services
                 InternshipRequestId = employmentRequest.InternshipRequestId,
             };
             student.Employments.ForEach(x => x.Status = EmploymentStatus.InActive);
+            student.EmploymentRequests.ForEach(x => { 
+                if(x.Id!= employmentRequest.Id)
+                {
+                    x.Status = EmploymentRequestStatus.Declined;
+                }
+            });
             student.InternshipRequests.ForEach(x =>
             {
                 if (x.Status == InternshipStatus.Accepted)
                 {
                     x.Status = InternshipStatus.Unactual;
-                }
+                }              
             });
             await _context.Employments.AddAsync(employment);
             await _context.SaveChangesAsync();
