@@ -126,9 +126,6 @@ namespace DP_backend.Migrations
                     b.Property<Guid>("StudentId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Tutor")
-                        .HasColumnType("text");
-
                     b.Property<string>("Vacancy")
                         .IsRequired()
                         .HasColumnType("text");
