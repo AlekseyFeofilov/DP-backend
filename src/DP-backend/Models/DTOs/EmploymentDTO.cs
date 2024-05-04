@@ -19,7 +19,7 @@ namespace DP_backend.Models.DTOs
 
         [Required]
         public string Vacancy { get; set; }
-
+        public string? Tutor { get; set; }
         public string? Comment { get; set; }
 
         public EmploymentStatus EmploymentStatus { get; set; }
@@ -35,6 +35,8 @@ namespace DP_backend.Models.DTOs
             EmploymentStatus = model.Status;
             InternshipRequestId= model.InternshipRequestId;
             EmploymentRequestId = model.EmploymentRequestId;
+            Tutor = model.Tutor;
+
         }
     }
 }

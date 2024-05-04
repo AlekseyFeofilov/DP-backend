@@ -12,6 +12,7 @@ public class Employment : BaseEntity
 
     public Guid? EmploymentRequestId { get; init; }
     public EmploymentRequest? EmploymentRequest { get; init; }
+    public string? Tutor {  get; set; }
 
     public Student Student { get; init; }
     public required Employer Employer { get; set; }
