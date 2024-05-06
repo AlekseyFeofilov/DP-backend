@@ -1,4 +1,4 @@
-﻿using DP_backend.Models.Exceptions;
+﻿using DP_backend.Common.Exceptions;
 using DP_backend.Models.DTOs;
 
 namespace DP_backend.Middleware
@@ -27,31 +27,31 @@ namespace DP_backend.Middleware
             }
             catch (BadDataException e)
             {
-                _logger.LogError(e.Message);
+                _logger.LogInformation(e, "Ожидаемая ошибка обработана ExceptionMiddleware");
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "400", Message = e.Message });
             }
             catch (NotFoundException e)
             {
-                _logger.LogError(e.Message);
+                _logger.LogInformation(e, "Ожидаемая ошибка обработана ExceptionMiddleware");
                 context.Response.StatusCode = StatusCodes.Status404NotFound;
                 await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "404", Message = e.Message });
             }
             catch (NoPermissionException e)
             {
-                _logger.LogError(e.Message);
+                _logger.LogInformation(e, "Ожидаемая ошибка обработана ExceptionMiddleware");
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
                 await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "403", Message = e.Message });
             }
             catch (InvalidOperationException e)
             {
-                _logger.LogError(e.Message);
+                _logger.LogInformation(e, "Ожидаемая ошибка обработана ExceptionMiddleware");
                 context.Response.StatusCode = StatusCodes.Status409Conflict;
                 await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "409", Message = e.Message });
             }
             catch (Exception e)
             {
-                _logger.LogError(e.ToString());
+                _logger.LogError(e, "Неизвестная ошибка обработана ExceptionMiddleware");
                 context.Response.StatusCode = StatusCodes.Status500InternalServerError;
                 await context.Response.WriteAsJsonAsync(new ErrorDto { Status = "500", Message = e.Message });
             }

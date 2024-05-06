@@ -1,4 +1,4 @@
-﻿namespace DP_backend.Models.Exceptions
+﻿namespace DP_backend.Common.Exceptions
 {
     [Serializable]
     public class NotFoundException : Exception

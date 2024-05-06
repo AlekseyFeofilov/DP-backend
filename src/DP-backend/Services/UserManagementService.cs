@@ -4,10 +4,11 @@ using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
 using DP_backend.Models.DTOs;
 using DP_backend.Models.DTOs.TSUAccounts;
-using DP_backend.Models.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using DP_backend.Common.Exceptions;
+using DP_backend.Database;
 
 namespace DP_backend.Services
 {

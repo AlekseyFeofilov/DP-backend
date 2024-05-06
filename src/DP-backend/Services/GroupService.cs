@@ -1,8 +1,9 @@
 ﻿using DP_backend.Common.Enumerations;
+using DP_backend.Common.Exceptions;
+using DP_backend.Database;
 using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Models.DTOs;
-using DP_backend.Models.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

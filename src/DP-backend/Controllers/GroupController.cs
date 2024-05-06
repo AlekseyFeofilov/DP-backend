@@ -1,6 +1,5 @@
 ﻿using DP_backend.Common.Enumerations;
 using DP_backend.Domain.Identity;
-using DP_backend.Models.Exceptions;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

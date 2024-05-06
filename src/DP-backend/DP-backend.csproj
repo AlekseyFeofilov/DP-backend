@@ -16,29 +16,25 @@
     <PackageReference Include="Azure.Identity" Version="1.10.4" />
     <PackageReference Include="Mapster.DependencyInjection" Version="1.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.Core" Version="5.6.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\DP-backend.Database\DP-backend.Database.csproj" />
+    <ProjectReference Include="..\DP-backend.Domain.FileStorage\DP-backend.Domain.FileStorage.csproj" />
     <ProjectReference Include="..\DP-backend.Common\DP-backend.Common.csproj" />
     <ProjectReference Include="..\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
     <ProjectReference Include="..\DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj" />
+    <ProjectReference Include="..\DP-backend.FileStorage\DP-backend.FileStorage.csproj" />
   </ItemGroup>
 
 </Project>

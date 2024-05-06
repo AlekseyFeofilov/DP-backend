@@ -13,6 +13,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend.Common", "src\DP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthTest", "AuthTest\AuthTest.csproj", "{AB5FF1F4-6219-4C40-BFA6-D40630882755}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.FileStorage", "src\DP-backend.FileStorage\DP-backend.FileStorage.csproj", "{B63E1F99-4D09-4986-909B-96BB99157D17}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.Domain.FileStorage", "src\DP-backend.Domain.FileStorage\DP-backend.Domain.FileStorage.csproj", "{81ABF089-D4D1-4D18-ADF7-E7CCD9B49449}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.Database", "src\DP-backend.Database\DP-backend.Database.csproj", "{5B188FF2-3AEA-490B-9076-C6907FF644B9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,11 +45,25 @@ Global
 		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB5FF1F4-6219-4C40-BFA6-D40630882755}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B63E1F99-4D09-4986-909B-96BB99157D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B63E1F99-4D09-4986-909B-96BB99157D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B63E1F99-4D09-4986-909B-96BB99157D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B63E1F99-4D09-4986-909B-96BB99157D17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81ABF089-D4D1-4D18-ADF7-E7CCD9B49449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81ABF089-D4D1-4D18-ADF7-E7CCD9B49449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81ABF089-D4D1-4D18-ADF7-E7CCD9B49449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81ABF089-D4D1-4D18-ADF7-E7CCD9B49449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B188FF2-3AEA-490B-9076-C6907FF644B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B188FF2-3AEA-490B-9076-C6907FF644B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B188FF2-3AEA-490B-9076-C6907FF644B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B188FF2-3AEA-490B-9076-C6907FF644B9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFAD4A38-6252-452F-A32A-9B0165A99B18}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

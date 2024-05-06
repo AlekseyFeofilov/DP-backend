@@ -1,4 +1,5 @@
-﻿using DP_backend.Common;
+﻿using System.Runtime.Serialization;
+using DP_backend.Common;
 using System.Text.Json.Serialization;
 
 namespace DP_backend.Domain.Employment;

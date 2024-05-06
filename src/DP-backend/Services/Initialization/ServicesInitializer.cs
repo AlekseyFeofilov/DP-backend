@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authorization;
+
 namespace DP_backend.Services.Initialization;
 
 public static class ServicesInitializer
@@ -12,5 +14,6 @@ public static class ServicesInitializer
         services.AddScoped<IEmploymentService, EmploymentService>();
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<ICommentService, CommentService>();
+        services.AddScoped<IAuthorizationHandler, FileCreatorOrStaffAuthorization>();
     }
 }

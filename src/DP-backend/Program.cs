@@ -1,8 +1,9 @@
 using System.Reflection;
 using DP_backend;
 using DP_backend.Configurations;
-using DP_backend.Configurators;
+using DP_backend.Database;
 using DP_backend.Domain.Identity;
+using DP_backend.FileStorage;
 using DP_backend.Services.Initialization;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
@@ -16,6 +17,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwaggerGen();
 
 services.InitInternalServices(configuration);
+
 builder.AddDb<ApplicationDbContext>("DbConnection");
 services.AddDefaultIdentity<User>(options =>
     {
@@ -26,14 +28,17 @@ services.AddDefaultIdentity<User>(options =>
     .AddSignInManager<SignInManager<User>>()
     .AddUserManager<UserManager<User>>()
     .AddRoleManager<RoleManager<Role>>();
+services.AddFileStorage(configuration);
 
 builder.ConfigureJwtAuthentication();
 builder.ConfigureClaimAuthorization();
 
 builder.Services.AddMapster();
 TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
+
 var allowAnyCorsPolicy = "AllowAnyCorsPolicy";
 builder.Services.AddCors(options => { options.AddPolicy(name: allowAnyCorsPolicy, configurePolicy: builder => { builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }); });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -41,7 +46,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); }
 );
 
-app.MigrateDBWhenNecessary<ApplicationDbContext>();
+// app.MigrateDBWhenNecessary<ApplicationDbContext>();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(allowAnyCorsPolicy);
@@ -51,7 +56,7 @@ app.UseExceptionMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();
-RoleInitializer.Initialize(app.Services, configuration);
+// RoleInitializer.Initialize(app.Services, configuration);
 app.MapControllers();
 
 app.Run();

@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
+using DP_backend.Common.Exceptions;
 using DP_backend.Models;
-using DP_backend.Models.Exceptions;
 
 namespace DP_backend.Helpers;
 

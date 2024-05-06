@@ -1,4 +1,5 @@
-﻿using DP_backend.Helpers;
+﻿using DP_backend.Domain.Employment;
+using DP_backend.Helpers;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
