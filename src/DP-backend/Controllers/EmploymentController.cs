@@ -21,6 +21,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<EmploymentDTO>), 200)]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<ActionResult<List<EmploymentDTO>>> GetEmployments(
             string? companyName = null, EmploymentStatus? employmentStatus = null)
@@ -30,6 +31,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<EmploymentDTO>), 200)]
         [Route("{id:guid}")]
         [Authorize(Policy = "Staff")]
         public async Task<ActionResult<EmploymentDTO>> GetEmployment(Guid id)
@@ -66,6 +68,7 @@ namespace DP_backend.Controllers
 
         
         [HttpGet]
+        [ProducesResponseType(typeof(List<EmploymentDTO>), 200)]
         [Route("{studentId}")]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmployments(Guid studentId)
@@ -75,6 +78,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<ObjectWithDataDTO<EmploymentsInfoDTO>>), 200)]
         [Route("Everything/My")]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetYourEmploymentsInfo()
@@ -84,6 +88,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<ObjectWithDataDTO<EmploymentsInfoDTO>>), 200)]
         [Route("Everything/{studentId}")]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmploymentsInfo(Guid studentId)

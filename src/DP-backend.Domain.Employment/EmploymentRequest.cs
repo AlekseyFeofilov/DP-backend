@@ -1,4 +1,5 @@
 ﻿using DP_backend.Common;
+using System.Text.Json.Serialization;
 
 namespace DP_backend.Domain.Employment;
 
@@ -9,7 +10,7 @@ public class EmploymentRequest : BaseEntity
     public InternshipRequest InternshipRequest { get; set; }
     public EmploymentRequestStatus Status { get; set; }
 }
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum EmploymentRequestStatus
 {
     NonVerified = 1,

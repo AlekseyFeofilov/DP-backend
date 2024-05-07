@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DP_backend.Domain.Identity;
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ApplicationRoles
 {
     [Display(Name = "Администратор")]

@@ -20,6 +20,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("NonVerified")]
+        [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
         [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> GetNonVerifiedInternshipRequests()
         {
@@ -45,6 +46,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
         [Route("My")]
         [Authorize(Policy = $"Staff")]
         public async Task<IActionResult> GetYourInternshipRequests()
@@ -54,6 +56,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
         [Route("{userId}")]
         [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> GetStudentInternshipRequests(Guid userId)

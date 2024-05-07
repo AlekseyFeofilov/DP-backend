@@ -1,5 +1,6 @@
 ﻿using DP_backend.Common.Enumerations;
 using DP_backend.Domain.Employment;
+using DP_backend.Models.DTOs;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(StudentsWithPaginationDTO), 200)]
         [Authorize(Policy = "Staff")]
         public async Task<IActionResult> GetStudentsDashboard(int page, Grade? grade, int? group, StudentStatus? status, string? namePart)
         {

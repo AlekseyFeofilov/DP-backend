@@ -23,6 +23,7 @@ namespace DP_backend.Controllers
         [HttpGet]
         [Route("GetAll")]
         [AllowAnonymous]
+        [ProducesResponseType(typeof(List<EmployerDTO>), 200)]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult>  GetAll(bool? isPartner)
         {
@@ -31,6 +32,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(EmployerDTO), 200)]
         [Route("{id}")]
         public async Task<IActionResult> Get(Guid id)
         {

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace DP_backend.Models.DTOs.TSUAccounts
 {
@@ -19,7 +20,7 @@ namespace DP_backend.Models.DTOs.TSUAccounts
         public string AvatarUrl { get; set; }
         public Guid? NsiId { get; set; }
     }
-
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Gender
     {
         [Display(Name = "Мужской")]

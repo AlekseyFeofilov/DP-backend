@@ -2,6 +2,7 @@
 using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Models;
+using DP_backend.Models.DTOs;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -38,6 +39,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<StudentDTO>), 200)]
         [Route("ByGroup")]
         public async Task<IActionResult> GetStudents(Grade? grade=null, int? groupNumber=null, bool withoutGroups=false)
         {
@@ -46,6 +48,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(StudentStatus), 200)]
         [Route("{studentId}/GetStatus")]
         public async Task<IActionResult> GetStudentStatus(Guid studentId)
         {
@@ -54,6 +57,7 @@ namespace DP_backend.Controllers
         }
         [HttpGet]
         [Route("GetWihStatus")]
+        [ProducesResponseType(typeof(List<StudentDTO>), 200)]
         public async Task<IActionResult> GetStudentsWithStatuses(List<StudentStatus> statuses)
         {
                 var students = await _userManagementService.GetStudentsWithStatuses(statuses);

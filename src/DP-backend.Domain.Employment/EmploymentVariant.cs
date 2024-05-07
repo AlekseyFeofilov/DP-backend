@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 using DP_backend.Common;
 
 namespace DP_backend.Domain.Employment;
@@ -24,6 +25,7 @@ public class EmploymentVariant : BaseEntity
     public InternshipRequest InternshipRequest { get; set; }
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum EmploymentVariantStatus
 {
     [Description("Нет - дефолтный статус")]

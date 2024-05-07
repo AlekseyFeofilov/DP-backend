@@ -15,6 +15,7 @@ namespace DP_backend.Controllers;
 public class EmploymentVariantController(IEmploymentVariantService employmentVariantService, ApplicationDbContext context) : ControllerBase
 {
     [HttpGet("{id}")]
+    [ProducesResponseType(typeof(EmploymentVariantDTO), 200)]
     [ProducesResponseType<ErrorDto>(404)]
     public async Task<EmploymentVariantDTO> Get(Guid id, CancellationToken cancellationToken)
     {
@@ -53,6 +54,7 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpGet("my")]
+    [ProducesResponseType(typeof(List<EmploymentVariantDTO>), 200)]
     [Authorize]
     public async Task<List<EmploymentVariantDTO>> GetCallingUserEmploymentVariants(CancellationToken cancellationToken)
     {
@@ -62,6 +64,7 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpGet]
+    [ProducesResponseType(typeof(List<EmploymentVariantDTO>), 200)]
     [Authorize] // todo check permission for example employment_variant.read
     public async Task<List<EmploymentVariantDTO>> SearchEmploymentVariants(
         [FromQuery] Guid? studentId,
@@ -78,5 +81,6 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpGet("status/list")]
+    [ProducesResponseType(typeof(List<DictionaryEntry>), 200)]
     public IEnumerable<DictionaryEntry> GetStatuses() => DictionaryService.DescribeEnum<EmploymentVariantStatus>();
 }

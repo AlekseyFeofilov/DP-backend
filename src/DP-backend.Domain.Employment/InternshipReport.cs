@@ -1,4 +1,5 @@
 ﻿using DP_backend.Common;
+using System.Text.Json.Serialization;
 
 namespace DP_backend.Domain.Employment;
 
@@ -12,7 +13,7 @@ public class InternshipReport : BaseEntity
     public required DateTime InternshipStartedAt { get; set; }
     public required DateTime InternshipFinishedAt { get; set; }
 }
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum InternshipReportStatus
 {
     Submitted = 1,

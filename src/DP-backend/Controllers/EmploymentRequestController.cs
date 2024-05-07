@@ -1,5 +1,6 @@
 ﻿using DP_backend.Domain.Employment;
 using DP_backend.Helpers;
+using DP_backend.Models.DTOs;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -38,6 +39,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("My")]
+        [ProducesResponseType(typeof(List<EmploymentRequestDTO>), 200)]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetYourEmploymentRequests()
         {
@@ -45,6 +47,7 @@ namespace DP_backend.Controllers
             return Ok(requests);
         }
         [HttpGet]
+        [ProducesResponseType(typeof(List<EmploymentRequestDTO>), 200)]
         [Route("{studentId}")]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmploymentRequests(Guid studentId)

@@ -100,6 +100,7 @@ public class FileController : ControllerBase
 
     // todo some rule checks 
     [Authorize]
+    [ProducesResponseType(typeof(EntityFilesResponse), 200)]
     [HttpGet("{entityType}/{entityId}")]
     public async Task<EntityFilesResponse> GetLinkedFiles(string entityType, string entityId, CancellationToken ct)
     {
