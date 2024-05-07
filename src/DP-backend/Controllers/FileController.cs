@@ -1,9 +1,7 @@
-﻿using DP_backend.Domain.FileStorage;
-using DP_backend.FileStorage;
+﻿using DP_backend.FileStorage;
 using DP_backend.Helpers;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DP_backend.Controllers;
@@ -23,6 +21,12 @@ public class FileController : ControllerBase
         _fileLinkService = fileLinkService;
     }
 
+    /// <summary>
+    /// Отправка файла на сервер
+    /// </summary>
+    /// <param name="formFile"> файл в multipart/form-data </param>
+    /// <param name="ct"></param>
+    /// <returns>Id загруженного объекта</returns>
     [Authorize]
     [HttpPost]
     public async Task<Guid> UploadFile(IFormFile formFile, CancellationToken ct)
@@ -30,39 +34,47 @@ public class FileController : ControllerBase
         var userId = User.GetUserId();
         var stream = formFile.OpenReadStream();
 
-        var fileHandle = await _objectStorageService.UploadFile(formFile.FileName, stream, userId, ct);
+        var fileHandle = await _objectStorageService.UploadFile(formFile.FileName, formFile.ContentType, stream, userId, ct);
 
         return fileHandle.Id;
     }
 
-    [Authorize]
-    [HttpGet("{fileId}/url")]
-    [ProducesResponseType(403)]
-    [ProducesResponseType(typeof(string), 200)]
-    public async Task<IActionResult> GetFileDownloadUrl(Guid fileId, CancellationToken ct)
-    {
-        var authorizationResult = await _authorizationService.AuthorizeAsync(User, null, new FileCreatorOrStaff(fileId));
-        if (!authorizationResult.Succeeded) return Forbid("Нет доступа к файлу");
-
-        var (fileUrl, contentType, fileName) = await _objectStorageService.DownloadFileThrewUrl(fileId, ct);
-
-        return Ok(fileUrl);
-    }
-
+    /// <summary>
+    /// Загрузка файла с сервера
+    /// </summary>
+    /// <param name="fileId">Id ранее загруженного объекта</param>
+    /// <param name="ct"></param>
     [Authorize]
     [HttpGet("{fileId}")]
     [ProducesResponseType(403)]
     [ProducesResponseType(typeof(string), 200)]
-    public async Task<IActionResult> DownloadFile(Guid fileId, CancellationToken ct)
+    public async Task DownloadFile(Guid fileId, CancellationToken ct)
     {
         var authorizationResult = await _authorizationService.AuthorizeAsync(User, null, new FileCreatorOrStaff(fileId));
-        if (!authorizationResult.Succeeded) return Forbid("Нет доступа к файлу");
+        if (!authorizationResult.Succeeded)
+        {
+            var forbidResult = Forbid("Нет доступа к файлу");
+            await forbidResult.ExecuteResultAsync(ControllerContext);
+            return;
+        }
 
-        var (fileStream, contentType, fileName) = await _objectStorageService.DownloadFile(fileId, ct);
-
-        return File(fileStream, contentType, fileName);
+        await _objectStorageService.DownloadFile(
+            fileId,
+            (stream, fileHandle, cancellationToken) =>
+            {
+                var fileStreamResult = File(stream, fileHandle.ContentType, fileHandle.Name);
+                return fileStreamResult.ExecuteResultAsync(ControllerContext);
+            },
+            ct);
     }
 
+    /// <summary>
+    /// Прикрепить файл к сущности
+    /// </summary>
+    /// <param name="fileId">Id ранее загруженного объекта</param>
+    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён</param>
+    /// <param name="entityId">Id сущности</param>
+    /// <param name="ct"></param>
     [Authorize]
     [HttpPut("{fileId}/link/{entityType}/{entityId}")]
     [ProducesResponseType(201)]
@@ -79,6 +91,13 @@ public class FileController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    /// Открепить файл от сущности
+    /// </summary>
+    /// <param name="fileId">Id ранее загруженного объекта</param>
+    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён</param>
+    /// <param name="entityId">Id сущности</param>
+    /// <param name="ct"></param>
     [Authorize]
     [HttpDelete("{fileId}/link/{entityType}/{entityId}")]
     [ProducesResponseType(201)]
@@ -96,9 +115,15 @@ public class FileController : ControllerBase
 
     public record EntityFilesResponse(string EntityType, string EntityId, IEnumerable<FileDto> Files);
 
-    public record FileDto(Guid FileId, string FileName, long Size, DateTime CreatedAt);
+    public record FileDto(Guid FileId, string FileName, string ContentType, long Size, DateTime CreatedAt);
 
-    // todo some rule checks 
+    // todo maybe some rule checks 
+    /// <summary>
+    /// Получить информацию о файлах прикрепленных к сущности 
+    /// </summary>
+    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён</param>
+    /// <param name="entityId">Id сущности</param>
+    /// <param name="ct"></param>
     [Authorize]
     [ProducesResponseType(typeof(EntityFilesResponse), 200)]
     [HttpGet("{entityType}/{entityId}")]
@@ -106,6 +131,6 @@ public class FileController : ControllerBase
     {
         var linkedFiles = await _fileLinkService.GetLinkedFiles(entityType, entityId, ct);
         return new EntityFilesResponse(entityType, entityId,
-            linkedFiles.Select(file => new FileDto(file.Id, file.Name, file.Size, file.CreatedAt)));
+            linkedFiles.Select(file => new FileDto(file.Id, file.Name, file.ContentType, file.Size, file.CreatedAt)));
     }
 }

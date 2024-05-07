@@ -27,8 +27,8 @@ services.AddDefaultIdentity<User>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager<SignInManager<User>>()
     .AddUserManager<UserManager<User>>()
-    .AddRoleManager<RoleManager<Role>>();
-//services.AddFileStorage(configuration); закоментил, пока нету секретного ключа
+     .AddRoleManager<RoleManager<Role>>();
+services.AddFileStorage(configuration);
 
 builder.ConfigureJwtAuthentication();
 builder.ConfigureClaimAuthorization();

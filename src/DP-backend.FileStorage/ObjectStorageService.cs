@@ -12,9 +12,12 @@ namespace DP_backend.FileStorage;
 public interface IObjectStorageService
 {
     Task<BucketHandle> CreateBucket(CancellationToken ct = default);
-    Task<FileHandle> UploadFile(string fileName, Stream stream, Guid userId, CancellationToken ct = default);
-    Task<(Stream fileStream, string contentType, string fileName)> DownloadFile(Guid fileId, CancellationToken ct = default);
-    Task<(string fileUrl, string contentType, string fileName)> DownloadFileThrewUrl(Guid fileId, CancellationToken ct = default);
+
+    Task<FileHandle> UploadFile(string fileName, string contentType, Stream stream, Guid userId, CancellationToken ct = default);
+
+    delegate Task DownloadFileCallback(Stream fileStream, FileHandle fileHandle, CancellationToken cancellationToken);
+
+    Task DownloadFile(Guid fileId, DownloadFileCallback downloadCallback, CancellationToken ct = default);
 }
 
 internal class MinioStorageService : IObjectStorageService
@@ -49,7 +52,7 @@ internal class MinioStorageService : IObjectStorageService
         return bucketHandle;
     }
 
-    public async Task<FileHandle> UploadFile(string fileName, Stream stream, Guid userId, CancellationToken ct = default)
+    public async Task<FileHandle> UploadFile(string fileName, string contentType, Stream stream, Guid userId, CancellationToken ct = default)
     {
         var bucket = await _dbContext.BucketHandles.FirstOrDefaultAsync(x => x.State == BucketState.Writeable, ct);
         if (bucket == null)
@@ -59,7 +62,7 @@ internal class MinioStorageService : IObjectStorageService
         }
 
         await using var tx = await _dbContext.Database.BeginTransactionAsync(ct);
-        var fileHandle = await FileHandle.CreateWithStream(fileName, stream, bucket, userId, ct);
+        var fileHandle = await FileHandle.CreateWithStream(fileName, contentType, stream, bucket, userId, ct);
 
         stream.Seek(0, SeekOrigin.Begin);
         var putObject = new PutObjectArgs()
@@ -67,10 +70,9 @@ internal class MinioStorageService : IObjectStorageService
                 .WithObject(fileHandle.GetObjectId())
                 .WithStreamData(stream)
                 .WithObjectSize(stream.Length)
-            // todo .WithContentType()
-            ;
+                .WithContentType(fileHandle.ContentType);
         var response = await _minioClient.PutObjectAsync(putObject, ct);
-
+        
         _dbContext.Add(fileHandle);
         await _dbContext.SaveChangesAsync(ct);
 
@@ -80,40 +82,18 @@ internal class MinioStorageService : IObjectStorageService
         return fileHandle;
     }
 
-    // todo : fix it somehow 
-    [Obsolete]
-    public async Task<(Stream fileStream, string contentType, string fileName)> DownloadFile(Guid fileId, CancellationToken ct = default)
+    public async Task DownloadFile(Guid fileId, IObjectStorageService.DownloadFileCallback fileCallback, CancellationToken ct = default)
     {
         var fileHandle = await _dbContext.FileHandles.FindAsync([ fileId ], ct);
         if (fileHandle == null) throw new NotFoundException($"Файл {fileId} не найден ");
 
-        Stream resultStream = null!;
         var getObjectArgs = new GetObjectArgs()
             .WithBucket(fileHandle.Bucket.BucketName)
             .WithObject(fileHandle.GetObjectId())
             // cringe minio api
-            .WithCallbackStream(stream => { resultStream = stream; });
+            .WithCallbackStream((stream, cancellationToken) => fileCallback.Invoke(stream, fileHandle, cancellationToken));
 
         var @object = await _minioClient.GetObjectAsync(getObjectArgs, ct);
-
-        return (resultStream, @object.ContentType, fileHandle.Name);
-    }
-
-    // todo : fix it somehow 
-    [Obsolete]
-    public async Task<(string fileUrl, string contentType, string fileName)> DownloadFileThrewUrl(Guid fileId, CancellationToken ct = default)
-    {
-        var fileHandle = await _dbContext.FileHandles.FindAsync([ fileId ], ct);
-        if (fileHandle == null) throw new NotFoundException($"Файл {fileId} не найден ");
-
-        var getObjectArgs = new PresignedGetObjectArgs()
-            .WithBucket(fileHandle.Bucket.BucketName)
-            .WithObject(fileHandle.GetObjectId())
-            .WithExpiry(24 * 60 * 60); // todo move to config 
-
-        var fileUrl = await _minioClient.PresignedGetObjectAsync(getObjectArgs);
-
-        return (fileUrl, "application/octet-stream", fileHandle.Name);
     }
 
     private void SetBucketName(BucketHandle bucketHandle)
