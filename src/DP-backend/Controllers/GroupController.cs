@@ -1,8 +1,11 @@
 ﻿using DP_backend.Common.Enumerations;
 using DP_backend.Domain.Identity;
+using DP_backend.Models.DTOs;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
+using static DP_backend.Controllers.FileController;
 
 
 namespace DP_backend.Controllers
@@ -50,6 +53,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(List<GroupDTO>), 200)]
         public async Task<IActionResult> GetGroups(Grade? grade)
         {
             try

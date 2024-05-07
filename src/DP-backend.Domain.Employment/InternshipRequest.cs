@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DP_backend.Domain.Employment
@@ -17,7 +18,7 @@ namespace DP_backend.Domain.Employment
         public InternshipStatus Status { get; set; } = InternshipStatus.NonVerified;
 
     }
-
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum InternshipStatus
     {
         NonVerified = 1,

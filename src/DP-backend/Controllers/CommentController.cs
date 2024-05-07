@@ -29,6 +29,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [Route("{entityId:guid}")]
+        [ProducesResponseType(typeof(List<CommentDTO>), 200)]
         public async Task<ActionResult<List<CommentDTO>>> GetComment(Guid entityId)
         {
             var comments = await _commentService.GetComments(entityId);

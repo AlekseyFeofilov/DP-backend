@@ -133,6 +133,7 @@ namespace DP_backend.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType(typeof(string), 200)]
         [Route("GetLink")]
         public async Task<IActionResult> GetAuthLink()
         {

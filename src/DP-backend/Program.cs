@@ -28,7 +28,7 @@ services.AddDefaultIdentity<User>(options =>
     .AddSignInManager<SignInManager<User>>()
     .AddUserManager<UserManager<User>>()
     .AddRoleManager<RoleManager<Role>>();
-services.AddFileStorage(configuration);
+//services.AddFileStorage(configuration);
 
 builder.ConfigureJwtAuthentication();
 builder.ConfigureClaimAuthorization();

@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace DP_backend.Domain.FileStorage;
 
 public class BucketHandle
@@ -14,7 +16,7 @@ public class BucketHandle
     public long ObjectsSize { get; set; } = 0;
     public long ObjectsCount { get; set; } = 0;
 }
-
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum BucketState
 {
     Writeable = 1,
