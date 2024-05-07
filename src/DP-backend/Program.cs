@@ -46,7 +46,7 @@ app.UseSwagger();
 app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); }
 );
 
-// app.MigrateDBWhenNecessary<ApplicationDbContext>();
+app.MigrateDBWhenNecessary<ApplicationDbContext>();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(allowAnyCorsPolicy);
@@ -56,7 +56,7 @@ app.UseExceptionMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();
-// RoleInitializer.Initialize(app.Services, configuration);
+RoleInitializer.Initialize(app.Services, configuration);
 app.MapControllers();
 
 app.Run();
