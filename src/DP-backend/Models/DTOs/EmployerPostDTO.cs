@@ -10,6 +10,8 @@ namespace DP_backend.Models.DTOs
         public string? Contact { get; set; }
         public bool isPartner { get; set; }
         public string? Comment { get; set; }
+        public string Tutor { get; set; }
+        public string Vacancy { get; set; }
         public EmployerPostDTO() { }
         public EmployerPostDTO(Employer model)
         {
@@ -19,6 +21,8 @@ namespace DP_backend.Models.DTOs
             Contact = model.Contact;
             isPartner = model.isPartner;
             Comment = model.Comment;
+            Tutor = model.Tutor;
+            Vacancy = model.Vacancy;
         }
     }
 }
