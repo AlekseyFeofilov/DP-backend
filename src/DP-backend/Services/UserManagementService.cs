@@ -210,13 +210,23 @@ namespace DP_backend.Services
             {
                 query = query.Where(x => x.Group.Number == group);
             }
-            if (status != null)
-            {
-                query = query.Where(x => x.Status == status);
-            }
             if (namePart != null)
             {
                 query = query.Where(x => Regex.IsMatch(x.Name, namePart));
+            }
+            List<StatusesCounterDTO> counters = new List<StatusesCounterDTO>();
+            foreach(var stat in Enum.GetValues(typeof(StudentStatus)))
+            {
+                var counter = new StatusesCounterDTO()
+                {
+                    StudentStatus = (StudentStatus)stat,
+                    Count = query.Where(x => x.Status == (StudentStatus)stat).Count()
+                };
+                counters.Add(counter);
+            }
+            if (status != null)
+            {
+                query = query.Where(x => x.Status == status);
             }
             if ((query.Count() % _pageSize) == 0)
             {
@@ -234,7 +244,8 @@ namespace DP_backend.Services
             return new StudentsWithPaginationDTO
             {
                 Students = students,
-                Pagination = pagination
+                Pagination = pagination,
+                StudentStatusesCount = counters
             };
         }
     }
