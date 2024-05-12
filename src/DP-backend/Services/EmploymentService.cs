@@ -351,7 +351,7 @@ namespace DP_backend.Services
 
         public async Task<List<EmploymentRequestDTO>> GetEmploymentRequestsWithFilters(int? group, EmploymentRequestStatus? status)
         {
-            IQueryable<EmploymentRequest> query = _context.EmploymentRequests.Include(x=>x.InternshipRequest).ThenInclude(x => x.Student).ThenInclude(x => x.Group);
+            IQueryable<EmploymentRequest> query = _context.EmploymentRequests.Include(x=>x.InternshipRequest).ThenInclude(x => x.Student).ThenInclude(x => x.Group).Include(x => x.InternshipRequest).ThenInclude(x => x.Employer);
             if (group != null)
             {
                 query = query.Where(x => x.InternshipRequest.Student.Group.Number == group);
