@@ -232,7 +232,7 @@ namespace DP_backend.Services
             student.EmploymentRequests.ForEach(x => { 
                 if(x.Id!= employmentRequest.Id)
                 {
-                    x.Status = EmploymentRequestStatus.Declined;
+                    x.Status = EmploymentRequestStatus.UnActual;
                 }
             });
             student.InternshipRequests.ForEach(x =>
