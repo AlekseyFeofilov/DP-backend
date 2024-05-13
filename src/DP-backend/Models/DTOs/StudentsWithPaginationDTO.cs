@@ -4,5 +4,6 @@
     {
         public List<StudentDTO> Students { get; set; }
         public PaginationDTO Pagination { get; set; }
+        public List<StatusesCounterDTO> StudentStatusesCount { get; set; }
     }
 }
