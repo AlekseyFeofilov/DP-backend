@@ -4,7 +4,7 @@ namespace DP_backend.Models.DTOs
 {
     public class EmployerDTO : EmployerPostDTO
     {
-        public Guid? Id { get; set; }
+        public Guid Id { get; set; }
 
         public EmployerDTO(Employer employer) : base(employer)
         {

@@ -9,7 +9,7 @@ namespace DP_backend.Domain.Employment;
 /// </summary>
 public class InternshipReport : BaseEntity
 {
-    public EmployerVariant Employer { get; set; }
+    public Employer Employer { get; set; }
     public required DateTime InternshipStartedAt { get; set; }
     public required DateTime InternshipFinishedAt { get; set; }
 }

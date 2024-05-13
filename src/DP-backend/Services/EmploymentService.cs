@@ -105,12 +105,6 @@ namespace DP_backend.Services
             {
                 throw new NotFoundException($"Трудоустройство {employmentId} не найдено");
             }
-            var newEmployer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(e => e.Id == employmentChange.EmployerId);
-            if (newEmployer == null)
-            {
-                throw new BadDataException($"Компания-работодатель {employmentChange.EmployerId} не найдена");
-            }
-            employment.Employer = newEmployer;
             employment.Vacancy = employmentChange.Vacancy;
             employment.Comment = employmentChange.Comment;
             if (employment.Status != employmentChange.EmploymentStatus && employmentChange.EmploymentStatus == EmploymentStatus.Active && isStaff)
