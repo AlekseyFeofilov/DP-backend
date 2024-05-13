@@ -15,5 +15,6 @@ public enum EmploymentRequestStatus
 {
     NonVerified = 1,
     Accepted = 2,
-    Declined = 3
+    Declined = 3,
+    UnActual = 4
 }
