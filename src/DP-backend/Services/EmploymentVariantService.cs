@@ -34,22 +34,14 @@ public class EmploymentVariantService(ApplicationDbContext context, IEmploymentS
     public async Task<EmploymentVariant> Create(CreateEmploymentVariantRequest request, CancellationToken ct)
     {
         var dto = request.Data;
-        if (!dto.EmployerVariant.EmployerId.HasValue
-            && dto.EmployerVariant.CustomCompanyName == null) throw new BadDataException("Не корректное значение варианта работадателя");
 
-        EmployerVariant? employerVariant = null;
-        if (dto.EmployerVariant.EmployerId.HasValue)
-        {
-            var employerId = dto.EmployerVariant.EmployerId.Value;
-            var employer = await context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId, ct)
-                           ?? throw new NotFoundException($"Компания-работодатель {{{employerId}}} не найден");
-            employerVariant = new EmployerVariant(employer);
-        }
+        var employerId = dto.EmployerId;
+        var employer = await context.Employers.GetUndeleted().FirstOrDefaultAsync(x => x.Id == employerId, ct)
+                       ?? throw new NotFoundException($"Компания-работодатель {{{employerId}}} не найден");
 
-        employerVariant ??= new EmployerVariant(dto.EmployerVariant.CustomCompanyName!);
         var internshipRequest = await employmentService.CreateInternshipRequest(request.CallingUser.GetUserId(), new InternshipRequestСreationDTO
         {
-            EmployerId = (Guid)dto.EmployerVariant.EmployerId,
+            EmployerId = dto.EmployerId,
             Vacancy = dto.Occupation,
             Comment = ""
         });

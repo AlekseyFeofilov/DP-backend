@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend.Domain.Employmen
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DP-backend.Common", "src\DP-backend.Common\DP-backend.Common.csproj", "{AC828830-76BD-4760-B6CB-F06EDFB13036}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthTest", "AuthTest\AuthTest.csproj", "{AB5FF1F4-6219-4C40-BFA6-D40630882755}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthTest", "AuthTest\AuthTest.csproj", "{AB5FF1F4-6219-4C40-BFA6-D40630882755}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DP-backend.FileStorage", "src\DP-backend.FileStorage\DP-backend.FileStorage.csproj", "{B63E1F99-4D09-4986-909B-96BB99157D17}"
 EndProject
@@ -63,7 +63,5 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DFAD4A38-6252-452F-A32A-9B0165A99B18}
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
 EndGlobal

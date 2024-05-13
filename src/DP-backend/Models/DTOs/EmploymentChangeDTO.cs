@@ -5,8 +5,6 @@ namespace DP_backend.Models.DTOs
 {
     public class EmploymentChangeDTO
     {
-        public Guid EmployerId { get; set; }
-
         [Required]
         public required string Vacancy { get; set; }
 
