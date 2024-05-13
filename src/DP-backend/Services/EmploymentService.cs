@@ -278,6 +278,7 @@ namespace DP_backend.Services
                 .ThenInclude(x => x.Employer)
                 .Include(x => x.Employments)
                 .ThenInclude(x => x.Employer)
+                .Include(x=>x.InternshipRequests)
                 .FirstOrDefaultAsync(x => x.Id == studentId);
             if (student == null)
             {
