@@ -1,4 +1,5 @@
-﻿using DP_backend.Domain.Employment;
+﻿using Azure.Core;
+using DP_backend.Domain.Employment;
 using DP_backend.Helpers;
 using DP_backend.Models.DTOs;
 using DP_backend.Services;
@@ -56,5 +57,24 @@ namespace DP_backend.Controllers
             return Ok(requests);
         }
 
+        [HttpGet]
+        [ProducesResponseType(typeof(EmploymentRequestDTO), 200)]
+        [Route("{internshipRequestId}")]
+        [Authorize(Policy = $"Staff")]
+        public async Task<IActionResult> GetInternshipRequests(Guid internshipRequestId)
+        {
+            var request = await _employmentService.GetEmploymentRequest(internshipRequestId);
+            return Ok(request);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<EmploymentRequestDTO>), 200)]
+        [Route("")]
+        [Authorize(Policy = $"Staff")]
+        public async Task<IActionResult> GetInternshipRequests(int? group, EmploymentRequestStatus? status)
+        {
+            var requests = await _employmentService.GetEmploymentRequestsWithFilters(group, status);
+            return Ok(requests);
+        }
     }
 }

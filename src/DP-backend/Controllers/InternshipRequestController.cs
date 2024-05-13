@@ -64,5 +64,25 @@ namespace DP_backend.Controllers
             var internshipRequests = await _employmentService.GetStudentInternshipRequests(userId);
             return Ok(internshipRequests);
         }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(InternshipRequestDTO), 200)]
+        [Route("{internshipRequestId}")]
+        [Authorize(Policy = $"Staff")]
+        public async Task<IActionResult> GetInternshipRequests(Guid internshipRequestId)
+        {
+            var internshipRequest = await _employmentService.GetInternshipRequest(internshipRequestId);
+            return Ok(internshipRequest);
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
+        [Route("")]
+        [Authorize(Policy = $"Staff")]
+        public async Task<IActionResult> GetInternshipRequests(int? group, InternshipStatus? status)
+        {
+            var internshipRequest = await _employmentService.GetInternshipRequestsWithFilters(group, status);
+            return Ok(internshipRequest);
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using DP_backend.Common.Exceptions;
+﻿using DP_backend.Common.Enumerations;
+using DP_backend.Common.Exceptions;
 using DP_backend.Database;
 using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
@@ -25,6 +26,10 @@ namespace DP_backend.Services
         Task<List<EmploymentRequestDTO>> GetStudentRequests(Guid studentId);
         Task<List<EmploymentDTO>> GetStudentEmployments(Guid studentId);
         Task<List<ObjectWithDataDTO<EmploymentsInfoDTO>>> GetAllStudentEmploymentInformation(Guid studentId);
+        Task<InternshipRequestDTO> GetInternshipRequest(Guid internshipRequestId);
+        Task<List<InternshipRequestDTO>> GetInternshipRequestsWithFilters(int? group, InternshipStatus? status);
+        Task<EmploymentRequestDTO> GetEmploymentRequest(Guid employmentRequestId);
+        Task<List<EmploymentRequestDTO>> GetEmploymentRequestsWithFilters(int? group, EmploymentRequestStatus? status);
     }
 
     public class EmploymentService : IEmploymentService
@@ -303,6 +308,54 @@ namespace DP_backend.Services
                 infoList.Add(info);
             }
             return infoList;
+        }
+
+        public async Task<InternshipRequestDTO> GetInternshipRequest(Guid internshipRequestId)
+        {
+            var internshipRequest = await _context.InternshipRequests.Include(x=>x.Employer).Include(x => x.Student).FirstOrDefaultAsync(x=>x.Id==internshipRequestId);
+            if(internshipRequest==null)
+            {
+                throw new NotFoundException($"Заявка 1ого типа с Id {internshipRequestId}  не найдена");
+            }
+            return new InternshipRequestDTO(internshipRequest);
+        }
+
+        public async Task<List<InternshipRequestDTO>> GetInternshipRequestsWithFilters(int? group, InternshipStatus? status)
+        {
+            IQueryable<InternshipRequest> query = _context.InternshipRequests.Include(x => x.Student).ThenInclude(x => x.Group).Include(x => x.Employer);
+            if (group != null)
+            {
+                query = query.Where(x => x.Student.Group.Number == group);
+            }
+            if(status != null)
+            {
+                query = query.Where(x => x.Status == status);
+            }
+            return await query.Select(x=>new InternshipRequestDTO(x)).ToListAsync();
+        }
+
+        public async Task<EmploymentRequestDTO> GetEmploymentRequest(Guid employmentRequestId)
+        {
+            var employmentRequest = await _context.EmploymentRequests.Include(x => x.InternshipRequest).ThenInclude(x => x.Employer).FirstOrDefaultAsync(x => x.Id == employmentRequestId);
+            if (employmentRequest == null)
+            {
+                throw new NotFoundException($"Заявка 2ого типа с Id {employmentRequestId}  не найдена");
+            }
+            return new EmploymentRequestDTO(employmentRequest);
+        }
+
+        public async Task<List<EmploymentRequestDTO>> GetEmploymentRequestsWithFilters(int? group, EmploymentRequestStatus? status)
+        {
+            IQueryable<EmploymentRequest> query = _context.EmploymentRequests.Include(x=>x.InternshipRequest).ThenInclude(x => x.Student).ThenInclude(x => x.Group).Include(x => x.InternshipRequest).ThenInclude(x => x.Employer);
+            if (group != null)
+            {
+                query = query.Where(x => x.InternshipRequest.Student.Group.Number == group);
+            }
+            if (status != null)
+            {
+                query = query.Where(x => x.Status == status);
+            }
+            return await query.Select(x => new EmploymentRequestDTO(x)).ToListAsync();
         }
     }
 }
