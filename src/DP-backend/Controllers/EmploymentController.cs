@@ -36,10 +36,7 @@ namespace DP_backend.Controllers
         [Authorize(Policy = "Staff")]
         public async Task<ActionResult<EmploymentDTO>> GetEmployment(Guid id)
         {
-            var employment = await _employmentService.GetEmployment(
-                id,
-                User.GetUserId(),
-                User.FindFirstValue(ApplicationRoleNames.Staff) == "true" || User.FindFirstValue(ApplicationRoleNames.Administrator) == "true");
+            var employment = await _employmentService.GetEmployment(id, User.GetUserId());
             return Ok(employment);
         }
 
