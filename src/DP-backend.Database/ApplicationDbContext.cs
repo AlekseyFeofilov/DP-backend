@@ -32,9 +32,8 @@ namespace DP_backend.Database
         public virtual DbSet<FileHandle> FileHandles { get; set; }
         public virtual DbSet<BucketHandle> BucketHandles { get; set; }
         public virtual DbSet<FileEntityLink> FileEntityLinks { get; set; }
-
-        // todo : see InternshipReport
-        // public virtual DbSet<InternshipReport> InternshipReports { get; set; }
+        
+        public virtual DbSet<InternshipDiaryRequest> InternshipDiaryRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

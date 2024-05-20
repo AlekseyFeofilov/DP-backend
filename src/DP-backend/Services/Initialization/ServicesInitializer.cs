@@ -15,5 +15,6 @@ public static class ServicesInitializer
         services.AddScoped<IGroupService, GroupService>();
         services.AddScoped<ICommentService, CommentService>();
         services.AddScoped<IAuthorizationHandler, FileCreatorOrStaffAuthorization>();
+        services.AddScoped<IInternshipDiaryRequestService, InternshipDiaryRequestService>();
     }
 }

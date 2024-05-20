@@ -13,7 +13,7 @@ namespace DP_backend.Services
     public interface IEmploymentService
     {
         Task<List<EmploymentDTO>> GetEmployments(string? companyName, EmploymentStatus? employmentStatus);
-        Task<EmploymentDTO> GetEmployment(Guid employmentId, Guid userId, bool isStaff);
+        Task<EmploymentDTO> GetEmployment(Guid employmentId, Guid userId);
         Task CreateEmploymentRequest(Guid internshipRequestId, Guid userId);
         Task UpdateEmploymentRequestStatus(Guid employmentRequestId, EmploymentRequestStatus status);
         Task<InternshipRequest> CreateInternshipRequest(Guid userId, InternshipRequestСreationDTO employmentСreation);
@@ -58,7 +58,7 @@ namespace DP_backend.Services
                 .ToListAsync();
         }
 
-        public async Task<EmploymentDTO> GetEmployment(Guid employmentId, Guid userId, bool isStaff)
+        public async Task<EmploymentDTO> GetEmployment(Guid employmentId, Guid userId)
         {
             var employment = await _context.Employments.GetUndeleted()
                 .Include(e => e.Employer)
@@ -66,10 +66,6 @@ namespace DP_backend.Services
             if (employment == null)
             {
                 throw new NotFoundException($"Трудоустройство {employmentId} не найдено");
-            }
-            if (employment.StudentId != userId && !isStaff)
-            {
-                throw new NoPermissionException();
             }
             return new EmploymentDTO(employment);
         }
