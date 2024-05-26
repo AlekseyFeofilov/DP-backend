@@ -49,7 +49,7 @@ namespace DP_backend.Controllers
         }
         [HttpGet]
         [ProducesResponseType(typeof(List<EmploymentRequestDTO>), 200)]
-        [Route("{studentId}")]
+        [Route("Student/{studentId}")]
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> GetStudentEmploymentRequests(Guid studentId)
         {

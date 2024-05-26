@@ -7,6 +7,7 @@ public class EmploymentRequest : BaseEntity
 {
     public Guid InternshipRequestId { get; set; }
     public Guid StudentId { get; set; }
+    public Student Student { get; set; }
     public InternshipRequest InternshipRequest { get; set; }
     public EmploymentRequestStatus Status { get; set; }
 }

@@ -68,8 +68,8 @@ namespace DP_backend.Controllers
         }
 
         [Route("{groupId}/Update")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteGroup(Guid groupId,Grade grade)
+        [HttpPut]
+        public async Task<IActionResult> UpdateGroup(Guid groupId,Grade grade)
         {
             try
             {

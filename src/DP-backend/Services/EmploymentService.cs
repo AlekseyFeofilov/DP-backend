@@ -147,13 +147,13 @@ namespace DP_backend.Services
 
         public async Task<List<InternshipRequestDTO>> GetStudentInternshipRequests(Guid studentId)
         {
-            var internshipRequests = await _context.InternshipRequests.Include(x => x.Employer).Where(e => e.StudentId == studentId).Select(x=> new InternshipRequestDTO(x)).ToListAsync();
+            var internshipRequests = await _context.InternshipRequests.Include(x => x.Employer).Include(x=>x.Student).ThenInclude(x=>x.Group).Where(e => e.StudentId == studentId).Select(x=> new InternshipRequestDTO(x)).ToListAsync();
             return internshipRequests;
         }
 
         public async Task<List<InternshipRequestDTO>> GetNonVerifiedInternshipRequests()
         {
-            var internshipRequests = await _context.InternshipRequests.Include(x=>x.Employer).Where(e => e.Status == InternshipStatus.NonVerified).Select(x => new InternshipRequestDTO(x)).ToListAsync();
+            var internshipRequests = await _context.InternshipRequests.Include(x=>x.Employer).Include(x => x.Student).ThenInclude(x => x.Group).Where(e => e.Status == InternshipStatus.NonVerified).Select(x => new InternshipRequestDTO(x)).ToListAsync();
             return internshipRequests;
         }
 
@@ -248,6 +248,8 @@ namespace DP_backend.Services
                 .Include(x => x.EmploymentRequests)
                 .ThenInclude(x=>x.InternshipRequest)
                 .ThenInclude(x=>x.Employer)
+                .Include(x => x.EmploymentRequests)
+                .Include(x=>x.Group)
                 .FirstOrDefaultAsync(x => x.Id == studentId);
             if (student == null)
             {
@@ -308,7 +310,7 @@ namespace DP_backend.Services
 
         public async Task<InternshipRequestDTO> GetInternshipRequest(Guid internshipRequestId)
         {
-            var internshipRequest = await _context.InternshipRequests.Include(x=>x.Employer).Include(x => x.Student).FirstOrDefaultAsync(x=>x.Id==internshipRequestId);
+            var internshipRequest = await _context.InternshipRequests.Include(x=>x.Employer).Include(x => x.Student).ThenInclude(x=>x.Group).FirstOrDefaultAsync(x=>x.Id==internshipRequestId);
             if(internshipRequest==null)
             {
                 throw new NotFoundException($"Заявка 1ого типа с Id {internshipRequestId}  не найдена");
@@ -332,7 +334,15 @@ namespace DP_backend.Services
 
         public async Task<EmploymentRequestDTO> GetEmploymentRequest(Guid employmentRequestId)
         {
-            var employmentRequest = await _context.EmploymentRequests.Include(x => x.InternshipRequest).ThenInclude(x => x.Employer).FirstOrDefaultAsync(x => x.Id == employmentRequestId);
+            var employmentRequest = await _context.EmploymentRequests
+                .Include(x => x.Student)
+                .ThenInclude(x => x.Group)
+                .Include(x => x.InternshipRequest)
+                .ThenInclude(x => x.Employer)
+                .Include(x => x.InternshipRequest)
+                .ThenInclude(x => x.Student)
+                .ThenInclude(x => x.Group)
+                .FirstOrDefaultAsync(x => x.Id == employmentRequestId);
             if (employmentRequest == null)
             {
                 throw new NotFoundException($"Заявка 2ого типа с Id {employmentRequestId}  не найдена");
@@ -342,7 +352,12 @@ namespace DP_backend.Services
 
         public async Task<List<EmploymentRequestDTO>> GetEmploymentRequestsWithFilters(int? group, EmploymentRequestStatus? status)
         {
-            IQueryable<EmploymentRequest> query = _context.EmploymentRequests.Include(x=>x.InternshipRequest).ThenInclude(x => x.Student).ThenInclude(x => x.Group).Include(x => x.InternshipRequest).ThenInclude(x => x.Employer);
+            IQueryable<EmploymentRequest> query = _context.EmploymentRequests
+                .Include(x=>x.InternshipRequest)
+                .ThenInclude(x => x.Student)
+                .ThenInclude(x => x.Group)
+                .Include(x => x.InternshipRequest)
+                .ThenInclude(x => x.Employer);
             if (group != null)
             {
                 query = query.Where(x => x.InternshipRequest.Student.Group.Number == group);
