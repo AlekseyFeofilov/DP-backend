@@ -54,7 +54,8 @@ namespace DP_backend.Services
         {
             var requests = await _context.InternshipDiaryRequests.GetUndeleted()
                 .Where(r => r.Status == status)
-                .GroupJoin(_context.FileEntityLinks, r => r.Id, f => Guid.Parse(f.EntityId), (r, f) => new InternshipDiaryRequestDTO(r, f.Select(f => f.FileId).ToList()))
+                .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
+                .Select(r => new InternshipDiaryRequestDTO(r.Request, r.FileIds))
                 .ToListAsync();
             return requests;
         }
@@ -63,7 +64,8 @@ namespace DP_backend.Services
         {
             var request = await _context.InternshipDiaryRequests.GetUndeleted()
                 .Where(r => r.Id == id)
-                .GroupJoin(_context.FileEntityLinks, r => r.Id, f => Guid.Parse(f.EntityId), (r, f) => new InternshipDiaryRequestDTO(r, f.Select(f => f.FileId).ToList()))
+                .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
+                .Select(r => new InternshipDiaryRequestDTO(r.Request, r.FileIds))
                 .FirstOrDefaultAsync();
             if (request == null)
             {
@@ -76,7 +78,8 @@ namespace DP_backend.Services
         {
             var requests = await _context.InternshipDiaryRequests.GetUndeleted()
                .Where(r => r.StudentId == studentId)
-               .GroupJoin(_context.FileEntityLinks, r => r.Id, f => Guid.Parse(f.EntityId), (r, f) => new InternshipDiaryRequestDTO(r, f.Select(f => f.FileId).ToList()))
+                .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
+                .Select(r => new InternshipDiaryRequestDTO(r.Request, r.FileIds))
                .ToListAsync();
             return requests;
         }
