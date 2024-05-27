@@ -8,7 +8,7 @@ namespace DP_backend.Models.DTOs
         public Guid Id { get; set; }
 
         [Required]
-        public Guid StudentId { get; set; }
+        public StudentShortDTO Student { get; set; }
 
         [Required]
         public EmployerDTO Employer { get; set; }
@@ -16,6 +16,7 @@ namespace DP_backend.Models.DTOs
         [Required]
         public string Vacancy { get; set; }
 
+        public DateTime CreateDateTime { get; set; }
         public string? Comment { get; set; }
 
         public InternshipStatus InternshipRequestStatus { get; set; }
@@ -25,11 +26,12 @@ namespace DP_backend.Models.DTOs
         public InternshipRequestDTO(InternshipRequest model)
         {
             Id = model.Id;
-            StudentId = model.StudentId;
+            Student = new StudentShortDTO(model.Student);
             Employer = new EmployerDTO(model.Employer);
             Vacancy = model.Vacancy;
             Comment = model.Comment;
             InternshipRequestStatus = model.Status;
+            CreateDateTime = model.CreateDateTime;
         }
     }
 }

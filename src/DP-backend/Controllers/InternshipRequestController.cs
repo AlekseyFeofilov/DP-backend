@@ -57,7 +57,7 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
-        [Route("{userId}")]
+        [Route("Student/{userId}")]
         [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> GetStudentInternshipRequests(Guid userId)
         {
@@ -79,7 +79,7 @@ namespace DP_backend.Controllers
         [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
         [Route("")]
         [Authorize(Policy = $"Staff")]
-        public async Task<IActionResult> GetInternshipRequests(int? group, InternshipStatus? status)
+        public async Task<IActionResult> GetAllInternshipRequests(int? group, InternshipStatus? status)
         {
             var internshipRequest = await _employmentService.GetInternshipRequestsWithFilters(group, status);
             return Ok(internshipRequest);
