@@ -8,6 +8,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     expose:
       - 5432
+    # for local debug purposes
     ports:
       - "5432:5432"
     deploy:
@@ -17,8 +18,11 @@ services:
         max_attempts: 3
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - internal
 
   app:
+    hostname: dp-backend
     build:
       context: .
       dockerfile: Dockerfile
@@ -26,8 +30,11 @@ services:
       - "db"
     environment:
       ASPNETCORE_ENVIRONMENT: Development
+    # for local debug purposes
     ports:
-      - "8080:8080"
+      - "8080:80"
+    expose:
+      - 80
     deploy:
       restart_policy:
         condition: on-failure
@@ -35,10 +42,14 @@ services:
         max_attempts: 3
     env_file:
       - path: ./.env
+    networks:
+      - api
+      - internal
 
   minio-storage:
     image: quay.io/minio/minio
     ports:
+      # for local debug purposes
       - 9000:9000
       - 9001:9001
     expose:
@@ -55,8 +66,15 @@ services:
       - /data
       - --console-address
       - ":9001"
+    networks:
+      - internal
 
 volumes:
   postgres-data:
   minio-data:
+
+networks:
+  internal:
+  api:
+    name: dp-api
 

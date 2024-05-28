@@ -21,4 +21,5 @@ RUN dotnet publish "./DP-backend/DP-backend.csproj" -c $BUILD_CONFIGURATION -o /
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_URLS="http://*:80"
 ENTRYPOINT ["dotnet", "DP-backend.dll"]
