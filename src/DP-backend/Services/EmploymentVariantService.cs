@@ -26,7 +26,10 @@ public class EmploymentVariantService(ApplicationDbContext context, IEmploymentS
 {
     public async Task<EmploymentVariant> Get(Guid employmentVariantId, CancellationToken ct)
     {
-        var employmentVariant = await context.EmploymentVariants.GetUndeleted().Include(ev => ev.InternshipRequest).FirstOrDefaultAsync(x => x.Id == employmentVariantId, ct);
+        var employmentVariant = await context.EmploymentVariants.GetUndeleted()
+            .Include(ev => ev.InternshipRequest)
+            .ThenInclude(ir => ir.Employer)
+            .FirstOrDefaultAsync(x => x.Id == employmentVariantId, ct);
         if (employmentVariant is null) throw new NotFoundException($"Вариант трудоустройства {{{employmentVariantId}}} не найден");
         return employmentVariant;
     }
