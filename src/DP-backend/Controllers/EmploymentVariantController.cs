@@ -20,7 +20,9 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     public async Task<EmploymentVariantDTO> Get(Guid id, CancellationToken cancellationToken)
     {
         var employmentVariant = await employmentVariantService.Get(id, cancellationToken);
-        return employmentVariant.Adapt<EmploymentVariantDTO>();
+        return new EmploymentVariantDTO(employmentVariant.Id, employmentVariant.Status, employmentVariant.Priority,
+            new EmployerDTO(employmentVariant.InternshipRequest.Employer), employmentVariant.Occupation, 
+            employmentVariant.StudentId, employmentVariant.InternshipRequest.Comment);
     }
 
     [HttpPost]
@@ -30,7 +32,9 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     public async Task<EmploymentVariantDTO> Create(EmploymentVariantCreateDTO dto, CancellationToken cancellationToken)
     {
         var employmentVariant = await employmentVariantService.Create(new(User, dto), cancellationToken);
-        return employmentVariant.Adapt<EmploymentVariantDTO>();
+        return new EmploymentVariantDTO(employmentVariant.Id, employmentVariant.Status, employmentVariant.Priority,
+            new EmployerDTO(employmentVariant.InternshipRequest.Employer), employmentVariant.Occupation,
+            employmentVariant.StudentId, employmentVariant.InternshipRequest.Comment);
     }
 
     [HttpPut("{id}")]
@@ -40,7 +44,9 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     public async Task<EmploymentVariantDTO> Update(Guid id, EmploymentVariantUpdateDTO data, CancellationToken cancellationToken)
     {
         var employmentVariant = await employmentVariantService.Update(new(User, id, data), cancellationToken);
-        return employmentVariant.Adapt<EmploymentVariantDTO>();
+        return new EmploymentVariantDTO(employmentVariant.Id, employmentVariant.Status, employmentVariant.Priority,
+            new EmployerDTO(employmentVariant.InternshipRequest.Employer), employmentVariant.Occupation,
+            employmentVariant.StudentId, employmentVariant.InternshipRequest.Comment);
     }
 
     [HttpDelete("{id}")]
@@ -50,7 +56,9 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     public async Task<EmploymentVariantDTO> Remove(Guid id, CancellationToken cancellationToken)
     {
         var employmentVariant = await employmentVariantService.Remove(new(User, id), cancellationToken);
-        return employmentVariant.Adapt<EmploymentVariantDTO>();
+        return new EmploymentVariantDTO(employmentVariant.Id, employmentVariant.Status, employmentVariant.Priority,
+            new EmployerDTO(employmentVariant.InternshipRequest.Employer), employmentVariant.Occupation,
+            employmentVariant.StudentId, employmentVariant.InternshipRequest.Comment);
     }
 
     [HttpGet("my")]
@@ -59,8 +67,13 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     public async Task<List<EmploymentVariantDTO>> GetCallingUserEmploymentVariants(CancellationToken cancellationToken)
     {
         var userId = User.GetUserId();
-        var employmentVariants = await context.EmploymentVariants.Where(x => x.Student.Id == userId).ToListAsync(cancellationToken);
-        return employmentVariants.Select(x => x.Adapt<EmploymentVariantDTO>()).ToList();
+        var employmentVariants = await context.EmploymentVariants.Where(x => x.Student.Id == userId)
+            .Include(ev => ev.InternshipRequest)
+            .ThenInclude(ir => ir.Employer)
+            .ToListAsync(cancellationToken);
+        return employmentVariants.Select(x => new EmploymentVariantDTO(x.Id, x.Status, x.Priority,
+            new EmployerDTO(x.InternshipRequest.Employer), x.Occupation, x.StudentId, x.InternshipRequest.Comment))
+            .ToList();
     }
 
     [HttpGet]
@@ -74,10 +87,14 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
         var employmentVariants = await context.EmploymentVariants
             .If(studentId.HasValue,
                 variants => variants.Where(x => x.Student.Id == studentId))
+            .Include(ev => ev.InternshipRequest)
+            .ThenInclude(ir => ir.Employer)
             .If(employerId.HasValue,
                 variants => variants.Where(x => x.InternshipRequest.Employer != null && x.InternshipRequest.Employer.Id == employerId))
             .ToListAsync(cancellationToken);
-        return employmentVariants.Select(x => x.Adapt<EmploymentVariantDTO>()).ToList();
+        return employmentVariants.Select(x => new EmploymentVariantDTO(x.Id, x.Status, x.Priority,
+            new EmployerDTO(x.InternshipRequest.Employer), x.Occupation, x.StudentId, x.InternshipRequest.Comment))
+            .ToList();
     }
 
     [HttpGet("status/list")]
