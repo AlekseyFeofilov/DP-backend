@@ -38,7 +38,7 @@ public enum EmploymentVariantStatus
     OfferPending = 3,
 
     [Description("Получил оффер (Принял)")]
-    OfferAccepted = 4,
+    OfferAccepted = 4,  
 
     [Description("Получил оффер (Отказался)")]
     OfferRefused = 5

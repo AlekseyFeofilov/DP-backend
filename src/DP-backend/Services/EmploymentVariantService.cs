@@ -29,6 +29,8 @@ public class EmploymentVariantService(ApplicationDbContext context, IEmploymentS
         var employmentVariant = await context.EmploymentVariants.GetUndeleted()
             .Include(ev => ev.InternshipRequest)
             .ThenInclude(ir => ir.Employer)
+            .Include(ev => ev.InternshipRequest)
+            .ThenInclude(ir => ir.Student)
             .FirstOrDefaultAsync(x => x.Id == employmentVariantId, ct);
         if (employmentVariant is null) throw new NotFoundException($"Вариант трудоустройства {{{employmentVariantId}}} не найден");
         return employmentVariant;
@@ -54,7 +56,8 @@ public class EmploymentVariantService(ApplicationDbContext context, IEmploymentS
             Priority = dto.Priority,
             Status = dto.Status,
             InternshipRequestId=internshipRequest.Id,
-            StudentId = request.CallingUser.GetUserId()
+            StudentId = request.CallingUser.GetUserId(),
+            InternshipRequest = internshipRequest,
         };
         context.EmploymentVariants.Add(employmentVariant);
         try
