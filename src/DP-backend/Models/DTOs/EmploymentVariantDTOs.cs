@@ -5,7 +5,7 @@ namespace DP_backend.Models.DTOs;
 /// <param name="Status"></param>
 /// <param name="Occupation">Должность \ занятость \ стек</param>
 /// <param name="Priority">Приоритет, чем меньше тем приоритетнее (семантика - "Первый приоритет")</param>
-public record EmploymentVariantDTO(Guid Id, EmploymentVariantStatus Status, int Priority, EmployerDTO Employer, string Occupation, Guid StudentId, string Comment);
+public record EmploymentVariantDTO(Guid Id, EmploymentVariantStatus Status, int Priority, string Occupation, Guid StudentId, InternshipRequestDTO? InternshipRequestDTO);
 
 /// <param name="Status"></param>
 /// <param name="Occupation">Должность \ занятость \ стек</param>
