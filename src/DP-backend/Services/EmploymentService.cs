@@ -108,7 +108,7 @@ namespace DP_backend.Services
             }
             employment.Vacancy = employmentChange.Vacancy;
             employment.Comment = employmentChange.Comment;
-            if (employment.Status != employmentChange.EmploymentStatus && employmentChange.EmploymentStatus == EmploymentStatus.Active && isStaff)
+            if (isStaff)
             {
                 employment.Status = employmentChange.EmploymentStatus;
             }

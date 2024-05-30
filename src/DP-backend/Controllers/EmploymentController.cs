@@ -46,11 +46,12 @@ namespace DP_backend.Controllers
         [Authorize(Policy = "Staff")]
         public async Task<IActionResult> ChangeEmployment(Guid id, EmploymentChangeDTO employmentChange)
         {
+            
             await _employmentService.ChangeEmployment(
                 id,
                 employmentChange,
                 User.GetUserId(),
-                User.FindFirstValue(ApplicationRoleNames.Staff) == "true" || User.FindFirstValue(ApplicationRoleNames.Administrator) == "true");
+                User.IsInRole(ApplicationRoleNames.Staff) || User.IsInRole(ApplicationRoleNames.Administrator));
             return Ok();
         }
 
