@@ -202,7 +202,7 @@ namespace DP_backend.Services
 
         public async Task CreateEmployment(EmploymentRequest employmentRequest)
         {
-            var student = await _context.Students.Include(x=>x.InternshipRequests).Include(x => x.Employments).FirstOrDefaultAsync(x => x.Id == employmentRequest.InternshipRequest.StudentId);
+            var student = await _context.Students.Include(x=>x.InternshipRequests).Include(x => x.EmploymentRequests).Include(x => x.Employments).FirstOrDefaultAsync(x => x.Id == employmentRequest.InternshipRequest.StudentId);
             if(student == null)
             {
                 throw new NotFoundException($"Пользователь с Id {employmentRequest.StudentId}  не найден");
@@ -228,14 +228,11 @@ namespace DP_backend.Services
             };
             student.Employments.ForEach(x => x.Status = EmploymentStatus.InActive);
             student.EmploymentRequests.ForEach(x => { 
-                if(x.Id!= employmentRequest.Id)
-                {
                     x.Status = EmploymentRequestStatus.UnActual;
-                }
             });
             student.InternshipRequests.ForEach(x =>
             {
-                if (x.Status == InternshipStatus.Accepted)
+                if (x.Status == InternshipStatus.Accepted || x.Status== InternshipStatus.NonVerified)
                 {
                     x.Status = InternshipStatus.Unactual;
                 }              
