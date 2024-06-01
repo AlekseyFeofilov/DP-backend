@@ -94,5 +94,15 @@ namespace DP_backend.Controllers
             var employmentsInfo = await _employmentService.GetAllStudentEmploymentInformation(studentId);
             return Ok(employmentsInfo);
         }
+
+        [HttpGet]
+        [Route("Report/{studentId}")]
+        [ProducesResponseType(typeof(EmploymentReportDTO), 200)]
+        [Authorize(Policy = "Staff")]
+        public async Task<IActionResult> GetStudentEmploymentReport(Guid studentId, DateTime startDate, DateTime endDate)
+        {
+            var report = await _employmentService.GetStudentEmploymentReport(studentId, startDate, endDate);
+            return Ok(report);
+        }
     }
 }

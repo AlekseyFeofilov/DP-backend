@@ -19,6 +19,7 @@ public class Employment : BaseEntity
     public required string Vacancy { get; set; }
     public string? Comment { get; set; }
     public EmploymentStatus Status { get; set; } = EmploymentStatus.InActive;
+    public DateTime? EndDate { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

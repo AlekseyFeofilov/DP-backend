@@ -75,7 +75,6 @@ namespace DP_backend.Database
             BaseEntityTimestampHelper.SetTimestamps(ChangeTracker);
             try
             {
-                await OperationUpdateHelper.CatchOperationUpdate(ChangeTracker, this);
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (Exception ex)

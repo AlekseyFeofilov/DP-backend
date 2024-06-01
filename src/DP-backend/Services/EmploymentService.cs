@@ -5,6 +5,7 @@ using DP_backend.Domain.Employment;
 using DP_backend.Domain.Identity;
 using DP_backend.Helpers;
 using DP_backend.Migrations;
+using DP_backend.Models;
 using DP_backend.Models.DTOs;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,7 @@ namespace DP_backend.Services
         Task<List<InternshipRequestDTO>> GetInternshipRequestsWithFilters(int? group, InternshipStatus? status);
         Task<EmploymentRequestDTO> GetEmploymentRequest(Guid employmentRequestId);
         Task<List<EmploymentRequestDTO>> GetEmploymentRequestsWithFilters(int? group, EmploymentRequestStatus? status);
+        Task<EmploymentReportDTO> GetStudentEmploymentReport(Guid studentId, DateTime startDate, DateTime endDate);
     }
 
     public class EmploymentService : IEmploymentService
@@ -111,6 +113,7 @@ namespace DP_backend.Services
             if (isStaff)
             {
                 employment.Status = employmentChange.EmploymentStatus;
+                
             }
             else
             {
@@ -368,6 +371,36 @@ namespace DP_backend.Services
                 query = query.Where(x => x.Status == status);
             }
             return await query.Select(x => new EmploymentRequestDTO(x)).ToListAsync();
+        }
+
+        public async Task<EmploymentReportDTO> GetStudentEmploymentReport(Guid studentId, DateTime startDate, DateTime endDate)
+        {
+            var student = await _context.Students
+                .Include(x=>x.Group)
+                .Include(x=>x.Employments)
+                .ThenInclude(x => x.Employer)
+                .FirstOrDefaultAsync(x=>x.Id==studentId);
+            if(student == null)
+            {
+                throw new NotFoundException($"Пользователь с Id {studentId}  не найден");
+            }
+            student.Employments.ForEach(x =>
+            {
+                if (x.EndDate == null)
+                {
+                    x.EndDate = DateTime.MaxValue;
+                }
+            });
+            var employments = student.Employments
+                .Where(x => x.CreateDateTime <= endDate && x.EndDate >= startDate)
+                .Select(x=>new EmploymentWithDatesShortDTO(x, startDate, endDate))
+                .ToList();
+
+            return new EmploymentReportDTO
+            {
+                Student = new StudentShortDTO(student),
+                Employments = employments
+            };
         }
     }
 }

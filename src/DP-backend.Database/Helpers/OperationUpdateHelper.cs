@@ -60,6 +60,7 @@ namespace DP_backend.Database.Helpers
 
             foreach (var entity in modifiedEntries2)
             {
+
                 if (entity.State == EntityState.Modified || entity.State == EntityState.Added)
                 {
                     var student = await context.Students
@@ -97,6 +98,14 @@ namespace DP_backend.Database.Helpers
                     else
                     {
                         student.Status = StudentStatus.None;
+                    }
+                    if (entity.Entity.Status == EmploymentStatus.Active)
+                    {
+                        entity.Entity.EndDate = null;
+                    }
+                    else if(entity.Entity.Status == EmploymentStatus.InActive && entity.Entity.EndDate == null)
+                    {
+                        entity.Entity.EndDate = DateTime.UtcNow;
                     }
                     changeTracker.TrackGraph(student, e =>
                     e.Entry.State = EntityState.Modified
