@@ -225,14 +225,11 @@ namespace DP_backend.Services
             };
             student.Employments.ForEach(x => x.Status = EmploymentStatus.InActive);
             student.EmploymentRequests.ForEach(x => { 
-                if(x.Id!= employmentRequest.Id)
-                {
                     x.Status = EmploymentRequestStatus.UnActual;
-                }
             });
             student.InternshipRequests.ForEach(x =>
             {
-                if ((x.Status == InternshipStatus.Accepted || x.Status== InternshipStatus.NonVerified) && x.Id != employmentRequest.InternshipRequestId)
+                if (x.Status == InternshipStatus.Accepted || x.Status== InternshipStatus.NonVerified)
                 {
                     x.Status = InternshipStatus.Unactual;
                 }              
