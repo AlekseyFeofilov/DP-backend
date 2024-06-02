@@ -11,7 +11,7 @@ namespace DP_backend.Services
     public interface IInternshipDiaryRequestService
     {
         Task Create(InternshipDiaryRequestCreationDTO creationDTO);
-        Task<List<InternshipDiaryRequestDTO>> GetAllByStatus(InternshipDiaryRequestStatus status);
+        Task<List<InternshipDiaryRequestDTO>> GetAllByStatus(InternshipDiaryRequestStatus? status);
         Task<InternshipDiaryRequestDTO> GetById(Guid id);
         Task<List<InternshipDiaryRequestDTO>> GetByStudentId(Guid studentId);
         Task ChangeStatus(Guid requestId, InternshipDiaryRequestStatus newStatus, Guid userId, bool isStudent);
@@ -33,6 +33,12 @@ namespace DP_backend.Services
             {
                 throw new BadDataException("Некорректное значение семестра. Допустимые значения 5,6,7,8");
             }
+            var student = await _context.Students.GetUndeleted()
+                .FirstOrDefaultAsync(s => s.Id == creationDTO.StudentId);
+            if (student == null)
+            {
+                throw new BadDataException($"Студент {creationDTO.StudentId} не найден");
+            }
             var existingRequest = await _context.InternshipDiaryRequests.GetUndeleted()
                 .FirstOrDefaultAsync(r => r.StudentId == creationDTO.StudentId && r.Semester == creationDTO.Semester);
             if (existingRequest != null)
@@ -46,14 +52,14 @@ namespace DP_backend.Services
                 Semester = creationDTO.Semester,
                 Status = InternshipDiaryRequestStatus.No,
             };
-            await _context.AddAsync(newRequest);
+            await _context.InternshipDiaryRequests.AddAsync(newRequest);
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<InternshipDiaryRequestDTO>> GetAllByStatus(InternshipDiaryRequestStatus status)
+        public async Task<List<InternshipDiaryRequestDTO>> GetAllByStatus(InternshipDiaryRequestStatus? status)
         {
             var requests = await _context.InternshipDiaryRequests.GetUndeleted()
-                .Where(r => r.Status == status)
+                .If(status != null, q => q.Where(r => r.Status == status))
                 .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
                 .Select(r => new InternshipDiaryRequestDTO(r.Request, r.FileIds))
                 .ToListAsync();

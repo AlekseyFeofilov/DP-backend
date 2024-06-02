@@ -34,6 +34,7 @@ namespace DP_backend.Database
         public virtual DbSet<FileEntityLink> FileEntityLinks { get; set; }
         
         public virtual DbSet<InternshipDiaryRequest> InternshipDiaryRequests { get; set; }
+        public virtual DbSet<CourseWorkRequest> CourseWorkRequests { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

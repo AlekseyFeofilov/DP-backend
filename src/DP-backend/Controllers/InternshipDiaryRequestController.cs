@@ -31,8 +31,8 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(List<InternshipDiaryRequestDTO>), 200)]
-        [Authorize(Policy = "StaffAndStudent")]
-        public async Task<ActionResult<List<InternshipDiaryRequestDTO>>> GetAllByStatus(InternshipDiaryRequestStatus status)
+        [Authorize(Policy = "Staff")]
+        public async Task<ActionResult<List<InternshipDiaryRequestDTO>>> GetAllByStatus(InternshipDiaryRequestStatus? status)
         {
             var requests = await _internshipDiaryRequestService.GetAllByStatus(status);
             return Ok(requests);

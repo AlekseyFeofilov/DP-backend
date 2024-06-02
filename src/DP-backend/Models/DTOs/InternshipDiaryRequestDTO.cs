@@ -10,6 +10,8 @@ namespace DP_backend.Models.DTOs
 
         public List<Guid> FileIds { get; set; }
 
+        public InternshipDiaryRequestStatus Status { get; set; }
+
         public int Semester { get; set; }
 
         public InternshipDiaryRequestDTO() { }
@@ -19,6 +21,7 @@ namespace DP_backend.Models.DTOs
             Id = internshipDiaryRequest.Id;
             StudentId = internshipDiaryRequest.StudentId;
             FileIds = fileIds;
+            Status = internshipDiaryRequest.Status;
             Semester = internshipDiaryRequest.Semester;
         }
     }
