@@ -45,8 +45,8 @@ namespace DP_backend.Services
         {
             var comments = await _context.Comments.GetUndeleted()
                 .Where(c => c.TargetEntityId == entityId)
-                .Join(_context.Users, c => c.Id, u => u.Id, (c, u) => new { Comment = c, User = u })
-                .OrderByDescending(c => c.Comment.CreateDateTime)
+                .Join(_context.Users, c => c.CreatedBy, u => u.Id, (c, u) => new { Comment = c, User = u })
+                .OrderBy(c => c.Comment.CreateDateTime)
                 .Select(c => new CommentDTO(c.Comment, c.User))
                 .ToListAsync();
 
