@@ -21,9 +21,15 @@ namespace DP_backend.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(StudentsWithPaginationDTO), 200)]
         [Authorize(Policy = "Staff")]
-        public async Task<IActionResult> GetStudentsDashboard(int page, Grade? grade, int? group, StudentStatus? status, string? namePart)
+        public async Task<IActionResult> GetStudentsDashboard(int page, 
+            Grade? grade, 
+            int? group, 
+            StudentStatus? status, 
+            string? namePart, 
+            Guid? companyId
+            )
         {
-            var students = await _userManagementService.GetStudentsByFilters(page, grade, group, status, namePart);
+            var students = await _userManagementService.GetStudentsByFilters(page, grade, group, status, namePart, companyId);
             return Ok(students);
         }
     }

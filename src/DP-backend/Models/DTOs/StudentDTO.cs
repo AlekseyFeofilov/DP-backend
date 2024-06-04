@@ -19,7 +19,7 @@ namespace DP_backend.Models.DTOs
             Status = model.Status;
             Group = model.Group==null? null : new GroupDTO(model.Group);
             Employments = model.Employments.Select(x=> new EmploymentDTO(x)).ToList();
-            EmploymentVariants = model.EmploymentVariants.Select(x=>x.Adapt<EmploymentVariantDTO>()).ToList();
+            EmploymentVariants = model.EmploymentVariants.Select(x => new EmploymentVariantDTO(x.Id, x.Status, x.Priority, x.Occupation, x.StudentId, new InternshipRequestDTO(x.InternshipRequest))).ToList();
         }
     }
 }

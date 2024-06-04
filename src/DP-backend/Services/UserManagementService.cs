@@ -21,7 +21,7 @@ namespace DP_backend.Services
         public Task<List<StudentDTO>> GetStudentsFromGroup (Grade? grade, int? groupNumber, bool withoutGroups);
         public Task<StudentStatus> GetStudentStatus(Guid userId);
         public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
-        public Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart);
+        public Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart, Guid? companyId);
     }
 
     public class UserManagementService : IUserManagementService
@@ -197,11 +197,13 @@ namespace DP_backend.Services
             return await _dbContext.Students.Where(x=>statuses.Contains(x.Status)).Select(x=> new StudentDTO(x)).ToListAsync();
         }
 
-        public async Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart)
+        public async Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart, Guid? companyId)
         {
             int _pageSize = _configuration.GetSection("PaginationSettings").GetValue<int>("PageSize");
             int pageCount; 
-            IQueryable<Student> query = _dbContext.Students.Include(x => x.Group).Include(x => x.Employments).ThenInclude(x => x.Employer).Include(x => x.EmploymentVariants).ThenInclude(x => x.InternshipRequest).ThenInclude(x => x.Employer);
+            IQueryable<Student> query = _dbContext.Students.Include(x => x.Group)
+                .Include(x => x.Employments).ThenInclude(x => x.Employer)
+                .Include(x => x.EmploymentVariants).ThenInclude(x => x.InternshipRequest).ThenInclude(x => x.Employer);
             if(grade != null)
             {
                 query = query.Where(x => x.Group.Grade == grade);
@@ -213,6 +215,10 @@ namespace DP_backend.Services
             if (namePart != null)
             {
                 query = query.Where(x => Regex.IsMatch(x.Name, namePart));
+            }
+            if (companyId != null)
+            {
+                query = query.Where(x => x.Employments.Any(e => e.Employer.Id == companyId));
             }
             List<StatusesCounterDTO> counters = new List<StatusesCounterDTO>();
             foreach(var stat in Enum.GetValues(typeof(StudentStatus)))
@@ -239,7 +245,7 @@ namespace DP_backend.Services
             var students = await query
                 .Skip(_pageSize * (page - 1))
                 .Take(_pageSize)
-                .Select(x=>new StudentDTO(x)).ToListAsync();
+                .Select(x => new StudentDTO(x)).ToListAsync();
             var pagination = new PaginationDTO(page, pageCount, _pageSize);
             return new StudentsWithPaginationDTO
             {
