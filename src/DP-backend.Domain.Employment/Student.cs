@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using DP_backend.Common;
 
 namespace DP_backend.Domain.Employment;
@@ -16,6 +17,7 @@ public class Student : BaseEntity
     public List<Employment> Employments { get; set; }
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum StudentStatus
 {
     None = 0,
