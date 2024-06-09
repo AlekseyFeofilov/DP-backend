@@ -47,7 +47,7 @@ namespace DP_backend.Services
 
             var newRequest = new CourseWorkRequest()
             {
-                StudentId = creationDTO.StudentId,
+                StudentId = (Guid)creationDTO.StudentId,
                 Semester = creationDTO.Semester,
                 Status = CourseWorkRequestStatus.No,
             };
@@ -59,8 +59,9 @@ namespace DP_backend.Services
         {
             var requests = await _context.CourseWorkRequests.GetUndeleted()
                .If(status != null, q => q.Where(r => r.Status == status))
-               .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
-               .Select(r => new CourseWorkRequestDTO(r.Request, r.FileIds))
+               .Include(f => f.Student)
+               .GroupJoin(_context.FileEntityLinks.Include(f => f.File), r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, Files = f })
+               .Select(r => new CourseWorkRequestDTO(r.Request, r.Files))
                .ToListAsync();
             return requests;
         }
@@ -69,8 +70,9 @@ namespace DP_backend.Services
         {
             var request = await _context.CourseWorkRequests.GetUndeleted()
                 .Where(r => r.Id == id)
-                .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
-                .Select(r => new CourseWorkRequestDTO(r.Request, r.FileIds))
+                .Include(f => f.Student)
+                .GroupJoin(_context.FileEntityLinks.Include(f => f.File), r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, Files = f })
+                .Select(r => new CourseWorkRequestDTO(r.Request, r.Files))
                 .FirstOrDefaultAsync();
             if (request == null)
             {
@@ -83,8 +85,9 @@ namespace DP_backend.Services
         {
             var requests = await _context.CourseWorkRequests.GetUndeleted()
                .Where(r => r.StudentId == studentId)
-                .GroupJoin(_context.FileEntityLinks, r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, FileIds = f.Select(f => f.FileId).ToList() })
-                .Select(r => new CourseWorkRequestDTO(r.Request, r.FileIds))
+               .Include(f => f.Student)
+               .GroupJoin(_context.FileEntityLinks.Include(f => f.File), r => r.Id.ToString(), f => f.EntityId, (r, f) => new { Request = r, Files = f })
+               .Select(r => new CourseWorkRequestDTO(r.Request, r.Files))
                .ToListAsync();
             return requests;
         }

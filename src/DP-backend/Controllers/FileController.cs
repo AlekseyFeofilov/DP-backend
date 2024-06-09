@@ -1,5 +1,6 @@
 ﻿using DP_backend.FileStorage;
 using DP_backend.Helpers;
+using DP_backend.Models.DTOs;
 using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -113,9 +114,7 @@ public class FileController : ControllerBase
         return NoContent();
     }
 
-    public record EntityFilesResponse(string EntityType, string EntityId, IEnumerable<FileDto> Files);
-
-    public record FileDto(Guid FileId, string FileName, string ContentType, long Size, DateTime CreatedAt);
+    public record EntityFilesResponse(string EntityType, string EntityId, IEnumerable<FileDTO> Files);
 
     // todo maybe some rule checks 
     /// <summary>
@@ -131,6 +130,6 @@ public class FileController : ControllerBase
     {
         var linkedFiles = await _fileLinkService.GetLinkedFiles(entityType, entityId, ct);
         return new EntityFilesResponse(entityType, entityId,
-            linkedFiles.Select(file => new FileDto(file.Id, file.Name, file.ContentType, file.Size, file.CreatedAt)));
+            linkedFiles.Select(file => new FileDTO { FileId = file.Id, FileName = file.Name, ContentType = file.ContentType, Size = file.Size, CreatedAt = file.CreatedAt }));
     }
 }

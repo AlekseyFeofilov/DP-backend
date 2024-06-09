@@ -14,6 +14,7 @@ namespace DP_backend.Domain.Employment
     public class CourseWorkRequest : BaseEntity
     {
         public Guid StudentId { get; set; }
+        public Student Student { get; set; }
         public CourseWorkRequestStatus Status { get; set; }
         public int Semester { get; set; }
     }

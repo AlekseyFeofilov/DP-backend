@@ -25,6 +25,10 @@ namespace DP_backend.Controllers
         [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> CreateRequest(CourseWorkRequestCreationDTO creationDTO)
         {
+            if (creationDTO.StudentId == null)
+            {
+                creationDTO.StudentId = User.GetUserId();
+            }
             await _courseWorkRequestService.Create(creationDTO);
             return Ok();
         }

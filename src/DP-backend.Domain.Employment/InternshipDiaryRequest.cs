@@ -9,6 +9,7 @@ namespace DP_backend.Domain.Employment;
 public class InternshipDiaryRequest : BaseEntity
 {
     public Guid StudentId { get; set; }
+    public Student Student { get; set; }
     public InternshipDiaryRequestStatus Status { get; set; }
     public int Semester {  get; set; }
 }
