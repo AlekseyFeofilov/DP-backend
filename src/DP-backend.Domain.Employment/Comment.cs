@@ -1,4 +1,5 @@
 ﻿using DP_backend.Common;
+using DP_backend.Common.EntityType;
 
 namespace DP_backend.Domain.Employment;
 
@@ -10,9 +11,14 @@ public class Comment : BaseEntity
     public required Guid CreatedBy { get; init; }
 
     /// <summary>
-    /// Сущность к которой привязан комментарий
+    /// Id сущности к которой привязан комментарий
     /// </summary>
-    public required Guid TargetEntityId { get; init; }
+    public required string TargetEntityId { get; init; }
+    /// <summary>
+    /// Тип сущности к которой привязан комментарий
+    /// </summary>
+    /// <remarks><see cref="EntityType"/></remarks>
+    public required string TargetEntityType { get; set; }
 
     public required string Message { get; set; }
 }

@@ -26,5 +26,8 @@ public class FileStorageEntitiesConfiguration :
     {
         builder.HasKey(x => new { x.FileId, x.EntityType, x.EntityId });
         builder.HasIndex(x => new { x.EntityType, x.EntityId }).IsUnique(false);
+        
+        // ограничение FK выглядит излищним 
+        // builder.HasOne<EntityType>().WithMany().HasForeignKey(x => x.EntityType);
     }
 }

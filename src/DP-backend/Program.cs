@@ -1,5 +1,4 @@
 using System.Reflection;
-using DP_backend;
 using DP_backend.Configurations;
 using DP_backend.Database;
 using DP_backend.Domain.Identity;
@@ -19,16 +18,14 @@ builder.Services.ConfigureSwaggerGen();
 services.InitInternalServices(configuration);
 
 builder.AddDb<ApplicationDbContext>("DbConnection");
-services.AddDefaultIdentity<User>(options =>
-    {
-        options.User.AllowedUserNameCharacters = string.Empty; 
-    })
+services.AddDefaultIdentity<User>(options => { options.User.AllowedUserNameCharacters = string.Empty; })
     .AddRoles<Role>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager<SignInManager<User>>()
     .AddUserManager<UserManager<User>>()
-     .AddRoleManager<RoleManager<Role>>();
+    .AddRoleManager<RoleManager<Role>>();
 services.AddFileStorage(configuration);
+services.AddLazyCache();
 
 builder.ConfigureJwtAuthentication();
 builder.ConfigureClaimAuthorization();
@@ -39,14 +36,17 @@ TypeAdapterConfig.GlobalSettings.Scan(Assembly.GetExecutingAssembly());
 var allowAnyCorsPolicy = "AllowAnyCorsPolicy";
 builder.Services.AddCors(options => { options.AddPolicy(name: allowAnyCorsPolicy, configurePolicy: builder => { builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod(); }); });
 
+
 var app = builder.Build();
+
+app.MigrateDBWhenNecessary<ApplicationDbContext>();
+await RoleInitializer.Initialize(app.Services, configuration);
+await DbDictionariesInitializer.Initialize(app.Services, configuration);
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
-app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); }
-);
+app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1"); });
 
-app.MigrateDBWhenNecessary<ApplicationDbContext>();
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors(allowAnyCorsPolicy);
@@ -56,7 +56,7 @@ app.UseExceptionMiddleware();
 
 app.UseAuthentication();
 app.UseAuthorization();
-RoleInitializer.Initialize(app.Services, configuration);
+
 app.MapControllers();
 
 app.Run();

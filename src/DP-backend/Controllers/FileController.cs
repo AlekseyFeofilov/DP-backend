@@ -1,4 +1,5 @@
-﻿using DP_backend.FileStorage;
+﻿using DP_backend.Common.EntityType;
+using DP_backend.FileStorage;
 using DP_backend.Helpers;
 using DP_backend.Models.DTOs;
 using DP_backend.Services;
@@ -73,7 +74,7 @@ public class FileController : ControllerBase
     /// Прикрепить файл к сущности
     /// </summary>
     /// <param name="fileId">Id ранее загруженного объекта</param>
-    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён</param>
+    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён; Id from <see cref="EntityType"/></param>
     /// <param name="entityId">Id сущности</param>
     /// <param name="ct"></param>
     [Authorize]
@@ -96,7 +97,7 @@ public class FileController : ControllerBase
     /// Открепить файл от сущности
     /// </summary>
     /// <param name="fileId">Id ранее загруженного объекта</param>
-    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён</param>
+    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён; Id from <see cref="EntityType"/></param>
     /// <param name="entityId">Id сущности</param>
     /// <param name="ct"></param>
     [Authorize]
@@ -120,7 +121,7 @@ public class FileController : ControllerBase
     /// <summary>
     /// Получить информацию о файлах прикрепленных к сущности 
     /// </summary>
-    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён</param>
+    /// <param name="entityType">Тип сущности \ имя сущности \ пространство имён; Id from <see cref="EntityType"/></param>
     /// <param name="entityId">Id сущности</param>
     /// <param name="ct"></param>
     [Authorize]

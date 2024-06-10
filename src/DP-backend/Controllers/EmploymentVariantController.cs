@@ -12,7 +12,7 @@ namespace DP_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EmploymentVariantController(IEmploymentVariantService employmentVariantService, ApplicationDbContext context) : ControllerBase
+public class EmploymentVariantController(IEmploymentVariantService employmentVariantService, ApplicationDbContext context, IEnumDictionaryService enumDictionaryService) : ControllerBase
 {
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(EmploymentVariantDTO), 200)]
@@ -96,6 +96,6 @@ public class EmploymentVariantController(IEmploymentVariantService employmentVar
     }
 
     [HttpGet("status/list")]
-    [ProducesResponseType(typeof(List<DictionaryEntry>), 200)]
-    public IEnumerable<DictionaryEntry> GetStatuses() => DictionaryService.DescribeEnum<EmploymentVariantStatus>();
+    [ProducesResponseType(typeof(List<IEnumDictionaryService.Entry>), 200)]
+    public IEnumerable<IEnumDictionaryService.Entry> GetStatuses() => enumDictionaryService.DescribeEnum<EmploymentVariantStatus>();
 }

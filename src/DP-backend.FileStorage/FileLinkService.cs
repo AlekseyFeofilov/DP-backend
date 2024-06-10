@@ -1,3 +1,4 @@
+using DP_backend.Common.EntityType;
 using DP_backend.Common.Exceptions;
 using DP_backend.Database;
 using DP_backend.Domain.FileStorage;
@@ -15,16 +16,23 @@ public interface IFileLinkService
 internal class FileLinkService : IFileLinkService
 {
     private readonly ApplicationDbContext _dbContext;
+    private readonly IEntityTypesProvider _entityTypesProvider;
 
-    public FileLinkService(ApplicationDbContext dbContext)
+    public FileLinkService(ApplicationDbContext dbContext, IEntityTypesProvider entityTypesProvider)
     {
         _dbContext = dbContext;
+        _entityTypesProvider = entityTypesProvider;
     }
 
     public async Task LinkFileToEntity(string entityType, string entityId, Guid fileId, Guid userId, CancellationToken ct)
     {
         var fileHandle = await _dbContext.FileHandles.FindAsync([ fileId ], ct);
         if (fileHandle == null) throw new NotFoundException($"Файл {fileId} не найден");
+
+        if (await _entityTypesProvider.ValidateEntityType(entityType, EntityTypeUsage.LinkFile, ct) == false)
+        {
+            throw new BadDataException($"Invalid entity type \"{entityType}\" to link file");
+        }
 
         var fileEntityLink = new FileEntityLink { EntityType = entityType, EntityId = entityId, FileId = fileId, CreatedBy = userId };
         _dbContext.Add(fileEntityLink);

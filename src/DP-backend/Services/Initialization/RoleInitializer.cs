@@ -1,12 +1,11 @@
 ﻿using DP_backend.Domain.Identity;
-using DP_backend.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace DP_backend.Services.Initialization
 {
     public static class RoleInitializer
     {
-        public static async void Initialize(this IServiceProvider serviceProvider, IConfiguration configuration)
+        public static async Task Initialize(this IServiceProvider serviceProvider, IConfiguration configuration)
         {
             using (var scope = serviceProvider.CreateScope())
             {

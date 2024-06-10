@@ -1,3 +1,4 @@
+using DP_backend.Common.EntityType;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DP_backend.Services.Initialization;
@@ -17,5 +18,7 @@ public static class ServicesInitializer
         services.AddScoped<IAuthorizationHandler, FileCreatorOrStaffAuthorization>();
         services.AddScoped<IInternshipDiaryRequestService, InternshipDiaryRequestService>();
         services.AddScoped<ICourseWorkRequestService, CourseWorkRequestService>();
+        services.AddScoped<IEntityTypesProvider, DictionaryService>();
+        services.AddScoped<IEnumDictionaryService, DictionaryService>();
     }
 }
