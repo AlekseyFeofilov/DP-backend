@@ -24,6 +24,8 @@ namespace DP_backend.Models.DTOs
 
         public DateTime ModifyDateTime { get; set; }
 
+        public int? Grade { get; set; }
+
         public CourseWorkRequestDTO() { }
 
         public CourseWorkRequestDTO(CourseWorkRequest courseWorkRequest, IEnumerable<FileEntityLink> files)
@@ -35,6 +37,7 @@ namespace DP_backend.Models.DTOs
             Semester = courseWorkRequest.Semester;
             CreateDateTime = courseWorkRequest.CreateDateTime;
             ModifyDateTime = courseWorkRequest.ModifyDateTime;
+            Grade = courseWorkRequest.Grade;
         }
     }
 }

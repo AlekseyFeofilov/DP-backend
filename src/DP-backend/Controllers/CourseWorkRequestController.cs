@@ -6,6 +6,7 @@ using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace DP_backend.Controllers
@@ -94,6 +95,15 @@ namespace DP_backend.Controllers
         public async Task<IActionResult> DeleteEmployment(Guid id)
         {
             await _courseWorkRequestService.Delete(id);
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("{id:guid}/Grade/{grade:int}")]
+        [Authorize(Policy = "Staff")]
+        public async Task<IActionResult> SetGrade(Guid id, [Range(1,5)]int grade)
+        {
+            await _courseWorkRequestService.SetGrade(id, grade);
             return Ok();
         }
     }

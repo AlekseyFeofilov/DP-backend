@@ -24,6 +24,8 @@ namespace DP_backend.Models.DTOs
 
         public DateTime ModifyDateTime { get; set; }
 
+        public int? Grade { get; set; }
+
         public InternshipDiaryRequestDTO() { }
 
         public InternshipDiaryRequestDTO(InternshipDiaryRequest internshipDiaryRequest, IEnumerable<FileEntityLink> files) 
@@ -35,6 +37,7 @@ namespace DP_backend.Models.DTOs
             Semester = internshipDiaryRequest.Semester;
             CreateDateTime = internshipDiaryRequest.CreateDateTime;
             ModifyDateTime = internshipDiaryRequest.ModifyDateTime;
+            Grade = internshipDiaryRequest.Grade;
         }
     }
 }

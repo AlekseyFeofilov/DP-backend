@@ -7,6 +7,7 @@ using DP_backend.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace DP_backend.Controllers
 {
@@ -63,6 +64,15 @@ namespace DP_backend.Controllers
                 var students = await _userManagementService.GetStudentsWithStatuses(statuses);
                 return Ok(students);
         }
-        
+
+        [HttpGet]
+        [Route("Grades")]
+        [ProducesResponseType(typeof(List<StudentDTO>), 200)]
+        public async Task<IActionResult> GetStudentsGrades(int group, int semester)
+        {
+            var students = await _userManagementService.GetStudentsWithGrades(group, semester);
+            return Ok(students);
+        }
+
     }
 }

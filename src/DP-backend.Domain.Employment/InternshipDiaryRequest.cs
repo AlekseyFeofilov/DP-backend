@@ -12,6 +12,7 @@ public class InternshipDiaryRequest : BaseEntity
     public Student Student { get; set; }
     public InternshipDiaryRequestStatus Status { get; set; }
     public int Semester {  get; set; }
+    public int? Grade { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
