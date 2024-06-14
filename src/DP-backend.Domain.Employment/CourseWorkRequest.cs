@@ -17,6 +17,7 @@ namespace DP_backend.Domain.Employment
         public Student Student { get; set; }
         public CourseWorkRequestStatus Status { get; set; }
         public int Semester { get; set; }
+        public int? Grade { get; set; }
     }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]

@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 using DP_backend.Common.Exceptions;
 using DP_backend.Database;
+using Microsoft.EntityFrameworkCore.Internal;
+using System.Linq;
 
 namespace DP_backend.Services
 {
@@ -22,6 +24,7 @@ namespace DP_backend.Services
         public Task<StudentStatus> GetStudentStatus(Guid userId);
         public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
         public Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart, Guid? companyId);
+        public Task<List<StudentWithGradesDTO>> GetStudentsWithGrades(int group, int semester);
     }
 
     public class UserManagementService : IUserManagementService
@@ -254,5 +257,38 @@ namespace DP_backend.Services
                 StudentStatusesCount = counters
             };
         }
+
+        public async Task<List<StudentWithGradesDTO>> GetStudentsWithGrades(int group, int semester)
+        {
+            var query = _dbContext.Students
+            .Include(s => s.Group)
+            .Where(s => s.Group.Number == group)
+            .GroupJoin(
+                _dbContext.InternshipDiaryRequests.Where(idr => idr.Semester == semester),
+                student => student.Id,
+                internshipDiary => internshipDiary.StudentId,
+                (student, internshipDiaries) => new { student, internshipDiaries }
+            )
+            .SelectMany(
+                temp => temp.internshipDiaries.DefaultIfEmpty(),
+                (temp, internshipDiary) => new { temp.student, internshipDiary }
+            )
+            .GroupJoin(
+                _dbContext.CourseWorkRequests.Where(cwr => cwr.Semester == semester),
+                temp => temp.student.Id,
+                courseWork => courseWork.StudentId,
+                (temp, courseWorks) => new { temp.student, temp.internshipDiary, courseWorks }
+            )
+            .SelectMany(
+                temp => temp.courseWorks.DefaultIfEmpty(),
+                (temp, courseWork) => new StudentWithGradesDTO(
+                    temp.student,
+                    temp.internshipDiary==null? null : temp.internshipDiary.Grade,
+                    courseWork==null? null: courseWork.Grade
+                )
+            );
+
+            return await query.ToListAsync();
+        }   
     }
 }
