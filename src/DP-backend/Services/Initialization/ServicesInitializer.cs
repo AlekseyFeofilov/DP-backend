@@ -20,5 +20,6 @@ public static class ServicesInitializer
         services.AddScoped<ICourseWorkRequestService, CourseWorkRequestService>();
         services.AddScoped<IEntityTypesProvider, DictionaryService>();
         services.AddScoped<IEnumDictionaryService, DictionaryService>();
+        services.AddScoped<INotificationService, NotificationService>();
     }
 }
