@@ -1,8 +1,6 @@
-﻿using DP_backend.Common;
+﻿namespace DP_backend.Common;
 
-namespace DP_backend.Helpers;
-
-public static class IQueriableHelper
+public static class QueryableHelper
 {
     public static IQueryable<TEntity> GetUndeleted<TEntity>(this IQueryable<TEntity> query) where TEntity : class, IBaseEntity
     {

@@ -10,6 +10,7 @@ public class InternshipDiaryRequest : BaseEntity
 {
     public Guid StudentId { get; set; }
     public Student Student { get; set; }
+    public Guid InternshipRequestId { get; set; }
     public InternshipDiaryRequestStatus Status { get; set; }
     public int Semester {  get; set; }
     public int? Grade { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Azure.Core;
+using DP_backend.Common;
 using DP_backend.Common.Exceptions;
 using DP_backend.Database;
 using DP_backend.Domain.Employment;
@@ -52,6 +53,7 @@ namespace DP_backend.Services
                 StudentId = (Guid)creationDTO.StudentId,
                 Semester = creationDTO.Semester,
                 Status = InternshipDiaryRequestStatus.No,
+                InternshipRequestId = creationDTO.InternshipRequestId
             };
             await _context.InternshipDiaryRequests.AddAsync(newRequest);
             await _context.SaveChangesAsync();

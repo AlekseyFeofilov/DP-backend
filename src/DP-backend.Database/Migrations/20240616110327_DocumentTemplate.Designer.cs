@@ -4,17 +4,20 @@ using DP_backend.Database;
 using DP_backend.Domain.Templating;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace DP_backend.Migrations
+namespace DP_backend.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240616110327_DocumentTemplate")]
+    partial class DocumentTemplate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -324,9 +327,6 @@ namespace DP_backend.Migrations
                     b.Property<int?>("Grade")
                         .HasColumnType("integer");
 
-                    b.Property<Guid>("InternshipRequestId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("ModifyDateTime")
                         .HasColumnType("timestamp with time zone");
 
@@ -340,8 +340,6 @@ namespace DP_backend.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("InternshipRequestId");
 
                     b.HasIndex("StudentId");
 
@@ -851,12 +849,6 @@ namespace DP_backend.Migrations
 
             modelBuilder.Entity("DP_backend.Domain.Employment.InternshipDiaryRequest", b =>
                 {
-                    b.HasOne("DP_backend.Domain.Employment.InternshipRequest", null)
-                        .WithMany()
-                        .HasForeignKey("InternshipRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DP_backend.Domain.Employment.Student", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId")

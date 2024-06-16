@@ -37,6 +37,7 @@
     <ProjectReference Include="..\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
     <ProjectReference Include="..\DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj" />
     <ProjectReference Include="..\DP-backend.FileStorage\DP-backend.FileStorage.csproj" />
+    <ProjectReference Include="..\DP-backend.Templating\DP-backend.Templating.csproj" />
   </ItemGroup>
 
 </Project>

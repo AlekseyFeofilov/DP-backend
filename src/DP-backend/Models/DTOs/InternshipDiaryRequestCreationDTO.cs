@@ -11,5 +11,10 @@
         /// Допустимые значения: 5,6,7,8
         /// </summary>
         public int Semester { get; set; }
+        
+        /// <summary>
+        /// Id заявки на практику с которой связан дневник
+        /// </summary>
+        public Guid InternshipRequestId { get; set; }
     }
 }

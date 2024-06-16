@@ -27,11 +27,12 @@ public static class DbDictionariesInitializer
         EntityType[] initialEntityTypes =
         [
             //@formatter:off
-            new() { Id = EntityTypeIds.EmploymentRequest,      Description = "Заявка на трудоустройство",      Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
-            new() { Id = EntityTypeIds.InternshipRequest,      Description = "Заявка на прохождение правтики", Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
-            new() { Id = EntityTypeIds.InternshipDiaryRequest, Description = "Заявка для дневника практики",   Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
-            new() { Id = EntityTypeIds.CourseWorkRequest,      Description = "Заявка для для курсовых и ВКР",  Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
-            new() { Id = EntityTypeIds.EmploymentVariant,      Description = "Вариант трудоустройства",        Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
+            new() { Id = EntityTypeIds.EmploymentRequest,          Description = "Заявка на трудоустройство",      Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
+            new() { Id = EntityTypeIds.InternshipRequest,          Description = "Заявка на прохождение правтики", Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
+            new() { Id = EntityTypeIds.InternshipDiaryRequest,     Description = "Заявка для дневника практики",   Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
+            new() { Id = EntityTypeIds.CourseWorkRequest,          Description = "Заявка для для курсовых и ВКР",  Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
+            new() { Id = EntityTypeIds.EmploymentVariant,          Description = "Вариант трудоустройства",        Usage = EntityTypeUsage.LinkComment | EntityTypeUsage.LinkFile },
+            new() { Id = Domain.Templating.EntityTypeIds.Template, Description = "Шаблон документа",               Usage = EntityTypeUsage.LinkFile },
             
             // Сюда можно добавить новые типы 
             

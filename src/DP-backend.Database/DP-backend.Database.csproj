@@ -20,6 +20,7 @@
       <ProjectReference Include="..\DP-backend.Domain.FileStorage\DP-backend.Domain.FileStorage.csproj" />
       <ProjectReference Include="..\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
       <ProjectReference Include="..\DP-backend.Domain.Identity\DP-backend.Domain.Identity.csproj" />
+      <ProjectReference Include="..\DP-backend.Domain.Templating\DP-backend.Domain.Templating.csproj" />
     </ItemGroup>
 
 </Project>

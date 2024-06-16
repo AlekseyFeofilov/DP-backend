@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DP-backend.Common\DP-backend.Common.csproj" />
+      <ProjectReference Include="..\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
+      <ProjectReference Include="..\DP-backend.Domain.Templating\DP-backend.Domain.Templating.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="TemplateEngine.Docx" Version="1.1.5" />
+    </ItemGroup>
+
+</Project>

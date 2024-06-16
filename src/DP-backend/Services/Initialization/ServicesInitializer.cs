@@ -1,4 +1,5 @@
 using DP_backend.Common.EntityType;
+using DP_backend.Templating.DI;
 using Microsoft.AspNetCore.Authorization;
 
 namespace DP_backend.Services.Initialization;
@@ -20,5 +21,6 @@ public static class ServicesInitializer
         services.AddScoped<ICourseWorkRequestService, CourseWorkRequestService>();
         services.AddScoped<IEntityTypesProvider, DictionaryService>();
         services.AddScoped<IEnumDictionaryService, DictionaryService>();
+        services.AddTemplating();
     }
 }

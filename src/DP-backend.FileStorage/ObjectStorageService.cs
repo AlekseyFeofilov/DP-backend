@@ -6,6 +6,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Minio;
 using Minio.DataModel.Args;
+using Minio.DataModel.Result;
+using Minio.Handlers;
 
 namespace DP_backend.FileStorage;
 
@@ -61,23 +63,26 @@ internal class MinioStorageService : IObjectStorageService
             bucket = await CreateBucket(ct);
         }
 
-        await using var tx = await _dbContext.Database.BeginTransactionAsync(ct);
+        var inOuterTransaction = _dbContext.Database.CurrentTransaction != null;
+        var tx = inOuterTransaction ? null : await _dbContext.Database.BeginTransactionAsync(ct);
+        
         var fileHandle = await FileHandle.CreateWithStream(fileName, contentType, stream, bucket, userId, ct);
 
         stream.Seek(0, SeekOrigin.Begin);
         var putObject = new PutObjectArgs()
-                .WithBucket(bucket.BucketName)
-                .WithObject(fileHandle.GetObjectId())
-                .WithStreamData(stream)
-                .WithObjectSize(stream.Length)
-                .WithContentType(fileHandle.ContentType);
+            .WithBucket(bucket.BucketName)
+            .WithObject(fileHandle.GetObjectId())
+            .WithStreamData(stream)
+            .WithObjectSize(stream.Length)
+            .WithContentType(fileHandle.ContentType);
         var response = await _minioClient.PutObjectAsync(putObject, ct);
-        
+        if (string.IsNullOrEmpty(response.Etag)) throw new Exception("Failed to upload file to storage");
+
         _dbContext.Add(fileHandle);
         await _dbContext.SaveChangesAsync(ct);
 
         await IncrementBucketStats(bucket, fileHandle, ct);
-        await tx.CommitAsync(ct);
+        if (tx != null) await tx.CommitAsync(ct);
 
         return fileHandle;
     }
@@ -92,7 +97,7 @@ internal class MinioStorageService : IObjectStorageService
             .WithObject(fileHandle.GetObjectId())
             // cringe minio api
             .WithCallbackStream((stream, cancellationToken) => fileCallback.Invoke(stream, fileHandle, cancellationToken));
-
+        
         var @object = await _minioClient.GetObjectAsync(getObjectArgs, ct);
     }
 

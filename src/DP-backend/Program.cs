@@ -2,10 +2,13 @@ using System.Reflection;
 using DP_backend.Configurations;
 using DP_backend.Database;
 using DP_backend.Domain.Identity;
+using DP_backend.Domain.Templating.Employment;
 using DP_backend.FileStorage;
 using DP_backend.Services.Initialization;
+using DP_backend.Templating;
 using Mapster;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;using TemplateEngine.Docx;
+
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -42,6 +45,17 @@ var app = builder.Build();
 app.MigrateDBWhenNecessary<ApplicationDbContext>();
 await RoleInitializer.Initialize(app.Services, configuration);
 await DbDictionariesInitializer.Initialize(app.Services, configuration);
+
+
+// var serviceScope = app.Services.CreateScope();
+//
+// var documentTemplatesService = serviceScope.ServiceProvider.GetRequiredService<DocumentTemplatesService>();
+// var storageService = serviceScope.ServiceProvider.GetRequiredService<IObjectStorageService>();
+//
+// InternshipDiaryTemplate.CreateFor5Semester()
+//
+// documentTemplatesService.AddDocumentTemplate()
+
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();

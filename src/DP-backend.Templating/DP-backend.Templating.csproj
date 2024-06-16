@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <RootNamespace>DP_backend.Templating</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DP-backend.Common\DP-backend.Common.csproj" />
+      <ProjectReference Include="..\DP-backend.Database\DP-backend.Database.csproj" />
+      <ProjectReference Include="..\DP-backend.Domain.Employment\DP-backend.Domain.Employment.csproj" />
+      <ProjectReference Include="..\DP-backend.Domain.FileStorage\DP-backend.Domain.FileStorage.csproj" />
+      <ProjectReference Include="..\DP-backend.Domain.Templating\DP-backend.Domain.Templating.csproj" />
+      <ProjectReference Include="..\DP-backend.FileStorage\DP-backend.FileStorage.csproj" />
+      <ProjectReference Include="..\DP_backend.Domain.Templating.Employment\DP_backend.Domain.Templating.Employment.csproj" />
+    </ItemGroup>
+
+</Project>
