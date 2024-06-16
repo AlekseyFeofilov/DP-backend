@@ -35,6 +35,7 @@ namespace DP_backend.Database
         
         public virtual DbSet<InternshipDiaryRequest> InternshipDiaryRequests { get; set; }
         public virtual DbSet<CourseWorkRequest> CourseWorkRequests { get; set; }
+        public virtual DbSet<Notification> Notifications { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

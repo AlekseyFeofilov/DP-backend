@@ -30,7 +30,7 @@ public static class InternshipDiaryTemplate
         public required string PracticeOrderNumber { get; set; }
         public required DateTime PracticeOrderDate { get; set; }
 
-        // todo : I suppose we should pick it from student's  internship request
+        // todo : наверное руководителя практики от университета нужно указывать в заявке, а не глобально
         public required string ManagerFromUniversity { get; set; }
 
         public TemplateContext CreateContext()

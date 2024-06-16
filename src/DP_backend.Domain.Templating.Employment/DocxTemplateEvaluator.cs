@@ -15,8 +15,8 @@ public class DocxTemplateEvaluator
             switch (value.Type)
             {
                 case TemplateContext.EntryType.KeyValueCollection:
-                    // todo
-                    break;
+                    throw new NotSupportedException();
+                
                 case TemplateContext.EntryType.Collection:
                     if (value.Collection?.All(x => x.Type == TemplateContext.EntryType.KeyValueCollection) == false)
                     {
@@ -33,6 +33,7 @@ public class DocxTemplateEvaluator
                         )
                     ));
                     break;
+                
                 case TemplateContext.EntryType.Value:
                     content.Fields.Add(new FieldContent(key, value.Value!));
                     break;
@@ -42,6 +43,6 @@ public class DocxTemplateEvaluator
         }
 
         templateProcessor.FillContent(content);
-        templateProcessor.SaveChanges(); // I suppose it will write to same stream ; todo : test
+        templateProcessor.SaveChanges();
     }
 }

@@ -36,7 +36,7 @@ public class EmploymentFieldsResolver : ITemplateFieldsResolver<InternshipDiaryT
 
         context.SetField(InternshipDiaryTemplate.Keys.EmploymentName, employer.CompanyName);
 
-        // todo : Who is tutor ? Or we need move info
+        // todo : корректно ли использовать здесь Tutor
         context.SetField(InternshipDiaryTemplate.Keys.ManagerFromEmployment, employer.Tutor);
         context.SetField(InternshipDiaryTemplate.Keys.EmploymentDelegate, employer.Tutor);
     }
