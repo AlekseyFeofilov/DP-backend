@@ -24,7 +24,7 @@ namespace DP_backend.Models.DTOs
 
         public DateTime ModifyDateTime { get; set; }
 
-        public int? Grade { get; set; }
+        public float? Mark { get; set; }
 
         public CourseWorkRequestDTO() { }
 
@@ -37,7 +37,7 @@ namespace DP_backend.Models.DTOs
             Semester = courseWorkRequest.Semester;
             CreateDateTime = courseWorkRequest.CreateDateTime;
             ModifyDateTime = courseWorkRequest.ModifyDateTime;
-            Grade = courseWorkRequest.Grade;
+            Mark = courseWorkRequest.Mark;
         }
     }
 }

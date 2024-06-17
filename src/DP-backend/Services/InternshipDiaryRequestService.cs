@@ -16,7 +16,7 @@ namespace DP_backend.Services
         Task<List<InternshipDiaryRequestDTO>> GetByStudentId(Guid studentId);
         Task ChangeStatus(Guid requestId, InternshipDiaryRequestStatus newStatus, Guid userId, bool isStudent);
         Task Delete(Guid id);
-        Task SetGrade(Guid id, int grade);
+        Task SetGrade(Guid id, float mark);
     }
 
     public class InternshipDiaryRequestService : IInternshipDiaryRequestService
@@ -142,7 +142,7 @@ namespace DP_backend.Services
             _context.InternshipDiaryRequests.Remove(request);
             await _context.SaveChangesAsync();
         }
-        public async Task SetGrade(Guid id, int grade)
+        public async Task SetGrade(Guid id, float mark)
         {
             var request = await _context.InternshipDiaryRequests
                 .Where(r => r.Id == id)
@@ -151,7 +151,7 @@ namespace DP_backend.Services
             {
                 throw new NotFoundException($"Заявка на дневник практики {id} не найдена");
             }
-            request.Grade = grade;
+            request.Mark = mark;
             await _context.SaveChangesAsync();
         }
     }

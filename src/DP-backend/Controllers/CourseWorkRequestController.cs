@@ -101,9 +101,9 @@ namespace DP_backend.Controllers
         [HttpPut]
         [Route("{id:guid}/Grade/{grade:int}")]
         [Authorize(Policy = "Staff")]
-        public async Task<IActionResult> SetGrade(Guid id, [Range(1,5)]int grade)
+        public async Task<IActionResult> SetGrade(Guid id, [Range(1,5)]float mark)
         {
-            await _courseWorkRequestService.SetGrade(id, grade);
+            await _courseWorkRequestService.SetGrade(id, mark);
             return Ok();
         }
     }
