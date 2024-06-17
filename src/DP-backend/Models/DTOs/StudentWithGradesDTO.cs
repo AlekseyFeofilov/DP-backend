@@ -4,15 +4,15 @@ namespace DP_backend.Models.DTOs
 {
     public class StudentWithGradesDTO : StudentShortDTO
     {
-        public int? InternshipDiaryGrade {  get; set; }
-        public int? CourseWorkGrade { get; set; }
+        public float? InternshipDiaryMark {  get; set; }
+        public float? CourseWorkMark { get; set; }
 
         public StudentWithGradesDTO() { }
 
-        public StudentWithGradesDTO(Student model, int? internshipDiaryGrade, int? courseWorkGrade) : base(model)
+        public StudentWithGradesDTO(Student model, float? internshipDiaryMark, float? courseWorkMark) : base(model)
         {
-            InternshipDiaryGrade = internshipDiaryGrade;
-            CourseWorkGrade = courseWorkGrade;
+            InternshipDiaryMark = internshipDiaryMark;
+            CourseWorkMark = courseWorkMark;
         }
     }
 }

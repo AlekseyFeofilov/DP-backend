@@ -284,8 +284,8 @@ namespace DP_backend.Services
                 temp => temp.courseWorks.DefaultIfEmpty(),
                 (temp, courseWork) => new StudentWithGradesDTO(
                     temp.student,
-                    temp.internshipDiary==null? null : temp.internshipDiary.Grade,
-                    courseWork==null? null: courseWork.Grade
+                    temp.internshipDiary==null? null : temp.internshipDiary.Mark,
+                    courseWork==null? null: courseWork.Mark
                 )
             );
 

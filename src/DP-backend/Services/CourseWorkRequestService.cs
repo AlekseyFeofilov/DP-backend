@@ -16,7 +16,7 @@ namespace DP_backend.Services
         Task<List<CourseWorkRequestDTO>> GetByStudentId(Guid studentId);
         Task ChangeStatus(Guid requestId, CourseWorkRequestStatus newStatus, Guid userId, bool isStudent);
         Task Delete(Guid id);
-        Task SetGrade (Guid id, int grade);
+        Task SetGrade (Guid id, float mark);
     }
 
     public class CourseWorkRequestService : ICourseWorkRequestService
@@ -143,7 +143,7 @@ namespace DP_backend.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task SetGrade(Guid id, int grade)
+        public async Task SetGrade(Guid id, float mark)
         {
             var request = await _context.CourseWorkRequests
                 .Where(r => r.Id == id)
@@ -152,7 +152,7 @@ namespace DP_backend.Services
             {
                 throw new NotFoundException($"Заявка на курсовую/диплом {id} не найдена");
             }
-            request.Grade=grade;
+            request.Mark= mark;
             await _context.SaveChangesAsync();
         }
     }
