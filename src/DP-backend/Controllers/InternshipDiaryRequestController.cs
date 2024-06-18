@@ -98,7 +98,7 @@ namespace DP_backend.Controllers
             return Ok();
         }
         [HttpPut]
-        [Route("{id:guid}/Grade/{grade:int}")]
+        [Route("{id:guid}/Mark/{mark:float}")]
         [Authorize(Policy = "Staff")]
         public async Task<IActionResult> SetGrade(Guid id, [Range(1, 5)] float mark)
         {
