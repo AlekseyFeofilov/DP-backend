@@ -1,4 +1,5 @@
-﻿using DP_backend.Common;
+﻿using Azure.Core;
+using DP_backend.Common;
 using DP_backend.Common.Enumerations;
 using DP_backend.Common.Exceptions;
 using DP_backend.Database;
@@ -38,10 +39,17 @@ namespace DP_backend.Services
     public class EmploymentService : IEmploymentService
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public EmploymentService(ApplicationDbContext context)
+        private readonly string _staffIntershipNotification = "http://dp-staff.alexfil888.fvds.ru/statement/internship-check#";
+        private readonly string _studentIntershipNotification = "http://dp-student.alexfil888.fvds.ru/statement/internship-check#";
+        private readonly string _staffEmploymentNotification = "http://dp-staff.alexfil888.fvds.ru/statement/internship-apply#";
+        private readonly string _studentEmploymentNotification = "http://dp-student.alexfil888.fvds.ru/statement/internship-apply#";
+
+        public EmploymentService(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task<List<EmploymentDTO>> GetEmployments(string? companyName, EmploymentStatus? employmentStatus)
@@ -75,7 +83,11 @@ namespace DP_backend.Services
 
         public async Task<InternshipRequest> CreateInternshipRequest(Guid userId, InternshipRequestСreationDTO employmentСreation)
         {
-
+            var student = await _context.Students.GetUndeleted().FirstOrDefaultAsync(s => s.Id == userId);
+            if (student == null)
+            {
+                throw new BadDataException($"Студент {userId} не найден");
+            }
             var employer = await _context.Employers.GetUndeleted().FirstOrDefaultAsync(e => e.Id == employmentСreation.EmployerId);
             if (employer == null)
             {
@@ -88,7 +100,7 @@ namespace DP_backend.Services
                 Vacancy = employmentСreation.Vacancy,
                 Comment = employmentСreation.Comment,
                 Status = InternshipStatus.NonVerified,
-                Id= Guid.NewGuid()
+                Id = Guid.NewGuid()
             };
             await _context.InternshipRequests.AddAsync(internshipRequest);
             try
@@ -99,6 +111,15 @@ namespace DP_backend.Services
             {
 
             }
+
+            var notification = new NotificationCreationDTO
+            {
+                Title = $"Создана заявка на прохождение практики",
+                Message = $"Студент {student.Name} группы {student.Group?.Number} отправил заявку на прохождение практики в {employer.CompanyName}",
+                Link = _staffIntershipNotification + internshipRequest.Id
+            };
+            await _notificationService.CreateNotificationForStaff(notification);
+
             return internshipRequest;
         }
 
@@ -147,6 +168,15 @@ namespace DP_backend.Services
             }
             internshipRequest.Status = status;
             await _context.SaveChangesAsync();
+
+            var notification = new NotificationCreationDTO
+            {
+                Title = $"Изменён статус заявки на прохождение практики",
+                Message = $"Статус заявки на прохождение практики в {internshipRequest.Employer.CompanyName} изменён на {status}",
+                Link = _studentIntershipNotification + internshipRequest.Id,
+                AddresseeId = internshipRequest.Student.UserId
+            };
+            await _notificationService.Create(notification);
         }
 
         public async Task<List<InternshipRequestDTO>> GetStudentInternshipRequests(Guid studentId)
@@ -163,24 +193,32 @@ namespace DP_backend.Services
 
         public async Task CreateEmploymentRequest(Guid internshipRequestId, Guid userId)
         {
-            var internshipRequest = await _context.InternshipRequests.Include(x=>x.Employer).FirstOrDefaultAsync(x => x.Id == internshipRequestId && x.StudentId == userId);
+            var internshipRequest = await _context.InternshipRequests.Include(x=>x.Employer).Include(s => s.Student).FirstOrDefaultAsync(x => x.Id == internshipRequestId && x.StudentId == userId);
             if (internshipRequest == null)
             {
-                throw new NotFoundException($"Заявка на прохождение практики в компании {internshipRequestId} у вас не найдено");
+                throw new NotFoundException($"Заявка на прохождение практики в компании {internshipRequestId} у вас не найдена");
             }
             if (internshipRequest.Status != InternshipStatus.Accepted)
             {
-                throw new InvalidOperationException($"Нельзя создать заявку на создание трудоустройства на основе заявка на прохождение практики в компании со статусом {internshipRequest.Status}");
+                throw new BadDataException($"Нельзя создать заявку на создание трудоустройства на основе заявки на прохождение практики в компании со статусом {internshipRequest.Status}");
             }
             var employmentRequest = new EmploymentRequest
             {
-                Id = new Guid(),
+                Id = Guid.NewGuid(),
                 StudentId = userId,
                 InternshipRequestId = internshipRequestId,
                 Status = EmploymentRequestStatus.NonVerified,              
             };
             await _context.EmploymentRequests.AddAsync(employmentRequest);
             await _context.SaveChangesAsync();
+
+            var notification = new NotificationCreationDTO
+            {
+                Title = $"Создана заявка на заведение трудоустройства",
+                Message = $"Студент {internshipRequest.Student.Name} группы {internshipRequest.Student.Group?.Number} отправил заявку на заведение трудоустройства в {internshipRequest.Employer.CompanyName}",
+                Link = _staffEmploymentNotification + internshipRequest.Id
+            };
+            await _notificationService.CreateNotificationForStaff(notification);
         }
 
         public async Task UpdateEmploymentRequestStatus(Guid employmentRequestId, EmploymentRequestStatus status)
@@ -198,7 +236,16 @@ namespace DP_backend.Services
             {
               await CreateEmployment(employmentRequest);
             }            
-            await _context.SaveChangesAsync();           
+            await _context.SaveChangesAsync();
+
+            var notification = new NotificationCreationDTO
+            {
+                Title = $"Изменён статус заявки на заведение трудоустройства",
+                Message = $"Статус заявки на заведение трудоустройства в {employmentRequest.InternshipRequest.Employer.CompanyName} изменён на {status}",
+                Link = _studentEmploymentNotification + employmentRequest.Id,
+                AddresseeId = employmentRequest.Student.UserId
+            };
+            await _notificationService.Create(notification);
         }
 
         public async Task CreateEmployment(EmploymentRequest employmentRequest)

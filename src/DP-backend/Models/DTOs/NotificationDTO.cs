@@ -16,6 +16,8 @@ namespace DP_backend.Models.DTOs
 
         public NotificationType Type { get; set; }
 
+        public bool IsRead { get; set; }
+
         public DateTime CreateDateTime { get; set; }
 
         public NotificationDTO() { }
@@ -29,6 +31,7 @@ namespace DP_backend.Models.DTOs
             Link = notification.Link;
             Type = notification.Type;
             CreateDateTime = notification.CreateDateTime;
+            IsRead = notification.IsRead;
         }
     }
 }
