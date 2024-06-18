@@ -181,7 +181,7 @@ namespace DP_backend.Services
             var notification = new NotificationCreationDTO
             {
                 Title = "Новый комментарий" + titleEnding,
-                Message = $"{author.UserName} добавил(-а) комментараий: \'{comment}\'",
+                Message = $"{author.UserName} добавил(-а) комментарий: \'{comment}\'",
                 Link = link + addComment.EntityId
             };
             if (forStaff)
