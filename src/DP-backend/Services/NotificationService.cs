@@ -12,6 +12,7 @@ namespace DP_backend.Services
     public interface INotificationService
     {
         Task Create(NotificationCreationDTO creationDTO);
+        Task CreateNotificationForStaff(NotificationCreationDTO creationDTO);
         Task<List<NotificationDTO>> GetUserNotifications(Guid userId);
         Task<int> GetCountUnreadNotifications(Guid userId);
         Task Delete(Guid notificationId, Guid userId);
@@ -45,6 +46,24 @@ namespace DP_backend.Services
             await _context.SaveChangesAsync();
         }
 
+        public async Task CreateNotificationForStaff(NotificationCreationDTO creationDTO)
+        {
+            var allStaff = await _context.Users.GetUndeleted()
+                .Include(r => r.Roles)
+                .Where(u => u.Roles.Any(r => r.Role.Name == ApplicationRoles.Staff.ToString()))
+                .ToListAsync();
+            var newNotifications = allStaff.Select(s => new Notification
+            {
+                Title = creationDTO.Title,
+                Message = creationDTO.Message,
+                AddresseeId = s.Id,
+                Link = creationDTO.Link,
+                Type = creationDTO.Type ?? NotificationType.Other,
+            });
+            await _context.Notifications.AddRangeAsync(newNotifications);
+            await _context.SaveChangesAsync();
+        }
+
         public async Task<List<NotificationDTO>> GetUserNotifications(Guid userId)
         {
             var user = await _context.Users.GetUndeleted().FirstOrDefaultAsync(u => u.Id == userId);
@@ -54,11 +73,14 @@ namespace DP_backend.Services
             }
 
             var notifications = await _context.Notifications.GetUndeleted()
-                .Where(n => n.AddresseeId == userId).ToListAsync();
+                .Where(n => n.AddresseeId == userId)
+                .OrderByDescending(t => t.CreateDateTime)
+                .ToListAsync();
+            var forReturn = notifications.Select(n => new NotificationDTO(n)).ToList();
 
             await ReadNotification(notifications);
 
-            return notifications.Select(n => new NotificationDTO(n)).ToList();
+            return forReturn;
         }
 
         public async Task<int> GetCountUnreadNotifications(Guid userId)

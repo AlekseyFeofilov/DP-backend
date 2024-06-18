@@ -1,4 +1,5 @@
-﻿using DP_backend.Common;
+﻿using Azure.Core;
+using DP_backend.Common;
 using DP_backend.Common.Exceptions;
 using DP_backend.Database;
 using DP_backend.Domain.Employment;
@@ -22,10 +23,15 @@ namespace DP_backend.Services
     public class CourseWorkRequestService : ICourseWorkRequestService
     {
         private readonly ApplicationDbContext _context;
+        private readonly INotificationService _notificationService;
 
-        public CourseWorkRequestService(ApplicationDbContext context)
+        //private readonly string _staffNotification = "http://dp-staff.alexfil888.fvds.ru/internship-diary/";
+        //private readonly string _studentNotification = "http://dp-student.alexfil888.fvds.ru/internship-diary#";
+
+        public CourseWorkRequestService(ApplicationDbContext context, INotificationService notificationService)
         {
             _context = context;
+            _notificationService = notificationService;
         }
 
         public async Task Create(CourseWorkRequestCreationDTO creationDTO)
@@ -98,6 +104,7 @@ namespace DP_backend.Services
         {
             var request = await _context.CourseWorkRequests.GetUndeleted()
                 .Where(r => r.Id == requestId)
+                .Include(s => s.Student)
                 .FirstOrDefaultAsync();
             if (request == null)
             {
@@ -112,6 +119,17 @@ namespace DP_backend.Services
                     if (request.StudentId == userId)
                     {
                         request.Status = newStatus;
+                        //if (newStatus == CourseWorkRequestStatus.Passed)
+                        //{
+                        //    request.Status = newStatus;
+                        //    var notification = new NotificationCreationDTO
+                        //    {
+                        //        Title = GetTitleForPassedBySemester(request.Semester),
+                        //        Message = GetMessageForPassedBySemester(request.Semester, request.Student),
+                        //        Link = _staffNotification + request.Id
+                        //    };
+                        //    await _notificationService.CreateNotificationForStaff(notification);
+                        //}
                     }
                     else
                     {
@@ -146,14 +164,73 @@ namespace DP_backend.Services
         public async Task SetGrade(Guid id, float mark)
         {
             var request = await _context.CourseWorkRequests
+                .Include(s => s.Student)
                 .Where(r => r.Id == id)
                 .FirstOrDefaultAsync();
             if (request == null)
             {
                 throw new NotFoundException($"Заявка на курсовую/диплом {id} не найдена");
             }
-            request.Mark= mark;
+            request.Mark = mark;
+            request.Status = CourseWorkRequestStatus.Rated;
             await _context.SaveChangesAsync();
+
+            //var notification = new NotificationCreationDTO
+            //{
+            //    Title = GetTitleForMarkBySemester(request.Semester),
+            //    Message = GetMessageForMarkBySemester(request.Semester, mark),
+            //    Link = _studentNotification + request.Id,
+            //    AddresseeId = request.Student.UserId
+            //};
+            //await _notificationService.Create(notification);
+        }
+
+        private string GetTitleForPassedBySemester(int semester)
+        {
+            if (semester == 6)
+            {
+                return $"Отправлена на проверку курсовая работа";
+            }
+            else
+            {
+                return $"Отправлен на проверку диплом";
+            }
+        }
+
+        private string GetMessageForPassedBySemester(int semester, Student student)
+        {
+            if (semester == 6)
+            {
+                return $"Студент {student.Name} группы {student.Group?.Number} отправил на проверку курсовую работу";
+            }
+            else
+            {
+                return $"Студент {student.Name} группы {student.Group?.Number} отправил на проверку диплом";
+            }
+        }
+
+        private string GetTitleForMarkBySemester(int semester)
+        {
+            if (semester == 6)
+            {
+                return $"Курсовая работа оценена";
+            }
+            else
+            {
+                return $"Диплом оценён";
+            }
+        }
+
+        private string GetMessageForMarkBySemester(int semester, float mark)
+        {
+            if (semester == 6)
+            {
+                return $"Поставлена оценка \'{mark}\' за курсовую работу";
+            }
+            else
+            {
+                return $"Поставлена оценка \'{mark}\' за диплом";
+            }
         }
     }
 }
