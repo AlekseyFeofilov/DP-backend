@@ -24,5 +24,5 @@ public enum InternshipDiaryRequestStatus
     OnRevision = 3,
     Approved = 4,
     SubmittedForSigning = 5,
-    Ready = 6
+    Rated = 6
 }
