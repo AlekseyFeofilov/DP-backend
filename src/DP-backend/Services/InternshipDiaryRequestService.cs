@@ -118,18 +118,32 @@ namespace DP_backend.Services
             if (isStudent)
             {
                 if ((request.Status == InternshipDiaryRequestStatus.No && newStatus == InternshipDiaryRequestStatus.OnVerification) || 
-                    (request.Status == InternshipDiaryRequestStatus.OnRevision && newStatus == InternshipDiaryRequestStatus.OnVerification))
+                    (request.Status == InternshipDiaryRequestStatus.OnRevision && newStatus == InternshipDiaryRequestStatus.OnVerification ||
+                    request.Status == InternshipDiaryRequestStatus.Approved && newStatus == InternshipDiaryRequestStatus.SubmittedForSigning))
                 {
                     if (request.StudentId == userId)
                     {
                         request.Status = newStatus;
-                        var notification = new NotificationCreationDTO
+                        if (newStatus == InternshipDiaryRequestStatus.OnVerification)
                         {
-                            Title = $"Отправлен на проверку дневник практики за {request.Semester} семестр",
-                            Message = $"Студент {request.Student.Name} группы {request.Student.Group?.Number} отправил на проверку дневник практики за {request.Semester} семестр",
-                            Link = _staffNotification + request.Id
-                        };
-                        await _notificationService.CreateNotificationForStaff(notification);
+                            var notification = new NotificationCreationDTO
+                            {
+                                Title = $"Отправлен на проверку дневник практики за {request.Semester} семестр",
+                                Message = $"Студент {request.Student.Name} группы {request.Student.Group?.Number} отправил на проверку дневник практики за {request.Semester} семестр",
+                                Link = _staffNotification + request.Id
+                            };
+                            await _notificationService.CreateNotificationForStaff(notification);
+                        }
+                        if (newStatus == InternshipDiaryRequestStatus.SubmittedForSigning)
+                        {
+                            var notification = new NotificationCreationDTO
+                            {
+                                Title = $"Сдан на подпись дневник практики за {request.Semester} семестр",
+                                Message = $"Студент {request.Student.Name} группы {request.Student.Group?.Number} сдал на подпись дневник практики за {request.Semester} семестр",
+                                Link = _staffNotification + request.Id
+                            };
+                            await _notificationService.CreateNotificationForStaff(notification);
+                        }
                     }
                     else
                     {
@@ -180,6 +194,7 @@ namespace DP_backend.Services
                 throw new NotFoundException($"Заявка на дневник практики {id} не найдена");
             }
             request.Mark = mark;
+            request.Status = InternshipDiaryRequestStatus.Rated;
             await _context.SaveChangesAsync();
 
             var notification = new NotificationCreationDTO
