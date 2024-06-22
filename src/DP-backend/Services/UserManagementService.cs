@@ -12,6 +12,7 @@ using DP_backend.Database;
 using Microsoft.EntityFrameworkCore.Internal;
 using System.Linq;
 using DP_backend.Common;
+using Microsoft.IdentityModel.Tokens;
 
 namespace DP_backend.Services
 {
@@ -24,7 +25,7 @@ namespace DP_backend.Services
         public Task<List<StudentDTO>> GetStudentsFromGroup (Grade? grade, int? groupNumber, bool withoutGroups);
         public Task<StudentStatus> GetStudentStatus(Guid userId);
         public Task<List<StudentDTO>> GetStudentsWithStatuses(List<StudentStatus> statuses);
-        public Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart, Guid? companyId);
+        public Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, List<StudentStatus>? statuses, string? namePart, Guid? companyId);
         public Task<List<StudentWithGradesDTO>> GetStudentsWithGrades(int group, int semester);
     }
 
@@ -201,7 +202,7 @@ namespace DP_backend.Services
             return await _dbContext.Students.Where(x=>statuses.Contains(x.Status)).Select(x=> new StudentDTO(x)).ToListAsync();
         }
 
-        public async Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, StudentStatus? status, string? namePart, Guid? companyId)
+        public async Task<StudentsWithPaginationDTO> GetStudentsByFilters(int page, Grade? grade, int? group, List<StudentStatus>? statuses, string? namePart, Guid? companyId)
         {
             int _pageSize = _configuration.GetSection("PaginationSettings").GetValue<int>("PageSize");
             int pageCount; 
@@ -234,9 +235,9 @@ namespace DP_backend.Services
                 };
                 counters.Add(counter);
             }
-            if (status != null)
+            if (!statuses.IsNullOrEmpty())
             {
-                query = query.Where(x => x.Status == status);
+                query = query.Where(x => statuses.Contains(x.Status));
             }
             if ((query.Count() % _pageSize) == 0)
             {
