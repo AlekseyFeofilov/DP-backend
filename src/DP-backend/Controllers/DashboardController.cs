@@ -24,12 +24,12 @@ namespace DP_backend.Controllers
         public async Task<IActionResult> GetStudentsDashboard(int page, 
             Grade? grade, 
             int? group, 
-            StudentStatus? status, 
+            [FromQuery]List<StudentStatus>? statuses, 
             string? namePart, 
             Guid? companyId
             )
         {
-            var students = await _userManagementService.GetStudentsByFilters(page, grade, group, status, namePart, companyId);
+            var students = await _userManagementService.GetStudentsByFilters(page, grade, group, statuses, namePart, companyId);
             return Ok(students);
         }
     }
