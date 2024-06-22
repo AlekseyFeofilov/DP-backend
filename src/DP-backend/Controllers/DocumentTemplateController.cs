@@ -10,9 +10,9 @@ namespace DP_backend.Controllers;
 public class DocumentTemplateController : ControllerBase
 {
     private readonly IDocumentTemplatesService _documentTemplatesService;
-    private readonly GenerateDocxInternshipDiaryUseCase _generateDocxInternshipDiaryUseCase;
+    private readonly IGenerateDocxInternshipDiaryUseCase _generateDocxInternshipDiaryUseCase;
 
-    public DocumentTemplateController(IDocumentTemplatesService documentTemplatesService, GenerateDocxInternshipDiaryUseCase generateDocxInternshipDiaryUseCase)
+    public DocumentTemplateController(IDocumentTemplatesService documentTemplatesService, IGenerateDocxInternshipDiaryUseCase generateDocxInternshipDiaryUseCase)
     {
         _documentTemplatesService = documentTemplatesService;
         _generateDocxInternshipDiaryUseCase = generateDocxInternshipDiaryUseCase;

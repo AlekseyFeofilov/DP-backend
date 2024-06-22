@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using DP_backend.Domain.Templating.Employment;
+using DP_backend.Templating;
 
 namespace DP_backend.Controllers
 {
@@ -24,14 +26,58 @@ namespace DP_backend.Controllers
 
         [HttpPost]
         [Authorize(Policy = "StaffAndStudent")]
-        public async Task<IActionResult> CreateRequest(InternshipDiaryRequestCreationDTO creationDTO)
+        public async Task<IActionResult> CreateRequest(InternshipDiaryRequestCreationDTO creationDTO, CancellationToken ct)
         {
             if (creationDTO.StudentId == null)
             {
                 creationDTO.StudentId = User.GetUserId();
             }
-            await _internshipDiaryRequestService.Create(creationDTO);
+
+            var internshipDiaryRequest = await _internshipDiaryRequestService.Create(creationDTO);
+
+            await GenerateInternshipDiaryTemplate(internshipDiaryRequest, ct);
+
             return Ok();
+        }
+
+        // todo : remove
+        [Obsolete("#2471")]
+        private async Task GenerateInternshipDiaryTemplate(InternshipDiaryRequest internshipDiaryRequest, CancellationToken ct)
+        {
+            var logger = HttpContext.RequestServices.GetRequiredService<ILogger<InternshipDiaryRequestController>>();
+            if (internshipDiaryRequest.Semester != (int)InternshipSemesters.Firth)
+            {
+                logger.LogInformation("Шаблон дневника практики не был сгенерирован при создании заявки на дневник практики {InternshipDiaryRequestId} семестр {SemesterNumber} для студента {StudentId}", internshipDiaryRequest.Id,
+                    internshipDiaryRequest.Semester, internshipDiaryRequest.StudentId);
+                return;
+            }
+
+            try
+            {
+                var generateDocxInternshipDiaryUseCase = HttpContext.RequestServices.GetRequiredService<IGenerateDocxInternshipDiaryUseCase>();
+                var fileHandle = await generateDocxInternshipDiaryUseCase.Execute(
+                    InternshipDiaryTemplate.TypeBySemester(InternshipSemesters.Firth),
+                    internshipDiaryRequest.Id,
+                    new InternshipDiaryAssessment(
+                        Mark: int.MinValue,
+                        Text: $"""
+                               ***
+                               Заполните это поле текстом характеристики с места практики.
+                               Заполните оценку практики [{int.MinValue}].
+                               Заполните дату создания характеристики [{InternshipDiaryTemplate.Formatting.Date(DateTime.MinValue)}].
+                               ***
+                               """,
+                        Date: DateTime.MinValue),
+                    Array.Empty<InternshipDiaryTask>(),
+                    ct);
+
+                logger.LogInformation("Создан шаблон дневника практики {FileName} Id {FileId} для заявки {InternshipDiaryRequestId}", fileHandle.Name, fileHandle.Id, internshipDiaryRequest.Id);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Ошибка при генерации шаблона дневника практики во время создании заявки на дневник практики {InternshipDiaryRequestId} семестр {SemesterNumber} для студента {StudentId}", internshipDiaryRequest.Id,
+                    internshipDiaryRequest.Semester, internshipDiaryRequest.StudentId);
+            }
         }
 
         [HttpGet]
@@ -85,7 +131,7 @@ namespace DP_backend.Controllers
                 newStatus,
                 User.GetUserId(),
                 User.Claims.Where(x => x.Type == ClaimTypes.Role).ToList()
-                .All(r => r.Value != ApplicationRoleNames.Staff && r.Value != ApplicationRoleNames.Administrator));
+                    .All(r => r.Value != ApplicationRoleNames.Staff && r.Value != ApplicationRoleNames.Administrator));
             return Ok();
         }
 
@@ -97,6 +143,7 @@ namespace DP_backend.Controllers
             await _internshipDiaryRequestService.Delete(id);
             return Ok();
         }
+
         [HttpPut]
         [Route("{id:guid}/Mark/{mark:float}")]
         [Authorize(Policy = "Staff")]

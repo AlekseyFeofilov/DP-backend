@@ -16,7 +16,7 @@ public static class DependenciesRegistration
             .AddKeyedScoped<ITemplateFieldsResolver<InternshipDiaryTemplateResolutionContext>, InternshipDiaryTasksFieldsResolver>(nameof(InternshipDiaryTemplate))
             .AddKeyedScoped<ITemplateFieldsResolver<InternshipDiaryTemplateResolutionContext>, InternshipDiaryAssessmentFieldsResolver>(nameof(InternshipDiaryTemplate));
         
-        serviceCollection.AddScoped<GenerateDocxInternshipDiaryUseCase>();
+        serviceCollection.AddScoped<IGenerateDocxInternshipDiaryUseCase, GenerateDocxInternshipDiaryUseCase>();
 
         return serviceCollection;
     }

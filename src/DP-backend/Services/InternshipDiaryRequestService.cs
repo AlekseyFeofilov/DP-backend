@@ -13,7 +13,7 @@ namespace DP_backend.Services
 {
     public interface IInternshipDiaryRequestService
     {
-        Task Create(InternshipDiaryRequestCreationDTO creationDTO);
+        Task<InternshipDiaryRequest> Create(InternshipDiaryRequestCreationDTO creationDTO);
         Task<List<InternshipDiaryRequestDTO>> GetAllByStatus(InternshipDiaryRequestStatus? status);
         Task<InternshipDiaryRequestDTO> GetById(Guid id);
         Task<List<InternshipDiaryRequestDTO>> GetByStudentId(Guid studentId);
@@ -36,7 +36,7 @@ namespace DP_backend.Services
             _notificationService = notificationService;
         }
         
-        public async Task Create(InternshipDiaryRequestCreationDTO creationDTO)
+        public async Task<InternshipDiaryRequest> Create(InternshipDiaryRequestCreationDTO creationDTO)
         {
             if (creationDTO.Semester < 5 || creationDTO.Semester > 8)
             {
@@ -65,6 +65,8 @@ namespace DP_backend.Services
 
             await _context.InternshipDiaryRequests.AddAsync(newRequest);
             await _context.SaveChangesAsync();
+            
+            return newRequest;
         }
 
         public async Task<List<InternshipDiaryRequestDTO>> GetAllByStatus(InternshipDiaryRequestStatus? status)

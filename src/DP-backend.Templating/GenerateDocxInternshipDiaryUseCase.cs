@@ -12,7 +12,12 @@ using EntityTypeIds = DP_backend.Domain.Employment.EntityTypeIds;
 
 namespace DP_backend.Templating;
 
-public class GenerateDocxInternshipDiaryUseCase
+public interface IGenerateDocxInternshipDiaryUseCase
+{
+    Task<FileHandle> Execute(string templateType, Guid internshipDiaryRequestId, InternshipDiaryAssessment internshipDiaryAssessment, IEnumerable<InternshipDiaryTask> internshipDiaryTasks, CancellationToken ct);
+}
+
+public class GenerateDocxInternshipDiaryUseCase : IGenerateDocxInternshipDiaryUseCase
 {
     private readonly IEnumerable<ITemplateFieldsResolver<InternshipDiaryTemplateResolutionContext>> _templateFieldsResolvers;
     private readonly ApplicationDbContext _dbContext;
