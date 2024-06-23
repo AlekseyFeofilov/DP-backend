@@ -25,6 +25,17 @@ namespace DP_backend.Models.DTOs
         public DateTime ModifyDateTime { get; set; }
 
         public float? Mark { get; set; }
+        
+        /// <summary>
+        /// Руководитель практики от профильной организации; если <c>null</c> в генерации документа используется уполномоченный представитель из Трудоустройства
+        /// </summary>
+        public string? ManagerFromEmployment { get; set; }
+
+        /// <summary>
+        /// Индивидуальный задание на практике; если <c>null</c> в генерации документа используется имя компании 
+        /// </summary>
+        public string? StudentIndividualTask { get; set; }
+        
 
         public InternshipDiaryRequestDTO() { }
 
@@ -37,6 +48,8 @@ namespace DP_backend.Models.DTOs
             Semester = internshipDiaryRequest.Semester;
             CreateDateTime = internshipDiaryRequest.CreateDateTime;
             ModifyDateTime = internshipDiaryRequest.ModifyDateTime;
+            ManagerFromEmployment = internshipDiaryRequest.ManagerFromEmployment;
+            StudentIndividualTask = internshipDiaryRequest.StudentIndividualTask;
             Mark = internshipDiaryRequest.Mark;
         }
     }
