@@ -1,4 +1,5 @@
-﻿using DP_backend.Domain.Employment;
+﻿using System.Text.Json.Serialization;
+using DP_backend.Domain.Employment;
 
 namespace DP_backend.Models.DTOs
 {
@@ -10,7 +11,19 @@ namespace DP_backend.Models.DTOs
         public string? Contact { get; set; }
         public bool isPartner { get; set; }
         public string? Comment { get; set; }
-        public string Tutor { get; set; }
+        
+        /// <summary>
+        /// Используйте AuthorizedDelegate
+        /// </summary>
+        [Obsolete("Используйте AuthorizedDelegate")]
+        [JsonPropertyName("tutor")]
+        [JsonInclude]
+        public string Tutor { get => AuthorizedDelegate; set => AuthorizedDelegate = value; }
+        /// <summary>
+        /// Уполномоченный представитель профильной организации
+        /// </summary>
+        public string AuthorizedDelegate {  get; set; }
+        
         public string Vacancy { get; set; }
         public EmployerPostDTO() { }
         public EmployerPostDTO(Employer model)
@@ -21,7 +34,7 @@ namespace DP_backend.Models.DTOs
             Contact = model.Contact;
             isPartner = model.isPartner;
             Comment = model.Comment;
-            Tutor = model.Tutor;
+            AuthorizedDelegate = model.AuthorizedDelegate;
             Vacancy = model.Vacancy;
         }
     }

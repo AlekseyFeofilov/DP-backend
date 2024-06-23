@@ -10,10 +10,19 @@ public class InternshipDiaryRequest : BaseEntity
 {
     public Guid StudentId { get; set; }
     public Student Student { get; set; }
-    public Guid InternshipRequestId { get; set; }
     public InternshipDiaryRequestStatus Status { get; set; }
     public int Semester {  get; set; }
     public float? Mark { get; set; }
+
+    /// <summary>
+    /// Руководитель практики от профильной организации; если <c>null</c> используется уполномоченный представитель из Трудоустройства
+    /// </summary>
+    public string? ManagerFromEmployment { get; set; }
+
+    /// <summary>
+    /// Индивидуальный задание на практике; если <c>null</c> используется имя компании 
+    /// </summary>
+    public string? StudentIndividualTask { get; set; }
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter))]

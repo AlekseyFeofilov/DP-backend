@@ -13,8 +13,13 @@
         public int Semester { get; set; }
         
         /// <summary>
-        /// Id заявки на практику с которой связан дневник
+        /// Руководитель практики от профильной организации
         /// </summary>
-        public Guid InternshipRequestId { get; set; }
+        public string ManagerFromEmployment { get; set; }
+
+        /// <summary>
+        /// Индивидуальный задание на практике; если <c>null</c> используется имя компании 
+        /// </summary>
+        public string? StudentIndividualTask { get; set; }
     }
 }

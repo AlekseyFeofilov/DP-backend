@@ -9,6 +9,5 @@ public class InternshipDiaryRequestCommentEntityConfiguration : IEntityTypeConfi
     public void Configure(EntityTypeBuilder<InternshipDiaryRequest> builder)
     {
         builder.HasKey(x => x.Id);
-        builder.HasOne<InternshipRequest>().WithMany().HasForeignKey(x => x.InternshipRequestId);
     }
 }

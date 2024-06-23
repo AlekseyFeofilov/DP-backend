@@ -33,7 +33,7 @@ namespace DP_backend.Services
                 isPartner = model.isPartner,
                 CommunicationPlace = model.CommunicationPlace,
                 PlacesQuantity = model.PlacesQuantity,
-                Tutor = model.Tutor,
+                AuthorizedDelegate = model.AuthorizedDelegate,
                 Vacancy = model.Vacancy
         };
             await _context.AddAsync(employer);
@@ -89,7 +89,7 @@ namespace DP_backend.Services
             employer.CommunicationPlace = model.CommunicationPlace;
             employer.Contact= model.Contact;
             employer.PlacesQuantity = model.PlacesQuantity;
-            employer.Tutor = model.Tutor;
+            employer.AuthorizedDelegate = model.AuthorizedDelegate;
             employer.Vacancy = model.Vacancy;
             await _context.SaveChangesAsync();
         }

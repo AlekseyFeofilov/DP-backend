@@ -62,6 +62,7 @@ public static class InternshipDiaryTemplate
         public const string EmploymentDelegate = "EmploymentDelegate";
         public const string ManagerFromUniversity = "ManagerFromUniversity";
         public const string StudentName = "Student";
+        public const string StudentIndividualTask = "StudentIndividualTask";
 
         public const string TasksDoneReportTable = "TasksDoneReportTable";
         public const string TaskBeginDate = "TaskBeginDate";

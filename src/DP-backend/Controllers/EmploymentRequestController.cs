@@ -59,11 +59,11 @@ namespace DP_backend.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(EmploymentRequestDTO), 200)]
-        [Route("{internshipRequestId}")]
+        [Route("{employmentRequestId}")]
         [Authorize(Policy = $"Staff")]
-        public async Task<IActionResult> GetInternshipRequests(Guid internshipRequestId)
+        public async Task<IActionResult> GetEmploymentRequest(Guid employmentRequestId)
         {
-            var request = await _employmentService.GetEmploymentRequest(internshipRequestId);
+            var request = await _employmentService.GetEmploymentRequest(employmentRequestId);
             return Ok(request);
         }
 
@@ -71,7 +71,7 @@ namespace DP_backend.Controllers
         [ProducesResponseType(typeof(List<EmploymentRequestDTO>), 200)]
         [Route("")]
         [Authorize(Policy = $"Staff")]
-        public async Task<IActionResult> GetInternshipRequests(int? group, EmploymentRequestStatus? status)
+        public async Task<IActionResult> GetEmploymentRequests(int? group, EmploymentRequestStatus? status)
         {
             var requests = await _employmentService.GetEmploymentRequestsWithFilters(group, status);
             return Ok(requests);

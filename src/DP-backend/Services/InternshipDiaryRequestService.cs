@@ -60,7 +60,8 @@ namespace DP_backend.Services
                 StudentId = (Guid)creationDTO.StudentId,
                 Semester = creationDTO.Semester,
                 Status = InternshipDiaryRequestStatus.No,
-                InternshipRequestId = creationDTO.InternshipRequestId
+                ManagerFromEmployment = creationDTO.ManagerFromEmployment,
+                StudentIndividualTask = creationDTO.StudentIndividualTask,
             };
 
             await _context.InternshipDiaryRequests.AddAsync(newRequest);
