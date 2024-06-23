@@ -13,9 +13,9 @@
         public int Semester { get; set; }
         
         /// <summary>
-        /// Руководитель практики от профильной организации
+        /// Руководитель практики от профильной организации; если <c>null</c> используется уполномоченный представитель из Трудоустройства
         /// </summary>
-        public string ManagerFromEmployment { get; set; }
+        public string? ManagerFromEmployment { get; set; }
 
         /// <summary>
         /// Индивидуальный задание на практике; если <c>null</c> используется имя компании 
