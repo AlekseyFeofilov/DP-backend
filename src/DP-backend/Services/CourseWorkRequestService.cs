@@ -25,8 +25,8 @@ namespace DP_backend.Services
         private readonly ApplicationDbContext _context;
         private readonly INotificationService _notificationService;
 
-        //private readonly string _staffNotification = "http://dp-staff.alexfil888.fvds.ru/internship-diary/";
-        //private readonly string _studentNotification = "http://dp-student.alexfil888.fvds.ru/internship-diary#";
+        private readonly string _staffNotification = "http://dp-staff.alexfil888.fvds.ru/projects/";
+        private readonly string _studentNotification = "http://dp-student.alexfil888.fvds.ru/projects/";
 
         public CourseWorkRequestService(ApplicationDbContext context, INotificationService notificationService)
         {
@@ -119,17 +119,17 @@ namespace DP_backend.Services
                     if (request.StudentId == userId)
                     {
                         request.Status = newStatus;
-                        //if (newStatus == CourseWorkRequestStatus.Passed)
-                        //{
-                        //    request.Status = newStatus;
-                        //    var notification = new NotificationCreationDTO
-                        //    {
-                        //        Title = GetTitleForPassedBySemester(request.Semester),
-                        //        Message = GetMessageForPassedBySemester(request.Semester, request.Student),
-                        //        Link = _staffNotification + request.Id
-                        //    };
-                        //    await _notificationService.CreateNotificationForStaff(notification);
-                        //}
+                        if (newStatus == CourseWorkRequestStatus.Passed)
+                        {
+                            request.Status = newStatus;
+                            var notification = new NotificationCreationDTO
+                            {
+                                Title = GetTitleForPassedBySemester(request.Semester),
+                                Message = GetMessageForPassedBySemester(request.Semester, request.Student),
+                                Link = _staffNotification + request.Id
+                            };
+                            await _notificationService.CreateNotificationForStaff(notification);
+                        }
                     }
                     else
                     {
@@ -175,14 +175,14 @@ namespace DP_backend.Services
             request.Status = CourseWorkRequestStatus.Rated;
             await _context.SaveChangesAsync();
 
-            //var notification = new NotificationCreationDTO
-            //{
-            //    Title = GetTitleForMarkBySemester(request.Semester),
-            //    Message = GetMessageForMarkBySemester(request.Semester, mark),
-            //    Link = _studentNotification + request.Id,
-            //    AddresseeId = request.Student.UserId
-            //};
-            //await _notificationService.Create(notification);
+            var notification = new NotificationCreationDTO
+            {
+                Title = GetTitleForMarkBySemester(request.Semester),
+                Message = GetMessageForMarkBySemester(request.Semester, mark),
+                Link = _studentNotification + request.Id,
+                AddresseeId = request.Student.UserId
+            };
+            await _notificationService.Create(notification);
         }
 
         private string GetTitleForPassedBySemester(int semester)

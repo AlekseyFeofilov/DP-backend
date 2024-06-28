@@ -28,7 +28,7 @@ namespace DP_backend.Services
         private readonly INotificationService _notificationService;
 
         private readonly string _staffNotification = "http://dp-staff.alexfil888.fvds.ru/internship-diary/";
-        private readonly string _studentNotification = "http://dp-student.alexfil888.fvds.ru/internship-diary#";
+        private readonly string _studentNotification = "http://dp-student.alexfil888.fvds.ru/internship-diary/";
 
         public InternshipDiaryRequestService(ApplicationDbContext context, INotificationService notificationService)
         {

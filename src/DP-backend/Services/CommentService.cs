@@ -24,7 +24,9 @@ namespace DP_backend.Services
         private readonly INotificationService _notificationService;
 
         private readonly string _staffDiaryNotification = "http://dp-staff.alexfil888.fvds.ru/internship-diary/";
-        private readonly string _studentDiaryNotification = "http://dp-student.alexfil888.fvds.ru/internship-diary#";
+        private readonly string _studentDiaryNotification = "http://dp-student.alexfil888.fvds.ru/internship-diary/";
+        private readonly string _staffCourseWorkNotification = "http://dp-staff.alexfil888.fvds.ru/projects/";
+        private readonly string _studentCourseWorkNotification = "http://dp-student.alexfil888.fvds.ru/projects/";
         private readonly string _staffIntershipNotification = "http://dp-staff.alexfil888.fvds.ru/statement/internship-check#";
         private readonly string _studentIntershipNotification = "http://dp-student.alexfil888.fvds.ru/statement/internship-check#";
         private readonly string _staffEmploymentNotification = "http://dp-staff.alexfil888.fvds.ru/statement/internship-apply#";
@@ -95,6 +97,7 @@ namespace DP_backend.Services
             string titleEnding;
             string link;
             bool forStaff = false;
+            Guid? addresseeId = null;
             switch (addComment.EntityType)
             {
                 case "InternshipRequest":
@@ -111,6 +114,7 @@ namespace DP_backend.Services
                     else
                     {
                         link = _studentIntershipNotification;
+                        addresseeId = internshipRequests.StudentId;
                     }
                     titleEnding = " к заявке на прохождение практики";
                     break;
@@ -128,6 +132,7 @@ namespace DP_backend.Services
                     else
                     {
                         link = _studentEmploymentNotification;
+                        addresseeId = employmentRequests.StudentId;
                     }
                     titleEnding = " к заявке на заведения трудоустройства";
                     break;
@@ -144,6 +149,7 @@ namespace DP_backend.Services
                     else
                     {
                         link = _studentEmploymentVariantNotification;
+                        addresseeId = employmentVariants.StudentId;
                     }
                     titleEnding = " к варианту трудоустройства";
                     break;
@@ -161,11 +167,35 @@ namespace DP_backend.Services
                     else
                     {
                         link = _studentDiaryNotification;
+                        addresseeId = internshipDiaryRequest.StudentId;
                     }
                     titleEnding = " к заявке на дневник практики";
                     break;
                 case "CourseWorkRequest":
-                    return;
+                    var courseWorkRequest = await _context.CourseWorkRequests.GetUndeleted().FirstOrDefaultAsync(r => r.Id.ToString() == addComment.EntityId);
+                    if (courseWorkRequest == null)
+                    {
+                        return;
+                    }
+                    if (author.Id == courseWorkRequest.StudentId)
+                    {
+                        link = _staffCourseWorkNotification;
+                        forStaff = true;
+                    }
+                    else
+                    {
+                        link = _studentCourseWorkNotification;
+                        addresseeId = courseWorkRequest.StudentId;
+                    }
+                    if (courseWorkRequest.Semester == 8)
+                    {
+                        titleEnding = " к заявке на диплом";
+                    }
+                    else
+                    {
+                        titleEnding = " к заявке на курсовую работу";
+                    }
+                    break;
                 default:
                     return;
             }
@@ -190,7 +220,11 @@ namespace DP_backend.Services
             }
             else
             {
-                notification.AddresseeId = author.Id;
+                if (addresseeId == null)
+                {
+                    return;
+                }
+                notification.AddresseeId = (Guid)addresseeId;
                 await _notificationService.Create(notification);
             }
         }
