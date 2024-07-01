@@ -28,6 +28,15 @@ namespace DP_backend.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        [Route("all")]
+        [Authorize(Policy = "Staff")]
+        public async Task<IActionResult> CreateNotificationByFilter(NotificationCreationByFilterDTO notificationFilter)
+        {
+            await _notificationService.CreateByFilter(notificationFilter, User.GetUserId());
+            return Ok();
+        }
+
         [HttpGet]
         [Route("my")]
         [ProducesResponseType(typeof(List<NotificationDTO>), 200)]
