@@ -12,6 +12,7 @@ namespace DP_backend.Services
     public interface INotificationService
     {
         Task Create(NotificationCreationDTO creationDTO);
+        Task CreateByFilter(NotificationCreationByFilterDTO notificationFilter, Guid userId);
         Task CreateNotificationForStaff(NotificationCreationDTO creationDTO);
         Task<List<NotificationDTO>> GetUserNotifications(Guid userId);
         Task<int> GetCountUnreadNotifications(Guid userId);
@@ -43,6 +44,37 @@ namespace DP_backend.Services
                 Type = creationDTO.Type ?? NotificationType.Other,
             };
             await _context.Notifications.AddAsync(notification);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task CreateByFilter(NotificationCreationByFilterDTO notificationFilter, Guid userId)
+        {
+            var author = await _context.Users.GetUndeleted().FirstOrDefaultAsync(u => u.Id == userId);
+            if (author == null)
+            {
+                throw new BadDataException($"Пользователь-отправитель {userId} не найден");
+            }
+
+            var studentQuery = _context.Students.GetUndeleted();
+            if (notificationFilter.Statuses != null)
+            {
+                studentQuery = studentQuery.Where(s => notificationFilter.Statuses.Contains(s.Status));
+            }
+            if (notificationFilter.Сourses != null)
+            {
+                studentQuery = studentQuery.Include(s => s.Group).Where(s => notificationFilter.Сourses.Contains(s.Group.Grade));
+            }
+
+            var students = await studentQuery.ToListAsync();
+            var newNotifications = students.Select(s => new Notification
+            {
+                Title = $"Новое уведомление от {author.UserName}",
+                Message = notificationFilter.Text,
+                AddresseeId = s.Id,
+                Link = "http://dp-student.alexfil888.fvds.ru/",
+                Type = NotificationType.Other,
+            });
+            await _context.Notifications.AddRangeAsync(newNotifications);
             await _context.SaveChangesAsync();
         }
 
