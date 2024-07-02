@@ -22,7 +22,7 @@ namespace DP_backend.Controllers
 
         [HttpPost]
         [Route("{internshipRequestId}")]
-        [Authorize(Policy = "Staff")]
+        [Authorize(Policy = "StaffAndStudent")]
         public async Task<IActionResult> CreateEmploymentRequest(Guid internshipRequestId)
         {
             await _employmentService.CreateEmploymentRequest(internshipRequestId, User.GetUserId());

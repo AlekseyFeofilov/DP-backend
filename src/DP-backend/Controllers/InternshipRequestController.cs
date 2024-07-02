@@ -48,7 +48,7 @@ namespace DP_backend.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(List<InternshipRequestDTO>), 200)]
         [Route("My")]
-        [Authorize(Policy = $"Staff")]
+        [Authorize(Policy = $"StaffAndStudent")]
         public async Task<IActionResult> GetYourInternshipRequests()
         {
             var internshipRequests = await _employmentService.GetStudentInternshipRequests(User.GetUserId());

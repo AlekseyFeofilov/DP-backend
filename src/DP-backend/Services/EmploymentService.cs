@@ -209,6 +209,9 @@ namespace DP_backend.Services
                 InternshipRequestId = internshipRequestId,
                 Status = EmploymentRequestStatus.NonVerified,              
             };
+
+            internshipRequest.Status = InternshipStatus.Unactual;
+
             await _context.EmploymentRequests.AddAsync(employmentRequest);
             await _context.SaveChangesAsync();
 
